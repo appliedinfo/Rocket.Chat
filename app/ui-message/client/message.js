@@ -15,8 +15,14 @@ import { upsertMessage } from '../../ui-utils/client/lib/RoomHistoryManager';
 import './message.html';
 import './messageThread.html';
 import { AutoTranslate } from '../../autotranslate/client';
+import { Mongo } from 'meteor/mongo';
 
 var moment = require('moment-timezone');
+
+var TaggedMessages = new Mongo.Collection('rocketchat_taggedmessages');
+console.log("message is called");
+Meteor.subscribe('rocketchat_taggedmessages');
+		console.log("teggitem",TaggedMessages.find())
 const renderBody = (msg, settings) => {
 	const isSystemMessage = MessageTypes.isSystemMessage(msg);
 	const messageType = MessageTypes.getType(msg) || {};
@@ -41,6 +47,22 @@ const renderBody = (msg, settings) => {
 	}
 	return msg;
 };
+
+
+Template.message.events({
+	'click #tag_message-actions__button' : function(){
+		const { msg} = this;
+		console.log("msgg",this);
+		// TaggedMessages.insert({
+		// message:msg.msg,
+		// messageId : msg._id,
+		// taggedAt: new Date(),
+		
+		// });	
+		Meteor.call('rocketchat_taggedmessages.insert',msg.msg,msg._id)
+		console.log("cllick",""+TaggedMessages.find());
+	}
+});
 
 Template.message.helpers({
 	body() {
@@ -258,7 +280,7 @@ Template.message.helpers({
 	},
 	showTranslated() {
 		const { msg, subscription, settings, u } = this;
-		if (settings.AutoTranslate_Enabled && msg.u && msg.u._id !== u._id && !MessageTypes.isSystemMessage(msg)) {
+		if (settings.AutoTranseditedlate_Enabled && msg.u && msg.u._id !== u._id && !MessageTypes.isSystemMessage(msg)) {
 			const autoTranslate = subscription && subscription.autoTranslate;
 			return msg.autoTranslateFetching || (!!autoTranslate !== !!msg.autoTranslateShowInverse && msg.translations && msg.translations[settings.translateLanguage]);
 		}
@@ -294,6 +316,25 @@ Template.message.helpers({
 		} if (msg.label) {
 			return msg.label;
 		}
+	},
+	 taggedMsg(){
+		const { msg } = this;
+				
+		const msgId  = [];
+	 TaggedMessages.find().forEach((item) => { 
+		 if(item.messageId===msg._id){
+			msgId.push(item.messageId);
+			
+		}
+
+		});
+			for(msg._id in msgId){
+			console.log("in the loop")
+			return true;
+		}
+	
+		return false;
+	
 	},
 	hasOembed() {
 		const { msg, settings } = this;
