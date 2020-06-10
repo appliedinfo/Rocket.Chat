@@ -14,15 +14,24 @@ import { t, roomTypes } from '../../utils';
 import { upsertMessage } from '../../ui-utils/client/lib/RoomHistoryManager';
 import './message.html';
 import './messageThread.html';
+import './messageTag.css';
 import { AutoTranslate } from '../../autotranslate/client';
 import { Mongo } from 'meteor/mongo';
+import toastr from 'toastr';
+		 
+		      
+		 
+		      
 
 var moment = require('moment-timezone');
 
 var TaggedMessages = new Mongo.Collection('rocketchat_taggedmessages');
-console.log("message is called");
 Meteor.subscribe('rocketchat_taggedmessages');
-		console.log("teggitem",TaggedMessages.find())
+		console.log("teggitemll",TaggedMessages.find().fetch())
+
+	
+
+
 const renderBody = (msg, settings) => {
 	const isSystemMessage = MessageTypes.isSystemMessage(msg);
 	const messageType = MessageTypes.getType(msg) || {};
@@ -50,23 +59,100 @@ const renderBody = (msg, settings) => {
 
 
 Template.message.events({
-	'click #tag_message-actions__button' : function(){
-		const { msg} = this;
-		console.log("msgg",this);
+	
+	
+	'click #tag_a_id' : function(){
+		const {msg} = this;
+		console.log("msggaa",msg);
+		const tagName = "tagA";
+		let taggedMsgList = [];
+		let isalreadyTagged = false;
+		TaggedMessages.find().forEach((item) => { 
+			console.log("contains",JSON.stringify(item))
+			console.log("contains",msg._id," ",item)
+			if(item.messageId===msg._id && item.tagName===tagName){
+				console.log("inside if")
+				taggedMsgList.push(item.messageId)
+				return;
+			
+		   }
+		   });
+		   console.log("contains item",taggedMsgList)
+
+		   if(taggedMsgList.length>0){
+			console.log("already tagged")
+			
+		}
+		else {
+		  Meteor.call('rocketchat_taggedmessages.insert',msg.msg,msg._id,tagName)
+		  console.log("cllick",""+TaggedMessages.find());
+		}
 		// TaggedMessages.insert({
 		// message:msg.msg,
 		// messageId : msg._id,
 		// taggedAt: new Date(),
 		
 		// });	
-		Meteor.call('rocketchat_taggedmessages.insert',msg.msg,msg._id)
+		// Meteor.call('rocketchat_taggedmessages.insert',msg.msg,msg._id,tagName)
+		// console.log("cllick",""+TaggedMessages.find());
+	},
+	'click #tag_b_id' : function(){
+		const { msg} = this;
+		const tagName = "tagB";
+		// TaggedMessages.insert({
+		// message:msg.msg,
+		// messageId : msg._id,
+		// taggedAt: new Date(),
+		
+		// });	
+		Meteor.call('rocketchat_taggedmessages.insert',msg.msg,msg._id,tagName)
 		console.log("cllick",""+TaggedMessages.find());
-	}
+	},
+	'click #tag_C_id' : function(){
+		const { msg} = this;
+			const tagName = "tagC";
+		// TaggedMessages.insert({
+		// message:msg.msg,
+		// messageId : msg._id,
+		// taggedAt: new Date(),
+		
+		// });	
+		Meteor.call('rocketchat_taggedmessages.insert',msg.msg,msg._id,tagName)
+		console.log("cllick",""+TaggedMessages.find());
+	},
+	'click #opendropdown_for-actions__button' : function(e,t){
+		if(Session.get("showdrop") == "block"){
+			Session.set("showdrop","none");
+		}
+		else{
+			Session.set("showdrop","block");
+		}
+		console.log("dropdown clicked")
+		
+	
+	},
+	// 'click #tag_message-actions__button' : function(){
+	// 	const { msg} = this;
+	// 	console.log("msgg",this);
+	// 	// TaggedMessages.insert({
+	// 	// message:msg.msg,
+	// 	// messageId : msg._id,
+	// 	// taggedAt: new Date(),
+		
+	// 	// });	
+	// 	Meteor.call('rocketchat_taggedmessages.insert',msg.msg,msg._id)
+	// 	console.log("cllick",""+TaggedMessages.find());
+	// }
 });
 
 Template.message.helpers({
+	showDropdown : function(){
+
+		return Session.get("showdrop")
+	},
 	body() {
 		const { msg, settings } = this;
+		console.log("messageid is",msg._id);
 		return Tracker.nonreactive(() => renderBody(msg, settings));
 	},
 	i18nReplyCounter() {
@@ -181,7 +267,6 @@ Template.message.helpers({
 	},
 	time() {
 		const { msg, timeAgo: useTimeAgo } = this;
-		console.log("logs this is ",this);
 		return useTimeAgo ? timeAgo(msg.ts) : DateFormat.formatTime(msg.ts);
 	},
 	date() {
@@ -319,9 +404,11 @@ Template.message.helpers({
 	},
 	 taggedMsg(){
 		const { msg } = this;
-				
+				console.log("istaggedthis",this)
 		const msgId  = [];
 	 TaggedMessages.find().forEach((item) => { 
+		 console.log("istaggedwala"+JSON.stringify(item))
+
 		 if(item.messageId===msg._id){
 			msgId.push(item.messageId);
 			

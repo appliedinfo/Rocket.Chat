@@ -22,8 +22,9 @@ Meteor.publish("rocketchat_taggedmessages", function () {
 
 Meteor.methods({
   
-'rocketchat_taggedmessages.insert'(message,messageId ){
+'rocketchat_taggedmessages.insert'(message,messageId,tagName ){
   TaggedMessages.insert({
+    tagName,
     message,
 		messageId ,
 		taggedAt: new Date(),
