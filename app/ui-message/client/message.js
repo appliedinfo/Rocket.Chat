@@ -24,6 +24,7 @@ import toastr from 'toastr';
 		      
 
 var moment = require('moment-timezone');
+let messageID ;
 
 var TaggedMessages = new Mongo.Collection('rocketchat_taggedmessages');
 Meteor.subscribe('rocketchat_taggedmessages');
@@ -60,65 +61,49 @@ const renderBody = (msg, settings) => {
 
 Template.message.events({
 	
-	
 	'click #tag_a_id' : function(){
+		console.log("thisisa",$(this));
 		const {msg} = this;
-		console.log("msggaa",msg);
+		const msgId = msg._id;
+		console.log("messagID",messageID);
 		const tagName = "tagA";
-		let taggedMsgList = [];
-		let isalreadyTagged = false;
-		TaggedMessages.find().forEach((item) => { 
-			console.log("contains",JSON.stringify(item))
-			console.log("contains",msg._id," ",item)
-			if(item.messageId===msg._id && item.tagName===tagName){
-				console.log("inside if")
-				taggedMsgList.push(item.messageId)
-				return;
-			
-		   }
-		   });
-		   console.log("contains item",taggedMsgList)
-
-		   if(taggedMsgList.length>0){
-			console.log("already tagged")
-			
-		}
-		else {
-		  Meteor.call('rocketchat_taggedmessages.insert',msg.msg,msg._id,tagName)
-		  console.log("cllick",""+TaggedMessages.find());
-		}
-		// TaggedMessages.insert({
-		// message:msg.msg,
-		// messageId : msg._id,
-		// taggedAt: new Date(),
-		
-		// });	
-		// Meteor.call('rocketchat_taggedmessages.insert',msg.msg,msg._id,tagName)
-		// console.log("cllick",""+TaggedMessages.find());
+		console.log("taga",msg._id,+ "" +TaggedMessages.findOne({messageId:msgId,tagName:"tagA"}));
+		let taggedMsg = TaggedMessages.findOne({messageId:msg._id,tagName:"tagA"})
+		if(typeof taggedMsg === "undefined"){
+			Meteor.call('rocketchat_taggedmessages.insert',msg.msg,msg._id,"tagA")
+	   }
+	   else {
+		   console.log("TAGa is already tagged");
+	   }
 	},
 	'click #tag_b_id' : function(){
-		const { msg} = this;
+		console.log("thisisb",this);
+		const {msg} = this;
+		
+		const msgId = msg._id;
 		const tagName = "tagB";
-		// TaggedMessages.insert({
-		// message:msg.msg,
-		// messageId : msg._id,
-		// taggedAt: new Date(),
-		
-		// });	
-		Meteor.call('rocketchat_taggedmessages.insert',msg.msg,msg._id,tagName)
-		console.log("cllick",""+TaggedMessages.find());
+		console.log("tagb",msg._id,+ "" +TaggedMessages.findOne({messageId:msgId,tagName:"tagB"}));
+		let taggedMsg = TaggedMessages.findOne({messageId:msgId,tagName:"tagB"})
+		if(typeof taggedMsg === "undefined" ){
+			Meteor.call('rocketchat_taggedmessages.insert',msg.msg,msg._id,"tagB")
+	   }
+	   else {
+		   console.log("TAGB is already tagged");
+	   }
 	},
-	'click #tag_C_id' : function(){
-		const { msg} = this;
-			const tagName = "tagC";
-		// TaggedMessages.insert({
-		// message:msg.msg,
-		// messageId : msg._id,
-		// taggedAt: new Date(),
-		
-		// });	
-		Meteor.call('rocketchat_taggedmessages.insert',msg.msg,msg._id,tagName)
-		console.log("cllick",""+TaggedMessages.find());
+	'click #tag_c_id' : function(){
+		console.log("thisisc",this);
+		const {msg} = this;
+		const msgId = msg._id;
+		const tagName = "tagC";
+		console.log("tagc",msg._id,+ "" +TaggedMessages.findOne({messageId:msgId,tagName:"tagC"}));
+		let taggedMsg = TaggedMessages.findOne({messageId:msgId,tagName:"tagC"})
+		if(typeof taggedMsg === "undefined" ){
+			Meteor.call('rocketchat_taggedmessages.insert',msg.msg,msg._id,"tagC")
+	   }
+	   else {
+		   console.log("TAGC is already tagged");
+	   }
 	},
 	'click #opendropdown_for-actions__button' : function(e,t){
 		if(Session.get("showdrop") == "block"){
@@ -127,7 +112,7 @@ Template.message.events({
 		else{
 			Session.set("showdrop","block");
 		}
-		console.log("dropdown clicked")
+
 		
 	
 	},
@@ -153,6 +138,7 @@ Template.message.helpers({
 	body() {
 		const { msg, settings } = this;
 		console.log("messageid is",msg._id);
+		messageID = msg._id;
 		return Tracker.nonreactive(() => renderBody(msg, settings));
 	},
 	i18nReplyCounter() {
@@ -282,7 +268,7 @@ Template.message.helpers({
 	},
 	dateinNextZone(){
 			const { msg } = this;
-		console.log("msg ",this.msg.ts);
+		console.log("msgggg ",this.msg._id);
 		var timeZone = moment.tz.guess();
 		const zoneName = moment.tz(timeZone).zoneName();
 	
@@ -402,27 +388,55 @@ Template.message.helpers({
 			return msg.label;
 		}
 	},
-	 taggedMsg(){
-		const { msg } = this;
-				console.log("istaggedthis",this)
-		const msgId  = [];
-	 TaggedMessages.find().forEach((item) => { 
-		 console.log("istaggedwala"+JSON.stringify(item))
-
-		 if(item.messageId===msg._id){
-			msgId.push(item.messageId);
-			
-		}
-
-		});
-			for(msg._id in msgId){
-			console.log("in the loop")
-			return true;
-		}
-	
+	isTaggedA(){
+		const {msg} = this;
+		let taggedMsg = TaggedMessages.findOne({messageId:msg._id,tagName:"tagA"})
+		if(typeof taggedMsg === "undefined"){
 		return false;
-	
+	   }
+	   else {
+		  return true;
+	   }
 	},
+	isTaggedB(){
+		const {msg} = this;
+		let taggedMsg = TaggedMessages.findOne({messageId:msg._id,tagName:"tagB"})
+		if(typeof taggedMsg === "undefined"){
+		return false;
+	   }
+	   else {
+		  return true;
+	   }
+	},
+	isTaggedC(){
+		const {msg} = this;
+		let taggedMsg = TaggedMessages.findOne({messageId:msg._id,tagName:"tagC"})
+		if(typeof taggedMsg === "undefined"){
+		return false;
+	   }
+	   else {
+		  return true;
+	   }
+	},
+	//  taggedMsg(){
+	// 	const { msg } = this;
+	// 	const msgId  = [];
+	//  TaggedMessages.find().forEach((item) => { 
+
+	// 	 if(item.messageId===msg._id){
+	// 		msgId.push(item.messageId);
+			
+	// 	}
+
+	// 	});
+	// 		for(msg._id in msgId){
+	// 		console.log("in the loop")
+	// 		return true;
+	// 	}
+	
+	// 	return false;
+	
+	// },
 	hasOembed() {
 		const { msg, settings } = this;
 		// there is no URLs, there is no template to show the oembed (oembed package removed) or oembed is not enable
