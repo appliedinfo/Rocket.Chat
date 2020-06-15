@@ -1,8 +1,8 @@
 <template name="messageBox">
 	<div class="rc-message-box rc-new {{#if isEmbedded}}rc-message-box--embedded{{/if}}">
 		<div class="rc-message-box__rc-clock" style="display: flex; padding-bottom: 4px; padding-top: 6px;" >
-			<div  style=" color: #a0a0a0;; font-family: inherit;padding: 1px 4px; background: #ffffff;">{{ clockTimeIST}}</div>
 			<div  style=" color: #a0a0a0; font-family: inherit; margin-left: 8px;padding: 1px 4px; background: #ffffff;">{{ clockTimeET}}</div>
+			<div  style=" color: #a0a0a0;; font-family: inherit;padding: 1px 4px; background: #ffffff;">{{ clockTimeIST}}</div>
 		</div>
 		
 		{{#unless isAnonymousOrMustJoinWithCode}}
