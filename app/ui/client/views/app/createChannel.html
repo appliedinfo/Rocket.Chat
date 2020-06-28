@@ -87,6 +87,62 @@
 					</div>
 					<div class="rc-input">
 						<label class="rc-input__label">
+							<div class="rc-input__title">Jira link</div>
+							<div class="rc-input__wrapper">
+								<div class="rc-input__icon">
+									{{> icon block="rc-input__icon-svg" icon="at"}}
+								</div>
+								<div class="rc-tags">
+									 <input type="text" class="rc-tags__input" placeholder="{{_ "Jira_placeholder"}}" name="jiraLink" autocomplete="off"/>
+								</div>
+							</div>
+							 
+						</label>
+					</div>
+					<div class="rc-input">
+						<label class="rc-input__label">
+							<div class="rc-input__title">Gitlab link</div>
+							<div class="rc-input__wrapper">
+								<div class="rc-input__icon">
+									{{> icon block="rc-input__icon-svg" icon="at"}}
+								</div>
+								<div class="rc-tags">
+									 <input type="text" class="rc-tags__input" placeholder="{{_ "Gitlab_placeholder"}}" name="gitlabLink" autocomplete="off"/>
+								</div>
+							</div>
+							 
+						</label>
+					</div>
+					<div class="rc-input">
+						<label class="rc-input__label">
+							<div class="rc-input__title">Google drive link</div>
+							<div class="rc-input__wrapper">
+								<div class="rc-input__icon">
+									{{> icon block="rc-input__icon-svg" icon="at"}}
+								</div>
+								<div class="rc-tags">
+									 <input type="text" class="rc-tags__input" placeholder="{{_ "Google_drive_placeholder"}}" name="driveLink" autocomplete="off"/>
+								</div>
+							</div>
+							 
+						</label>
+					</div>
+					<div class="rc-input">
+						<label class="rc-input__label">
+							<div class="rc-input__title">Goole sheet link</div>
+							<div class="rc-input__wrapper">
+								<div class="rc-input__icon">
+									{{> icon block="rc-input__icon-svg" icon="at"}}
+								</div>
+								<div class="rc-tags">
+									 <input type="text" class="rc-tags__input" placeholder="{{_ "Google_sheet_placeholder"}}" name="sheetLink" autocomplete="off"/>
+								</div>
+							</div>
+							 
+						</label>
+					</div>
+					<div class="rc-input">
+						<label class="rc-input__label">
 							<div class="rc-input__title">{{_ "Invite_Users"}}</div>
 							<div class="rc-input__wrapper">
 								<div class="rc-input__icon">
@@ -127,7 +183,7 @@
 				{{/if}}
 			</form>
 			<div class="create-channel__inputs">
-				<input form='create-channel' class="rc-button rc-button--primary" type='submit' data-button="create" {{createIsDisabled}} value="{{_ "Create"}}" />
+				<input form='create-channel' class="rc-button rc-button--primary" type='submit'   data-button="create" {{createIsDisabled}} value="{{_ "Create"}}" />
 			</div>
 		</div>
 		{{#each roomType in roomTypesAfterStandard}}

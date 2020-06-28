@@ -16,12 +16,13 @@ export class Rooms extends Base {
 		this.tryEnsureIndex({ t: 1 });
 		this.tryEnsureIndex({ 'u._id': 1 });
 		this.tryEnsureIndex({ 'tokenpass.tokens.token': 1 });
-		this.tryEnsureIndex({ ts: 1 });
+		this.tryEnsureIndex({ ts: 1 }); 
 		// discussions
 		this.tryEnsureIndex({ prid: 1 }, { sparse: true });
 		this.tryEnsureIndex({ fname: 1 }, { sparse: true });
 		// field used for DMs only
 		this.tryEnsureIndex({ uids: 1 }, { sparse: true });
+		
 	}
 
 	findOneByIdOrName(_idOrName, options) {
