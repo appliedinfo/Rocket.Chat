@@ -126,7 +126,7 @@ Template.createChannel.helpers({
 		const extensions_invalid = instance.extensions_invalid.get();
 		const inUse = instance.inUse.get();
 		const name = instance.name.get();
-
+		const jiraLink = instance.jiraLink.get() 
 		if (name.length === 0 || invalid || inUse === true || inUse === undefined || extensions_invalid) {
 			return 'disabled';
 		}
@@ -220,6 +220,30 @@ Template.createChannel.events({
 			t.name.set(modified);
 		}
 	},
+	'input [name="jiraLink"]'(e, t) { 
+		const input = e.target;
+		const position = input.selectionEnd || input.selectionStart;
+		const { length } = input.value; 
+		const value = input.value;
+		document.activeElement === input && e && /input/i.test(e.type) && (input.selectionEnd = position + input.value.length - length);
+		t.jiraLink.set(value)
+	},
+	'input [name="driveLink"]'(e, t) { 
+		const input = e.target;
+		const position = input.selectionEnd || input.selectionStart;
+		const { length } = input.value; 
+		const value = input.value;
+		document.activeElement === input && e && /input/i.test(e.type) && (input.selectionEnd = position + input.value.length - length);
+		t.driveLink.set(value)
+	},
+	'input [name="sheetLink"]'(e, t) { 
+		const input = e.target;
+		const position = input.selectionEnd || input.selectionStart;
+		const { length } = input.value; 
+		const value = input.value;
+		document.activeElement === input && e && /input/i.test(e.type) && (input.selectionEnd = position + input.value.length - length);
+		t.sheetLink.set(value)
+	},
 	'submit .create-channel__content'(e, instance) {
 		e.preventDefault();
 		e.stopPropagation();
@@ -228,7 +252,13 @@ Template.createChannel.events({
 		const readOnly = instance.readOnly.get();
 		const broadcast = instance.broadcast.get();
 		const encrypted = instance.encrypted.get();
+		const jiraLink = instance.jiraLink.get();
+		const driveLink = instance.driveLink.get();
+		const sheetLink = instance.sheetLink.get();
+		const gitlabLink = instance.sheetLink.get();
 		const isPrivate = type === 'p';
+
+		console.log("jooj", jiraLink, driveLink, sheetLink)
 
 		if (instance.invalid.get() || instance.inUse.get()) {
 			return e.target.name.focus();
@@ -240,8 +270,9 @@ Template.createChannel.events({
 		const extraData = Object.keys(instance.extensions_submits)
 			.reduce((result, key) => ({ ...result, ...instance.extensions_submits[key](instance) }), { broadcast, encrypted });
 
-		Meteor.call(isPrivate ? 'createPrivateGroup' : 'createChannel', name, instance.selectedUsers.get().map((user) => user.username), readOnly, {}, extraData, function(err, result) {
+		Meteor.call(isPrivate ? 'createPrivateGroup' : 'createChannel', name, instance.selectedUsers.get().map((user) => user.username), readOnly, {gitlabLink,jiraLink, driveLink, sheetLink}, extraData, 	function(err, result) {
 			if (err) {
+				console.log('error aaya', err)
 				if (err.error === 'error-invalid-name') {
 					instance.invalid.set(true);
 					return;
@@ -254,7 +285,7 @@ Template.createChannel.events({
 					toastr.error(t('error-invalid-room-name', { room_name: name }));
 					return;
 				}
-				toastr.error(err.message);
+				toastr.error(err.message); 
 				return;
 			}
 
@@ -295,6 +326,10 @@ Template.createChannel.onCreated(function() {
 	this.extensions_validations = {};
 	this.extensions_submits = {};
 	this.name = new ReactiveVar('');
+	this.jiraLink = new ReactiveVar('');
+	this.gitlabLink = new ReactiveVar('');
+	this.driveLink = new ReactiveVar('');
+	this.sheetLink = new ReactiveVar('');
 	this.type = new ReactiveVar(hasAllPermission(['create-p']) ? 'p' : 'c');
 	this.readOnly = new ReactiveVar(false);
 	this.broadcast = new ReactiveVar(false);

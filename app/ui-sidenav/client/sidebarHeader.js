@@ -83,6 +83,7 @@ const toolbarButtons = (/* user */) => [{
 	hasPopup: true,
 	action: (e) => {
 		const action = (title, content) => (e) => {
+			console.log('conn', content)
 			e.preventDefault();
 			modal.open({
 				title: t(title),
