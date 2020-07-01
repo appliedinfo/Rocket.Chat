@@ -160,6 +160,10 @@ Template.channelSettingsEditing.events({
 		const { settings } = t;
 		Object.keys(settings).forEach((key) => settings[key].value.set(settings[key].default.get()));
 	},
+	'click #gitlab_link'(e){
+		console.log("click on gitlab")
+		window.open(Template.instance.room.customFields.gitlabLink);
+	},
 
 	'click .rc-user-info__config-value'(e) {
 		const options = [{
@@ -286,6 +290,7 @@ Template.channelSettingsEditing.onCreated(function() {
 			type: 'markdown',
 			label: 'Announcement',
 			getValue() {
+				console.log("roomins",Template.instance.room);
 				return Template.instance().room.announcement;
 			},
 			canView() {
@@ -701,6 +706,26 @@ Template.channelSettingsEditing.onCreated(function() {
 	});
 });
 
+Template.channelSettingsInfo.events({
+	'click #gitlab_link'(e,t){
+		const gitlabUrl = t.room.customFields.gitlabLink
+		window.open(gitlabUrl)
+	},
+	'click #jira_link'(e,t){
+		const jiraUrl = t.room.customFields.jiraLink
+		window.open(jiraUrl)
+	},
+	'click #drive_link'(e,t){
+		const driveUrl = t.room.customFields.driveLink
+		window.open(driveUrl)
+	},
+	'click #sheet_link'(e,t){
+		const sheetUrl = t.room.customFields.sheetLink
+		window.open(sheetUrl)
+	},
+
+});
+
 Template.channelSettingsEditing.helpers({
 	...common,
 	value() {
@@ -819,6 +844,18 @@ Template.channelSettingsInfo.helpers({
 	},
 	description() {
 		return Template.instance().room.description;
+	},
+	gitlabLink(){
+      return Template.instance().room.customFields.gitlabLink;
+	},
+	jiraLink(){
+		return Template.instance().room.customFields.jiraLink;
+	},
+	sheetLink(){
+		return Template.instance().room.customFields.sheetLink;
+	},
+	driveLink(){
+		return Template.instance().room.customFields.driveLink;
 	},
 	broadcast() {
 		return Template.instance().room.broadcast;
