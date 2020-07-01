@@ -173,7 +173,7 @@
 
 		margin-bottom: 37px;
 
-		font-size: 15px;
+		font-size: 35px;
 		font-weight: 400;
 	}
 
@@ -181,6 +181,12 @@
 		padding: 8px 0;
 
 		color: #9ea2a8;
+	}
+
+	&__link {
+		padding: 8px 0;
+
+		color: #ffffff;
 	}
 
 	&-action {
