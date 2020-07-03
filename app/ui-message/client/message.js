@@ -212,9 +212,9 @@ Template.message.helpers({
         var timeZone = moment.tz.guess();
         const zoneName = moment.tz(timeZone).zoneName();
         if (zoneName === "IST") {
-            return "ET"
+            return moment().tz("America/New_York").zoneName();
         } else if (zoneName === "ET" || zoneName === "EST" || zoneName === "EDT") {
-            return "IST"
+            return moment().tz("Asia/Calcutta").zoneName();
         } else {
             return ""
         }

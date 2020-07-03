@@ -229,7 +229,7 @@ Template.messageBox.helpers({
 	var timeNowInET =   moment().tz("America/New_York").format("LT");
 	const zoneName = moment().tz("America/New_York").zoneName();
     setTimeout(startTime, 500);
-   Session.set('clock',timeNowInET+ zoneName);
+   Session.set('clock',timeNowInET+ " " +zoneName);
    
 }
    startTime();
