@@ -131,461 +131,395 @@ Template.message.events({
 });
 
 Template.message.helpers({
-	showDropdown : function(){
+    body() {
+        const { msg, settings } = this;
+        return Tracker.nonreactive(() => renderBody(msg, settings));
+    },
+    i18nReplyCounter() {
+        const { msg } = this;
+        return `<span class='reply-counter'>${ msg.tcount }</span>`;
+    },
+    i18nDiscussionCounter() {
+        const { msg } = this;
+        return `<span class='reply-counter'>${ msg.dcount }</span>`;
+    },
+    formatDateAndTime,
+    encodeURI(text) {
+        return encodeURI(text);
+    },
+    broadcast() {
+        const { msg, room = {}, u } = this;
+        return !msg.private && !msg.t && msg.u._id !== u._id && room && room.broadcast;
+    },
+    isIgnored() {
+        const { ignored, msg } = this;
+        const isIgnored = typeof ignored !== 'undefined' ? ignored : msg.ignored;
+        return isIgnored;
+    },
+    ignoredClass() {
+        const { ignored, msg } = this;
+        const isIgnored = typeof ignored !== 'undefined' ? ignored : msg.ignored;
+        return isIgnored ? 'message--ignored' : '';
+    },
+    isDecrypting() {
+        const { msg } = this;
+        return msg.e2e === 'pending';
+    },
+    isBot() {
+        const { msg } = this;
+        return msg.bot && 'bot';
+    },
+    roleTags() {
+        const { msg, hideRoles, settings } = this;
+        if (settings.hideRoles || hideRoles) {
+            return [];
+        }
 
-		return Session.get("showdrop")
-	},
-	body() {
-		const { msg, settings } = this;
-		console.log("messageid is",msg._id);
-		messageID = msg._id;
-		return Tracker.nonreactive(() => renderBody(msg, settings));
-	},
-	i18nReplyCounter() {
-		const { msg } = this;
-		return `<span class='reply-counter'>${ msg.tcount }</span>`;
-	},
-	i18nDiscussionCounter() {
-		const { msg } = this;
-		return `<span class='reply-counter'>${ msg.dcount }</span>`;
-	},
-	formatDateAndTime,
-	encodeURI(text) {
-		return encodeURI(text);
-	},
-	broadcast() {
-		const { msg, room = {}, u } = this;
-		return !msg.private && !msg.t && msg.u._id !== u._id && room && room.broadcast;
-	},
-	isIgnored() {
-		const { ignored, msg } = this;
-		const isIgnored = typeof ignored !== 'undefined' ? ignored : msg.ignored;
-		return isIgnored;
-	},
-	ignoredClass() {
-		const { ignored, msg } = this;
-		const isIgnored = typeof ignored !== 'undefined' ? ignored : msg.ignored;
-		return isIgnored ? 'message--ignored' : '';
-	},
-	isDecrypting() {
-		const { msg } = this;
-		return msg.e2e === 'pending';
-	},
-	isBot() {
-		const { msg } = this;
-		return msg.bot && 'bot';
-	},
-	roleTags() {
-		const { msg, hideRoles, settings } = this;
-		if (settings.hideRoles || hideRoles) {
-			return [];
-		}
+        if (!msg.u || !msg.u._id) {
+            return [];
+        }
+        const userRoles = UserRoles.findOne(msg.u._id);
+        const roomRoles = RoomRoles.findOne({
+            'u._id': msg.u._id,
+            rid: msg.rid,
+        });
+        const roles = [...(userRoles && userRoles.roles) || [], ...(roomRoles && roomRoles.roles) || []];
+        return Roles.find({
+            _id: {
+                $in: roles,
+            },
+            description: {
+                $exists: 1,
+                $ne: '',
+            },
+        }, {
+            fields: {
+                description: 1,
+            },
+        });
+    },
+    isGroupable() {
+        const { msg, room = {}, settings, groupable } = this;
+        if (groupable === false || settings.allowGroup === false || room.broadcast || msg.groupable === false || (MessageTypes.isSystemMessage(msg) && !msg.tmid)) {
+            return 'false';
+        }
+    },
+    avatarFromUsername() {
+        const { msg } = this;
 
-		if (!msg.u || !msg.u._id) {
-			return [];
-		}
-		const userRoles = UserRoles.findOne(msg.u._id);
-		const roomRoles = RoomRoles.findOne({
-			'u._id': msg.u._id,
-			rid: msg.rid,
-		});
-		const roles = [...(userRoles && userRoles.roles) || [], ...(roomRoles && roomRoles.roles) || []];
-		return Roles.find({
-			_id: {
-				$in: roles,
-			},
-			description: {
-				$exists: 1,
-				$ne: '',
-			},
-		}, {
-			fields: {
-				description: 1,
-			},
-		});
-	},
-	isGroupable() {
-		const { msg, room = {}, settings, groupable } = this;
-		if (groupable === false || settings.allowGroup === false || room.broadcast || msg.groupable === false || (MessageTypes.isSystemMessage(msg) && !msg.tmid)) {
-			return 'false';
-		}
-	},
-	avatarFromUsername() {
-		const { msg } = this;
+        if (msg.avatar != null && msg.avatar[0] === '@') {
+            return msg.avatar.replace(/^@/, '');
+        }
+    },
+    getName() {
+        const { msg, settings } = this;
+        if (msg.alias) {
+            return msg.alias;
+        }
+        if (!msg.u) {
+            return '';
+        }
+        return (settings.UI_Use_Real_Name && msg.u.name) || msg.u.username;
+    },
+    showUsername() {
+        const { msg, settings } = this;
+        return msg.alias || (settings.UI_Use_Real_Name && msg.u && msg.u.name);
+    },
+    own() {
+        const { msg, u } = this;
+        if (msg.u && msg.u._id === u._id) {
+            return 'own';
+        }
+    },
+    t() {
+        const { msg } = this;
+        return msg.t;
+    },
+    timestamp() {
+        const { msg } = this;
+        return +msg.ts;
+    },
+    chatops() {
+        const { msg, settings } = this;
+        if (msg.u && msg.u.username === settings.Chatops_Username) {
+            return 'chatops-message';
+        }
+    },
+    time() {
+        const { msg, timeAgo: useTimeAgo } = this;
+        return useTimeAgo ? timeAgo(msg.ts) : DateFormat.formatTime(msg.ts);
+    },
+    date() {
+        const { msg } = this;
+        return DateFormat.formatDate(msg.ts);
+    },
+    zoneAbbr() {
+        const { msg } = this;
+        var timeZoneOffset = msg.ts.timeZoneOffset;
+        var timeZone = moment.tz.guess();
+        const zoneName = moment.tz(timeZone).zoneName();
+        return zoneName;
+    },
+    dateinNextZone() {
+        const { msg } = this;
+        var timeZone = moment.tz.guess();
+        const zoneName = moment.tz(timeZone).zoneName();
 
-		if (msg.avatar != null && msg.avatar[0] === '@') {
-			return msg.avatar.replace(/^@/, '');
-		}
-	},
-	getName() {
-		const { msg, settings } = this;
-		if (msg.alias) {
-			return msg.alias;
-		}
-		if (!msg.u) {
-			return '';
-		}
-		return (settings.UI_Use_Real_Name && msg.u.name) || msg.u.username;
-	},
-	showUsername() {
-		const { msg, settings } = this;
-		return msg.alias || (settings.UI_Use_Real_Name && msg.u && msg.u.name);
-	},
-	own() {
-		const { msg, u } = this;
-		if (msg.u && msg.u._id === u._id) {
-			return 'own';
-		}
-	},
-	t() {
-		const { msg } = this;
-		return msg.t;
-	},
-	timestamp() {
-		const { msg } = this;
-		return +msg.ts;
-	},
-	chatops() {
-		const { msg, settings } = this;
-		if (msg.u && msg.u.username === settings.Chatops_Username) {
-			return 'chatops-message';
-		}
-	},
-	time() {
-		const { msg, timeAgo: useTimeAgo } = this;
-		return useTimeAgo ? timeAgo(msg.ts) : DateFormat.formatTime(msg.ts);
-	},
-	date() {
-		const { msg } = this;
-		return DateFormat.formatDate(msg.ts);
-	},
-	zoneAbbr(){
-		const { msg} = this;
-		var timeZoneOffset = msg.ts.timeZoneOffset;
-		var timeZone = moment.tz.guess();
-		const zoneName = moment.tz(timeZone).zoneName();
-		return zoneName;
-	},
-	dateinNextZone(){
-			const { msg } = this;
-		console.log("msgggg ",this.msg._id);
-		var timeZone = moment.tz.guess();
-		const zoneName = moment.tz(timeZone).zoneName();
-	
-		if(zoneName==="IST"){
-			
-			
-			const etDate = moment.tz(msg.ts.getTime(), "America/New_York").format("LL, h:mm A")
-			 return etDate;
-		}
-		else if(zoneName==="ET"||zoneName==="EST"||zoneName==="EDT"){
-			const etDate = moment.tz(msg.ts.getTime(), "Asia/Calcutta").format("LL, h:mm A")
-			
-			 return etDate;
-		}
-		else {
-			return "";
-		}
-	},
-	timeInNextZone(){
-		const { msg } = this;
-		console.log("msg ",this.msg.ts);
-		var timeZone = moment.tz.guess();
-		console.log("timezone is ",timeZone);
-		const zoneName = moment.tz(timeZone).zoneName();
-	
-		if(zoneName==="IST"){
-			console.log("msg time in ist is",msg.ts.getTime());
+        if (zoneName === "IST") {
 
-			const etTime = moment.tz(msg.ts.getTime(), "America/New_York").format("LT")
-			 
-			 return etTime;
-		}
-		else if(zoneName==="ET"||zoneName==="EST"||zoneName==="EDT"){
-			const isTime = moment.tz(msg.ts.getTime(), "Asia/Calcutta").format("LT")
-			 
-			 return isTime;
-		}
-		else {
-			return "";
-		}
-		
-	},
-	zoneAbbrInNextLabel(){
-		var timeZone = moment.tz.guess();
-		console.log("timezone is ",timeZone);
-		const zoneName = moment.tz(timeZone).zoneName();
-		if(zoneName==="IST"){
-			return "ET"
-		}
-		else if(zoneName==="ET"||zoneName==="EST"||zoneName==="EDT"){
-			return "IST"
-		}
-		else {
-			return ""
-		}
-  
-	},
-	isTemp() {
-		const { msg } = this;
-		if (msg.temp === true) {
-			return 'temp';message-body-wrapper
-		}
-	},
-	threadMessage() {
-		const { msg } = this;
-		return normalizeThreadMessage(msg);
-	},
-	bodyClass() {
-		const { msg } = this;
-		return MessageTypes.isSystemMessage(msg) ? 'color-info-font-color' : 'color-primary-font-color';
-	},
-	system(returnClass) {
-		const { msg } = this;
-		if (MessageTypes.isSystemMessage(msg)) {
-			if (returnClass) {
-				return 'color-info-font-color';
-			}
-			return 'system';
-		}
-	},
-	showTranslated() {
-		const { msg, subscription, settings, u } = this;
-		if (settings.AutoTranseditedlate_Enabled && msg.u && msg.u._id !== u._id && !MessageTypes.isSystemMessage(msg)) {
-			const autoTranslate = subscription && subscription.autoTranslate;
-			return msg.autoTranslateFetching || (!!autoTranslate !== !!msg.autoTranslateShowInverse && msg.translations && msg.translations[settings.translateLanguage]);
-		}
-	},
-	translationProvider() {
-		const instance = Template.instance();
-		const { translationProvider } = instance.data.msg;
-		return translationProvider && AutoTranslate.providersMetadata[translationProvider].displayName;
-	},
-	edited() {
-		const { msg } = this;
-		return msg.editedAt && !MessageTypes.isSystemMessage(msg);
-	},
-	editTime() {
-		const { msg } = this;
-		return msg.editedAt ? DateFormat.formatDateAndTime(msg.editedAt) : '';
-	},
-	editedBy() {
-		const { msg } = this;
-		if (!msg.editedAt) {
-			return '';
-		}
-		// try to return the username of the editor,
-		// otherwise a special "?" character that will be
-		// rendered as a special avatar
-		return (msg.editedBy && msg.editedBy.username) || '?';
-	},
-	label() {
-		const { msg } = this;
 
-		if (msg.i18nLabel) {
-			return t(msg.i18nLabel);
-		} if (msg.label) {
-			return msg.label;
-		}
-	},
-	isTaggedA(){
-		const {msg} = this;
-		let taggedMsg = TaggedMessages.findOne({messageId:msg._id,tagName:"tagA"})
-		if(typeof taggedMsg === "undefined"){
-		return false;
-	   }
-	   else {
-		  return true;
-	   }
-	},
-	isTaggedB(){
-		const {msg} = this;
-		let taggedMsg = TaggedMessages.findOne({messageId:msg._id,tagName:"tagB"})
-		if(typeof taggedMsg === "undefined"){
-		return false;
-	   }
-	   else {
-		  return true;
-	   }
-	},
-	isTaggedC(){
-		const {msg} = this;
-		let taggedMsg = TaggedMessages.findOne({messageId:msg._id,tagName:"tagC"})
-		if(typeof taggedMsg === "undefined"){
-		return false;
-	   }
-	   else {
-		  return true;
-	   }
-	},
-	//  taggedMsg(){
-	// 	const { msg } = this;
-	// 	const msgId  = [];
-	//  TaggedMessages.find().forEach((item) => { 
+            const etDate = moment.tz(msg.ts.getTime(), "America/New_York").format("LL, h:mm A")
+            return etDate;
+        } else if (zoneName === "ET" || zoneName === "EST" || zoneName === "EDT") {
+            const etDate = moment.tz(msg.ts.getTime(), "Asia/Calcutta").format("LL, h:mm A")
 
-	// 	 if(item.messageId===msg._id){
-	// 		msgId.push(item.messageId);
-			
-	// 	}
+            return etDate;
+        } else {
+            return "";
+        }
+    },
+    timeInNextZone() {
+        const { msg } = this;
+        var timeZone = moment.tz.guess();
+        const zoneName = moment.tz(timeZone).zoneName();
 
-	// 	});
-	// 		for(msg._id in msgId){
-	// 		console.log("in the loop")
-	// 		return true;
-	// 	}
-	
-	// 	return false;
-	
-	// },
-	hasOembed() {
-		const { msg, settings } = this;
-		// there is no URLs, there is no template to show the oembed (oembed package removed) or oembed is not enable
-		if (!(msg.urls && msg.urls.length > 0) || !Template.oembedBaseWidget || !settings.API_Embed) {
-			return false;
-		}
+        if (zoneName === "IST") {
+            const etTime = moment.tz(msg.ts.getTime(), "America/New_York").format("LT")
 
-		// check if oembed is disabled for message's sender
-		if ((settings.API_EmbedDisabledFor || '').split(',').map((username) => username.trim()).includes(msg.u && msg.u.username)) {
-			return false;
-		}
-		return true;
-	},
-	reactions() {
-		const { msg: { reactions = {} }, u: { username: myUsername, name: myName } } = this;
+            return etTime;
+        } else if (zoneName === "ET" || zoneName === "EST" || zoneName === "EDT") {
+            const isTime = moment.tz(msg.ts.getTime(), "Asia/Calcutta").format("LT")
 
-		return Object.entries(reactions)
-			.map(([emoji, reaction]) => {
-				const myDisplayName = reaction.names ? myName : `@${ myUsername }`;
-				const displayNames = reaction.names || reaction.usernames.map((username) => `@${ username }`);
-				const selectedDisplayNames = displayNames.slice(0, 15).filter((displayName) => displayName !== myDisplayName);
+            return isTime;
+        } else {
+            return "";
+        }
 
-				if (displayNames.some((displayName) => displayName === myDisplayName)) {
-					selectedDisplayNames.unshift(t('You'));
-				}
+    },
+    zoneAbbrInNextLabel() {
+        var timeZone = moment.tz.guess();
+        const zoneName = moment.tz(timeZone).zoneName();
+        if (zoneName === "IST") {
+            return moment().tz("America/New_York").zoneName();
+        } else if (zoneName === "ET" || zoneName === "EST" || zoneName === "EDT") {
+            return moment().tz("Asia/Calcutta").zoneName();
+        } else {
+            return ""
+        }
 
-				let usernames;
+    },
+    isTemp() {
+        const { msg } = this;
+        if (msg.temp === true) {
+            return 'temp';
+        }
+    },
+    threadMessage() {
+        const { msg } = this;
+        return normalizeThreadMessage(msg);
+    },
+    bodyClass() {
+        const { msg } = this;
+        return MessageTypes.isSystemMessage(msg) ? 'color-info-font-color' : 'color-primary-font-color';
+    },
+    system(returnClass) {
+        const { msg } = this;
+        if (MessageTypes.isSystemMessage(msg)) {
+            if (returnClass) {
+                return 'color-info-font-color';
+            }
+            return 'system';
+        }
+    },
+    showTranslated() {
+        const { msg, subscription, settings, u } = this;
+        if (settings.AutoTranslate_Enabled && msg.u && msg.u._id !== u._id && !MessageTypes.isSystemMessage(msg)) {
+            const autoTranslate = subscription && subscription.autoTranslate;
+            return msg.autoTranslateFetching || (!!autoTranslate !== !!msg.autoTranslateShowInverse && msg.translations && msg.translations[settings.translateLanguage]);
+        }
+    },
+    translationProvider() {
+        const instance = Template.instance();
+        const { translationProvider } = instance.data.msg;
+        return translationProvider && AutoTranslate.providersMetadata[translationProvider].displayName;
+    },
+    edited() {
+        const { msg } = this;
+        return msg.editedAt && !MessageTypes.isSystemMessage(msg);
+    },
+    editTime() {
+        const { msg } = this;
+        return msg.editedAt ? DateFormat.formatDateAndTime(msg.editedAt) : '';
+    },
+    editedBy() {
+        const { msg } = this;
+        if (!msg.editedAt) {
+            return '';
+        }
+        // try to return the username of the editor,
+        // otherwise a special "?" character that will be
+        // rendered as a special avatar
+        return (msg.editedBy && msg.editedBy.username) || '?';
+    },
+    label() {
+        const { msg } = this;
 
-				if (displayNames.length > 15) {
-					usernames = `${ selectedDisplayNames.join(', ') } ${ t('And_more', { length: displayNames.length - 15 }).toLowerCase() }`;
-				} else if (displayNames.length > 1) {
-					usernames = `${ selectedDisplayNames.slice(0, -1).join(', ') } ${ t('and') } ${ selectedDisplayNames[selectedDisplayNames.length - 1] }`;
-				} else {
-					usernames = selectedDisplayNames[0];
-				}
+        if (msg.i18nLabel) {
+            return t(msg.i18nLabel);
+        }
+        if (msg.label) {
+            return msg.label;
+        }
+    },
+    hasOembed() {
+        const { msg, settings } = this;
+        // there is no URLs, there is no template to show the oembed (oembed package removed) or oembed is not enable
+        if (!(msg.urls && msg.urls.length > 0) || !Template.oembedBaseWidget || !settings.API_Embed) {
+            return false;
+        }
 
-				return {
-					emoji,
-					count: displayNames.length,
-					usernames,
-					reaction: ` ${ t('Reacted_with').toLowerCase() } ${ emoji }`,
-					userReacted: displayNames.indexOf(myDisplayName) > -1,
-				};
-			});
-	},
-	markUserReaction(reaction) {
-		if (reaction.userReacted) {
-			return {
-				class: 'selected',
-			};
-		}
-	},
-	hideReactions() {
-		const { msg } = this;
-		if (_.isEmpty(msg.reactions)) {
-			return 'hidden';
-		}
-	},
-	hideMessageActions() {
-		const { msg } = this;
+        // check if oembed is disabled for message's sender
+        if ((settings.API_EmbedDisabledFor || '').split(',').map((username) => username.trim()).includes(msg.u && msg.u.username)) {
+            return false;
+        }
+        return true;
+    },
+    reactions() {
+        const { msg: { reactions = {} }, u: { username: myUsername, name: myName } } = this;
 
-		return msg.private || MessageTypes.isSystemMessage(msg);
-	},
-	actionLinks() {
-		const { msg } = this;
-		// remove 'method_id' and 'params' properties
-		return _.map(msg.actionLinks, function(actionLink, key) {
-			return _.extend({
-				id: key,
-			}, _.omit(actionLink, 'method_id', 'params'));
-		});
-	},
-	hideActionLinks() {
-		const { msg } = this;
-		if (_.isEmpty(msg.actionLinks)) {
-			return 'hidden';
-		}
-	},
-	injectMessage(data, { _id, rid }) {
-		data.msg = { _id, rid };
-	},
-	injectIndex(data, index) {
-		data.index = index;
-	},
-	injectSettings(data, settings) {
-		data.settings = settings;
-	},
-	channelName() {
-		const { subscription } = this;
-		// const subscription = Subscriptions.findOne({ rid: this.rid });
-		return subscription && subscription.name;
-	},
-	roomIcon() {
-		const { room } = this;
-		if (room && room.t === 'd') {
-			return 'at';
-		}
-		return roomTypes.getIcon(room);
-	},
-	customClass() {
-		const { customClass, msg } = this;
-		return customClass || msg.customClass;
-	},
-	fromSearch() {
-		const { customClass, msg } = this;
-		return [msg.customClass, customClass].includes('search');
-	},
-	actionContext() {
-		const { msg } = this;
-		return msg.actionContext;
-	},
-	messageActions(group) {
-		const { msg, context: ctx } = this;
-		let messageGroup = group;
-		let context = ctx || msg.actionContext;
+        return Object.entries(reactions)
+            .map(([emoji, reaction]) => {
+                const myDisplayName = reaction.names ? myName : `@${ myUsername }`;
+                const displayNames = reaction.names || reaction.usernames.map((username) => `@${ username }`);
+                const selectedDisplayNames = displayNames.slice(0, 15).filter((displayName) => displayName !== myDisplayName);
 
-		if (!group) {
-			messageGroup = 'message';
-		}
+                if (displayNames.some((displayName) => displayName === myDisplayName)) {
+                    selectedDisplayNames.unshift(t('You'));
+                }
 
-		if (!context) {
-			context = 'message';
-		}
+                let usernames;
 
-		return MessageAction.getButtons(this, context, messageGroup);
-	},
-	isSnippet() {
-		const { msg } = this;
-		return msg.actionContext === 'snippeted';
-	},
-	isThreadReply() {
-		const { groupable, msg: { tmid, t, groupable: _groupable }, settings: { showreply } } = this;
-		return !(groupable === true || _groupable === true) && !!(tmid && showreply && (!t || t === 'e2e'));
-	},
-	collapsed() {
-		const { msg: { tmid, collapsed }, settings: { showreply }, shouldCollapseReplies } = this;
-		const isCollapsedThreadReply = shouldCollapseReplies && tmid && showreply && collapsed !== false;
-		if (isCollapsedThreadReply) {
-			return 'collapsed';
-		}
-	},
-	collapseSwitchClass() {
-		const { msg: { collapsed = true } } = this;
-		return collapsed ? 'icon-right-dir' : 'icon-down-dir';
-	},
-	parentMessage() {
-		const { msg: { threadMsg } } = this;
-		return threadMsg;
-	},
+                if (displayNames.length > 15) {
+                    usernames = `${ selectedDisplayNames.join(', ') } ${ t('And_more', { length: displayNames.length - 15 }).toLowerCase() }`;
+                } else if (displayNames.length > 1) {
+                    usernames = `${ selectedDisplayNames.slice(0, -1).join(', ') } ${ t('and') } ${ selectedDisplayNames[selectedDisplayNames.length - 1] }`;
+                } else {
+                    usernames = selectedDisplayNames[0];
+                }
+
+                return {
+                    emoji,
+                    count: displayNames.length,
+                    usernames,
+                    reaction: ` ${ t('Reacted_with').toLowerCase() } ${ emoji }`,
+                    userReacted: displayNames.indexOf(myDisplayName) > -1,
+                };
+            });
+    },
+    markUserReaction(reaction) {
+        if (reaction.userReacted) {
+            return {
+                class: 'selected',
+            };
+        }
+    },
+    hideReactions() {
+        const { msg } = this;
+        if (_.isEmpty(msg.reactions)) {
+            return 'hidden';
+        }
+    },
+    hideMessageActions() {
+        const { msg } = this;
+
+        return msg.private || MessageTypes.isSystemMessage(msg);
+    },
+    actionLinks() {
+        const { msg } = this;
+        // remove 'method_id' and 'params' properties
+        return _.map(msg.actionLinks, function(actionLink, key) {
+            return _.extend({
+                id: key,
+            }, _.omit(actionLink, 'method_id', 'params'));
+        });
+    },
+    hideActionLinks() {
+        const { msg } = this;
+        if (_.isEmpty(msg.actionLinks)) {
+            return 'hidden';
+        }
+    },
+    injectMessage(data, { _id, rid }) {
+        data.msg = { _id, rid };
+    },
+    injectIndex(data, index) {
+        data.index = index;
+    },
+    injectSettings(data, settings) {
+        data.settings = settings;
+    },
+    channelName() {
+        const { subscription } = this;
+        // const subscription = Subscriptions.findOne({ rid: this.rid });
+        return subscription && subscription.name;
+    },
+    roomIcon() {
+        const { room } = this;
+        if (room && room.t === 'd') {
+            return 'at';
+        }
+        return roomTypes.getIcon(room);
+    },
+    customClass() {
+        const { customClass, msg } = this;
+        return customClass || msg.customClass;
+    },
+    fromSearch() {
+        const { customClass, msg } = this;
+        return [msg.customClass, customClass].includes('search');
+    },
+    actionContext() {
+        const { msg } = this;
+        return msg.actionContext;
+    },
+    messageActions(group) {
+        const { msg, context: ctx } = this;
+        let messageGroup = group;
+        let context = ctx || msg.actionContext;
+
+        if (!group) {
+            messageGroup = 'message';
+        }
+
+        if (!context) {
+            context = 'message';
+        }
+
+        return MessageAction.getButtons(this, context, messageGroup);
+    },
+    isSnippet() {
+        const { msg } = this;
+        return msg.actionContext === 'snippeted';
+    },
+    isThreadReply() {
+        const { groupable, msg: { tmid, t, groupable: _groupable }, settings: { showreply } } = this;
+        return !(groupable === true || _groupable === true) && !!(tmid && showreply && (!t || t === 'e2e'));
+    },
+    collapsed() {
+        const { msg: { tmid, collapsed }, settings: { showreply }, shouldCollapseReplies } = this;
+        const isCollapsedThreadReply = shouldCollapseReplies && tmid && showreply && collapsed !== false;
+        if (isCollapsedThreadReply) {
+            return 'collapsed';
+        }
+    },
+    collapseSwitchClass() {
+        const { msg: { collapsed = true } } = this;
+        return collapsed ? 'icon-right-dir' : 'icon-down-dir';
+    },
+    parentMessage() {
+        const { msg: { threadMsg } } = this;
+        return threadMsg;
+    },
 });
 
 
