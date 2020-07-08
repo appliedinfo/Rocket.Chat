@@ -15,6 +15,7 @@ export const RoomSettingsEnum = {
 	NAME: 'roomName',
 	TOPIC: 'roomTopic',
 	ANNOUNCEMENT: 'roomAnnouncement',
+	CUSTOMFIELDS : 'roomCustomFields',
 	DESCRIPTION: 'roomDescription',
 	READ_ONLY: 'readOnly',
 	REACT_WHEN_READ_ONLY: 'reactWhenReadOnly',
