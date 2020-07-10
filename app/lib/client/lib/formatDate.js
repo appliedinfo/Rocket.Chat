@@ -12,16 +12,13 @@ let sameDay;
 const dayFormat = ['h:mm A', 'H:mm'];
 
 Meteor.startup(() => Tracker.autorun(() => {
-	console.log("metoer obj is "+Meteor);
 	clockMode = getUserPreference(Meteor.userId(), 'clockMode', false);
 	sameDay = dayFormat[clockMode - 1] || settings.get('Message_TimeFormat');
 	lastDay = t('yesterday');
 }));
 
 export const formatTime = (time) => {
-	console.log("time is ",time);
 	switch (clockMode) {
-		
 		case 1:
 		case 2:
 			return moment(time).format(sameDay);

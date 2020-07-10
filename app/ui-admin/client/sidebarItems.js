@@ -3,7 +3,6 @@ import { Tracker } from 'meteor/tracker';
 
 const items = new ReactiveVar([]);
 
-
 export const registerAdminSidebarItem = (itemOptions) => {
 	Tracker.nonreactive(() => items.set([...items.get(), itemOptions]));
 };

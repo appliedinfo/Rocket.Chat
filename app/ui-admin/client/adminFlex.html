@@ -21,7 +21,6 @@
 				{{#if hasPermission 'view-user-administration'}}
 					{{> sidebarItem menuItem "Users" "team" "admin-users" "" }}
 				{{/if}}
-				
 				{{#each adminBoxOptions}}
 					{{#if permissionGranted}}
 						{{> sidebarItem menuItem label icon href "" }}
