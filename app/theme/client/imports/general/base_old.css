@@ -2134,13 +2134,10 @@
 	}
 
 	& .time {
-<<<<<<< HEAD
 		padding-right: 2px;
 		padding-left: 2px;
 
-=======
 		margin-left: 6px;
->>>>>>> Feature_Add_Timestamps
 		white-space: nowrap;
 	}
 
