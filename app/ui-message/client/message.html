@@ -43,7 +43,8 @@
 					{{#if isBot}}
 						<span class="is-bot color-secondary-color border-component-color">{{_ "Bot"}}</span>
 					{{/if}}
-					<time class="time" title='{{date}} {{time}}' datetime='{{date}} {{time}}'>{{time}}</time>
+					<time class="time" title='{{date}} {{time}} {{zoneAbbr}}' datetime='{{date}} {{time}} {{zoneAbbr}}'>{{time}} {{zoneAbbr}}</time>
+					<time class="time" title='{{dateinNextZone}}  {{zoneAbbrInNextLabel}}' datetime='{{dateinNextZone}} {{timeInNextZone}} {{zoneAbbrInNextLabel}}'>{{timeInNextZone}} {{zoneAbbrInNextLabel}}</time>
 					{{#if showTranslated}}
 						<span class="translated">
 							<i class="icon-language {{#if msg.autoTranslateFetching}}loading{{/if}}" aria-label="{{_ "Translated"}}"></i>
