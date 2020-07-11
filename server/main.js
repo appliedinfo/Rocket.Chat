@@ -63,6 +63,7 @@ import './methods/sendForgotPasswordEmail';
 import './methods/setAvatarFromService';
 import './methods/setUserActiveStatus';
 import './methods/setUserPassword';
+import './methods/tagmessage';
 import './methods/toogleFavorite';
 import './methods/unmuteUserInRoom';
 import './methods/userSetUtcOffset';

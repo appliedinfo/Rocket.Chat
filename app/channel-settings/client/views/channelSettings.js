@@ -160,6 +160,10 @@ Template.channelSettingsEditing.events({
 		const { settings } = t;
 		Object.keys(settings).forEach((key) => settings[key].value.set(settings[key].default.get()));
 	},
+	'click #gitlab_link'(e){
+		console.log("click on gitlab")
+		window.open(Template.instance.room.customFields.gitlabLink);
+	},
 
 	'click .rc-user-info__config-value'(e) {
 		const options = [{
@@ -286,6 +290,7 @@ Template.channelSettingsEditing.onCreated(function() {
 			type: 'markdown',
 			label: 'Announcement',
 			getValue() {
+				console.log("roomins",Template.instance.room);
 				return Template.instance().room.announcement;
 			},
 			canView() {
@@ -298,6 +303,103 @@ Template.channelSettingsEditing.onCreated(function() {
 				return call('saveRoomSettings', room._id, RoomSettingsEnum.ANNOUNCEMENT, value).then(() => {
 					toastr.success(t('Room_announcement_changed_successfully'));
 					return callbacks.run('roomAnnouncementChanged', room);
+				});
+			},
+		},
+		gitlab: {
+			type: 'markdown',
+			label: 'Gitlab',
+			getValue() {
+				return Template.instance().room.customFields.gitlabLink;
+			},
+			canView() {
+				return roomTypes.getConfig(room.t).allowRoomSettingChange(room, RoomSettingsEnum.CUSTOMFIELDS);
+			},
+			canEdit() {
+				return hasAllPermission('edit-room', room._id);
+			},
+			save(value) {
+				Template.instance().room.customFields = {
+					gitlabLink : value,
+					jiraLink : Template.instance().room.customFields.jiraLink,
+					driveLink: Template.instance().room.customFields.driveLink,
+					sheetLink: Template.instance().room.customFields.sheetLink
+				}
+				
+				return call('saveRoomSettings', room._id, RoomSettingsEnum.CUSTOMFIELDS, Template.instance().room.customFields).then(() => {
+					toastr.success(t('Room_GitlabLink_changed_successfully'));
+				});
+			},
+		},
+		jira: {
+			type: 'markdown',
+			label: 'Jira',
+			getValue() {
+				return Template.instance().room.customFields.jiraLink;
+			},
+			canView() {
+				return roomTypes.getConfig(room.t).allowRoomSettingChange(room, RoomSettingsEnum.CUSTOMFIELDS);
+			},
+			canEdit() {
+				return hasAllPermission('edit-room', room._id);
+			},
+			save(value) {
+				Template.instance().room.customFields = {
+					gitlabLink : Template.instance().room.customFields.gitlabLink,
+					jiraLink : value,
+					driveLink: Template.instance().room.customFields.driveLink,
+					sheetLink: Template.instance().room.customFields.sheetLink
+				}
+				return call('saveRoomSettings', room._id, RoomSettingsEnum.CUSTOMFIELDS, Template.instance().room.customFields).then(() => {
+					toastr.success(t('Room_JiraLink_changed_successfully'));
+				});
+			},
+		},
+		drive: {
+			type: 'markdown',
+			label: 'Drive',
+			getValue() {
+				return Template.instance().room.customFields.driveLink;
+			},
+			canView() {
+				return roomTypes.getConfig(room.t).allowRoomSettingChange(room, RoomSettingsEnum.CUSTOMFIELDS);
+			},
+			canEdit() {
+				return hasAllPermission('edit-room', room._id);
+			},
+			save(value) {
+				 Template.instance().room.customFields = {
+					gitlabLink: Template.instance().room.customFields.gitlabLink,
+					jiraLink : Template.instance().room.customFields.jiraLink,
+					driveLink : value,										
+					sheetLink: Template.instance().room.customFields.sheetLink
+				}
+				return call('saveRoomSettings', room._id, RoomSettingsEnum.CUSTOMFIELDS, Template.instance().room.customFields).then(() => {
+					toastr.success(t('Room_DriveLink_changed_successfully'));
+				});
+			},
+		},
+		sheet: {
+			type: 'markdown',
+			label: 'Sheet',
+			getValue() {
+				return Template.instance().room.customFields.sheetLink;
+			},
+			canView() {
+				return roomTypes.getConfig(room.t).allowRoomSettingChange(room, RoomSettingsEnum.CUSTOMFIELDS);
+			},
+			canEdit() {
+				return hasAllPermission('edit-room', room._id);
+			},
+			save(value) {
+				 Template.instance().room.customFields = {
+					gitlabLink: Template.instance().room.customFields.gitlabLink,
+					jiraLink : Template.instance().room.customFields.jiraLink,
+					driveLink: Template.instance().room.customFields.driveLink,
+					sheetLink: value
+				}
+				return call('saveRoomSettings', room._id, RoomSettingsEnum.CUSTOMFIELDS, Template.instance().room.customFields).then(() => {
+					toastr.success(t('Room_SheetLink_changed_successfully'));
 				});
 			},
 		},
@@ -701,6 +803,26 @@ Template.channelSettingsEditing.onCreated(function() {
 	});
 });
 
+Template.channelSettingsInfo.events({
+	'click #gitlab_link'(e,t){
+		const gitlabUrl = t.room.customFields.gitlabLink
+		window.open(gitlabUrl)
+	},
+	'click #jira_link'(e,t){
+		const jiraUrl = t.room.customFields.jiraLink
+		window.open(jiraUrl)
+	},
+	'click #drive_link'(e,t){
+		const driveUrl = t.room.customFields.driveLink
+		window.open(driveUrl)
+	},
+	'click #sheet_link'(e,t){
+		const sheetUrl = t.room.customFields.sheetLink
+		window.open(sheetUrl)
+	},
+
+});
+
 Template.channelSettingsEditing.helpers({
 	...common,
 	value() {
@@ -723,6 +845,7 @@ Template.channelSettingsEditing.helpers({
 		return text === text2 ? '' : ret;
 	},
 	settings() {
+		console.log("settings is ",Template.instance().settings)
 		return Template.instance().settings;
 	},
 	editing(field) {
@@ -819,6 +942,18 @@ Template.channelSettingsInfo.helpers({
 	},
 	description() {
 		return Template.instance().room.description;
+	},
+	gitlabLink(){
+      return Template.instance().room.customFields.gitlabLink;
+	},
+	jiraLink(){
+		return Template.instance().room.customFields.jiraLink;
+	},
+	sheetLink(){
+		return Template.instance().room.customFields.sheetLink;
+	},
+	driveLink(){
+		return Template.instance().room.customFields.driveLink;
 	},
 	broadcast() {
 		return Template.instance().room.broadcast;

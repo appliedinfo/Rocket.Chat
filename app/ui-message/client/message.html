@@ -45,6 +45,19 @@
 					{{/if}}
 					<time class="time" title='{{date}} {{time}} {{zoneAbbr}}' datetime='{{date}} {{time}} {{zoneAbbr}}'>{{time}} {{zoneAbbr}}</time>
 					<time class="time" title='{{dateinNextZone}}  {{zoneAbbrInNextLabel}}' datetime='{{dateinNextZone}} {{timeInNextZone}} {{zoneAbbrInNextLabel}}'>{{timeInNextZone}} {{zoneAbbrInNextLabel}}</time>
+					{{ #if isTaggedA}}
+					<span class="role-tag color-secondary-color border-component-color" >TAG A</span>
+
+					{{/if}}
+					{{ #if isTaggedB}}
+					<span class="role-tag color-secondary-color border-component-color" >TAG B</span>
+					
+					{{/if}}
+					{{ #if isTaggedC}}
+					<span class="role-tag color-secondary-color border-component-color" >TAG C</span>
+				 
+					{{/if}}
+					
 					{{#if showTranslated}}
 						<span class="translated">
 							<i class="icon-language {{#if msg.autoTranslateFetching}}loading{{/if}}" aria-label="{{_ "Translated"}}"></i>
@@ -144,8 +157,23 @@
 				</div>
 			{{/with}}
 			{{#unless hideMessageActions}}
-				<div class="message-actions">
-
+				<div class="message-actions" >
+				
+				
+				   <div class="dropdown" style = "display: none;">
+					<button id="opendropdown_for-actions__button" class="dropbtn">TAGS</button>
+					<div id="myDropdown" class="dropdown-content" style = "margin-left: 4px; display:{{showDropdown}}">
+				<div id="tag_a_id"  style="cursor: pointer;">
+					TAG A
+				</div >
+				<div id="tag_b_id" style="cursor: pointer;">
+					TAG B
+				</div >
+				<div id="tag_c_id"  style="cursor: pointer;">
+					TAG C
+				</div>
+					</div>
+				  </div>
 					<div class="message-actions__buttons">
 						{{#each action in messageActions 'message'}}
 							<button class="message-actions__button"  data-message-action="{{action.id}}" title="{{_ action.label}}">

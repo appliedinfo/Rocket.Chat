@@ -15,9 +15,25 @@ import { t, roomTypes } from '../../utils';
 import { upsertMessage } from '../../ui-utils/client/lib/RoomHistoryManager';
 import './message.html';
 import './messageThread.html';
+import './messageTag.css';
 import { AutoTranslate } from '../../autotranslate/client';
+import { Mongo } from 'meteor/mongo';
+import toastr from 'toastr';
+		 
+		      
+		 
+		      
 
 var moment = require('moment-timezone');
+let messageID ;
+
+var TaggedMessages = new Mongo.Collection('rocketchat_taggedmessages');
+Meteor.subscribe('rocketchat_taggedmessages');
+		console.log("teggitemll",TaggedMessages.find().fetch())
+
+	
+
+
 const renderBody = (msg, settings) => {
     const searchedText = msg.searchedText ? msg.searchedText : '';
     const isSystemMessage = MessageTypes.isSystemMessage(msg);
@@ -48,6 +64,78 @@ const renderBody = (msg, settings) => {
 
     return msg;
 };
+
+
+Template.message.events({
+	
+	'click #tag_a_id' : function(){
+		console.log("thisisa",$(this));
+		const {msg} = this;
+		const msgId = msg._id;
+		console.log("messagID",messageID);
+		const tagName = "tagA";
+		console.log("taga",msg._id,+ "" +TaggedMessages.findOne({messageId:msgId,tagName:"tagA"}));
+		let taggedMsg = TaggedMessages.findOne({messageId:msg._id,tagName:"tagA"})
+		if(typeof taggedMsg === "undefined"){
+			Meteor.call('rocketchat_taggedmessages.insert',msg.msg,msg._id,"tagA")
+	   }
+	   else {
+		   console.log("TAGa is already tagged");
+	   }
+	},
+	'click #tag_b_id' : function(){
+		console.log("thisisb",this);
+		const {msg} = this;
+		
+		const msgId = msg._id;
+		const tagName = "tagB";
+		console.log("tagb",msg._id,+ "" +TaggedMessages.findOne({messageId:msgId,tagName:"tagB"}));
+		let taggedMsg = TaggedMessages.findOne({messageId:msgId,tagName:"tagB"})
+		if(typeof taggedMsg === "undefined" ){
+			Meteor.call('rocketchat_taggedmessages.insert',msg.msg,msg._id,"tagB")
+	   }
+	   else {
+		   console.log("TAGB is already tagged");
+	   }
+	},
+	'click #tag_c_id' : function(){
+		console.log("thisisc",this);
+		const {msg} = this;
+		const msgId = msg._id;
+		const tagName = "tagC";
+		console.log("tagc",msg._id,+ "" +TaggedMessages.findOne({messageId:msgId,tagName:"tagC"}));
+		let taggedMsg = TaggedMessages.findOne({messageId:msgId,tagName:"tagC"})
+		if(typeof taggedMsg === "undefined" ){
+			Meteor.call('rocketchat_taggedmessages.insert',msg.msg,msg._id,"tagC")
+	   }
+	   else {
+		   console.log("TAGC is already tagged");
+	   }
+	},
+	'click #opendropdown_for-actions__button' : function(e,t){
+		if(Session.get("showdrop") == "block"){
+			Session.set("showdrop","none");
+		}
+		else{
+			Session.set("showdrop","block");
+		}
+
+		
+	
+	},
+	// 'click #tag_message-actions__button' : function(){
+	// 	const { msg} = this;
+	// 	console.log("msgg",this);
+	// 	// TaggedMessages.insert({
+	// 	// message:msg.msg,
+	// 	// messageId : msg._id,
+	// 	// taggedAt: new Date(),
+		
+	// 	// });	
+	// 	Meteor.call('rocketchat_taggedmessages.insert',msg.msg,msg._id)
+	// 	console.log("cllick",""+TaggedMessages.find());
+	// }
+});
 
 Template.message.helpers({
     body() {

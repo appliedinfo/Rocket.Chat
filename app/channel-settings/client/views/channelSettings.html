@@ -47,6 +47,54 @@
 				</div>
 			</div>
 		{{/with}}
+		{{#with settings.gitlab}}
+			<div class="rc-user-info__row">
+				<div class="rc-input">
+					<label class="rc-input__label">
+						<div class="rc-input__title">{{_ label}}{{equal default value '*'}}</div>
+						<div class="rc-input__wrapper">
+							<input type="text" name="gitlab" value="{{value}}" class="rc-input__element js-input" disabled="{{./disabled}}"/>
+						</div>
+					</label>
+				</div>
+			</div>
+		{{/with}}
+		{{#with settings.jira}}
+			<div class="rc-user-info__row">
+				<div class="rc-input">
+					<label class="rc-input__label">
+						<div class="rc-input__title">{{_ label}}{{equal default value '*'}}</div>
+						<div class="rc-input__wrapper">
+							<input type="text" name="jira" value="{{value}}" class="rc-input__element js-input" disabled="{{./disabled}}"/>
+						</div>
+					</label>
+				</div>
+			</div>
+		{{/with}}
+		{{#with settings.drive}}
+			<div class="rc-user-info__row">
+				<div class="rc-input">
+					<label class="rc-input__label">
+						<div class="rc-input__title">{{_ label}}{{equal default value '*'}}</div>
+						<div class="rc-input__wrapper">
+							<input type="text" name="drive" value="{{value}}" class="rc-input__element js-input" disabled="{{./disabled}}"/>
+						</div>
+					</label>
+				</div>
+			</div>
+		{{/with}}
+		{{#with settings.sheet}}
+			<div class="rc-user-info__row">
+				<div class="rc-input">
+					<label class="rc-input__label">
+						<div class="rc-input__title">{{_ label}}{{equal default value '*'}}</div>
+						<div class="rc-input__wrapper">
+							<input type="text" name="sheet" value="{{value}}" class="rc-input__element js-input" disabled="{{./disabled}}"/>
+						</div>
+					</label>
+				</div>
+			</div>
+		{{/with}}
 		{{#unless isDirectMessage}}
 			{{#with settings.description}}
 				<div class="rc-user-info__row">
@@ -367,6 +415,30 @@
 					{{_ "Description"}}
 					<div class="rc-user-info__description">
 						{{description}}
+					</div>
+				</label>
+				<label class="rc-user-info__label" id="gitlab_link">
+					{{_ "Gitlab link"}}
+					<div class="rc-user-info__link">
+						{{gitlabLink}}
+					</div>
+				</label>
+				<label class="rc-user-info__label">
+					{{_ "Jira link"}}
+					<div class="rc-user-info__link"  id="jira_link">
+						{{jiraLink}}
+					</div>
+				</label>
+				<label class="rc-user-info__label">
+					{{_ "Drive link"}}
+					<div class="rc-user-info__link"  id="drive_link">
+						{{driveLink}}
+					</div>
+				</label>
+				<label class="rc-user-info__label" >
+					{{_ "Sheet link"}}
+					<div class="rc-user-info__link" id="sheet_link">
+						{{sheetLink}}
 					</div>
 				</label>
 			{{/unless}}

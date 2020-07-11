@@ -183,6 +183,12 @@
 		color: #9ea2a8;
 	}
 
+	&__link {
+		padding: 8px 0;
+		cursor: pointer;
+		color: blue;
+	}
+
 	&-action {
 		display: flex;
 		overflow: hidden;
