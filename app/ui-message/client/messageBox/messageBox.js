@@ -5,6 +5,8 @@ import { Session } from 'meteor/session';
 import { Template } from 'meteor/templating';
 import { Tracker } from 'meteor/tracker';
 import moment from 'moment';
+var momenttz = require('moment-timezone');
+
 
 import { setupAutogrow } from './messageBoxAutogrow';
 import {
@@ -209,6 +211,29 @@ Template.messageBox.helpers({
 		const isArchived = roomTypes.archived(rid) || (subscription && subscription.t === 'd' && subscription.archived);
 
 		return !isReadOnly && !isArchived;
+	},
+	clockTimeIST(){
+				function startTime(){
+
+			var timeNowInIST =   moment().tz("Asia/Calcutta").format("LT");
+					
+		   setTimeout(startTime, 500);
+		   Session.set('clockis',timeNowInIST + " IST");
+		}
+		   startTime();
+   return Session.get('clockis');
+	},
+	clockTimeET(){
+		function startTime(){
+
+	var timeNowInET =   moment().tz("America/New_York").format("LT");
+	const zoneName = moment().tz("America/New_York").zoneName();
+    setTimeout(startTime, 500);
+   Session.set('clock',timeNowInET+ " " +zoneName);
+   
+}
+   startTime();
+   return Session.get('clock');
 	},
 	popupConfig() {
 		return Template.instance().popupConfig.get();
