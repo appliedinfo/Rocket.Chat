@@ -160,11 +160,6 @@ Template.channelSettingsEditing.events({
 		const { settings } = t;
 		Object.keys(settings).forEach((key) => settings[key].value.set(settings[key].default.get()));
 	},
-	'click #gitlab_link'(e){
-		console.log("click on gitlab")
-		window.open(Template.instance.room.customFields.gitlabLink);
-	},
-
 	'click .rc-user-info__config-value'(e) {
 		const options = [{
 			id: 'prune_default',
@@ -290,7 +285,6 @@ Template.channelSettingsEditing.onCreated(function() {
 			type: 'markdown',
 			label: 'Announcement',
 			getValue() {
-				console.log("roomins",Template.instance.room);
 				return Template.instance().room.announcement;
 			},
 			canView() {
