@@ -70,6 +70,7 @@ Template.flexTabBar.helpers({
 	},
 	...commonHelpers,
 	buttons() {
+		console.log("bttn",TabBar.getButtons())
 		return TabBar.getButtons().filter((button) =>
 			filterButtons(button, this.anonymous, this.data && this.data.rid),
 		);
