@@ -843,6 +843,7 @@ Template.channelSettingsEditing.helpers({
 		return Template.instance().settings;
 	},
 	editing(field) {
+		console.log("field",field)
 		return Template.instance().editing.get() === field;
 	},
 	isDisabled(field, room) {
