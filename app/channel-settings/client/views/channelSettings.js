@@ -797,25 +797,6 @@ Template.channelSettingsEditing.onCreated(function() {
 	});
 });
 
-Template.channelSettingsInfo.events({
-	'click #gitlab_link'(e,t){
-		const gitlabUrl = t.room.customFields.gitlabLink
-		window.open(gitlabUrl)
-	},
-	'click #jira_link'(e,t){
-		const jiraUrl = t.room.customFields.jiraLink
-		window.open(jiraUrl)
-	},
-	'click #drive_link'(e,t){
-		const driveUrl = t.room.customFields.driveLink
-		window.open(driveUrl)
-	},
-	'click #sheet_link'(e,t){
-		const sheetUrl = t.room.customFields.sheetLink
-		window.open(sheetUrl)
-	},
-
-});
 
 Template.channelSettingsEditing.helpers({
 	...common,

@@ -142,6 +142,26 @@ Template.headerRoom.helpers({
 	isSection() {
 		return Template.instance().data.sectionName != null;
 	},
+	gitlabLink(){
+ 	const room = Rooms.findOne(this._id);
+	const gitlabLink = room.customFields.gitlabLink;
+	return gitlabLink;
+	},
+	jiraLink(){
+		const room = Rooms.findOne(this._id);
+		 const jiraLink = room.customFields.jiraLink;
+		 return jiraLink;
+	},
+	driveLink(){
+		const room = Rooms.findOne(this._id);
+		 const driveLink = room.customFields.driveLink;
+		 return driveLink;
+	},
+	sheetLink(){
+		const room = Rooms.findOne(this._id);
+		 const sheetLink = room.customFields.sheetLink;
+		 return sheetLink;
+	},
 });
 
 Template.headerRoom.events({
@@ -149,35 +169,6 @@ Template.headerRoom.events({
 		fireGlobalEvent('click-toolbar-button', { id: this.id });
 		e.currentTarget.querySelector('button').blur();
 		return false;
-	},
-
-	'click .room-gitlab'(event, instance) {
-		event.stopPropagation();
-		event.preventDefault();
-		const room = Rooms.findOne(this._id);
-		const gitlabLink = room.customFields.gitlabLink;
-		window.open(gitlabLink);
-	},
-	'click .room-jira'(event, instance) {
-		event.stopPropagation();
-		event.preventDefault();
-		const room = Rooms.findOne(this._id);
-		const jiraLink = room.customFields.jiraLink;
-		window.open(jiraLink);
-	},
-	'click .room-drive'(event, instance) {
-		event.stopPropagation();
-		event.preventDefault();
-		const room = Rooms.findOne(this._id);
-		const driveLink = room.customFields.driveLink;
-		window.open(driveLink);
-	},
-	'click .room-sheet'(event, instance) {
-		event.stopPropagation();
-		event.preventDefault();
-		const room = Rooms.findOne(this._id);
-		const sheetLink = room.customFields.sheetLink;
-		window.open(sheetLink);
 	},
 
 	'click .js-favorite'(event, instance) {

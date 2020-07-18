@@ -417,28 +417,29 @@
 						{{description}}
 					</div>
 				</label>
-				<label class="rc-user-info__label" id="gitlab_link">
+				<label class="rc-user-info__label">
 					{{_ "Gitlab link"}}
 					<div class="rc-user-info__link">
-						{{gitlabLink}}
+						<a href={{gitlabLink}} target="_blank">{{gitlabLink}}</a>
 					</div>
 				</label>
 				<label class="rc-user-info__label">
 					{{_ "Jira link"}}
-					<div class="rc-user-info__link"  id="jira_link">
-						{{jiraLink}}
+					<div class="rc-user-info__link"  >
+							<a href={{jiraLink}} target="_blank">{{jiraLink}}</a>
+						
 					</div>
 				</label>
 				<label class="rc-user-info__label">
 					{{_ "Drive link"}}
-					<div class="rc-user-info__link"  id="drive_link">
-						{{driveLink}}
+					<div class="rc-user-info__link" >
+							<a href={{driveLink}} target="_blank">{{driveLink}}</a>
 					</div>
 				</label>
 				<label class="rc-user-info__label" >
 					{{_ "Sheet link"}}
-					<div class="rc-user-info__link" id="sheet_link">
-						{{sheetLink}}
+					<div class="rc-user-info__link" >
+						<a href={{sheetLink}} target="_blank">{{sheetLink}}</a>
 					</div>
 				</label>
 			{{/unless}}

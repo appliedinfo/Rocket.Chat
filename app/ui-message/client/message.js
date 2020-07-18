@@ -29,10 +29,7 @@ let messageID ;
 
 var TaggedMessages = new Mongo.Collection('rocketchat_taggedmessages');
 Meteor.subscribe('rocketchat_taggedmessages');
-		console.log("teggitemll",TaggedMessages.find().fetch())
-
 	
-
 
 const renderBody = (msg, settings) => {
     const searchedText = msg.searchedText ? msg.searchedText : '';
