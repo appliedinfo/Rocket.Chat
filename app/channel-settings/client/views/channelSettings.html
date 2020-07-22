@@ -34,7 +34,7 @@
 				</div>
 			</div>
 		{{/with}}
-
+																																																																																																																																																																																																				
 		{{#with settings.announcement}}
 			<div class="rc-user-info__row">
 				<div class="rc-input">
@@ -47,6 +47,7 @@
 				</div>
 			</div>
 		{{/with}}
+		{{#unless isDiscussion}}
 		{{#with settings.gitlab}}
 			<div class="rc-user-info__row">
 				<div class="rc-input">
@@ -95,6 +96,7 @@
 				</div>
 			</div>
 		{{/with}}
+		{{/unless}}
 		{{#unless isDirectMessage}}
 			{{#with settings.description}}
 				<div class="rc-user-info__row">
@@ -417,12 +419,14 @@
 						{{description}}
 					</div>
 				</label>
+				{{#unless isDiscussion}}
 				<label class="rc-user-info__label">
 					{{_ "Gitlab link"}}
 					<div class="rc-user-info__link">
 						<a href={{gitlabLink}} target="_blank">{{gitlabLink}}</a>
 					</div>
 				</label>
+				
 				<label class="rc-user-info__label">
 					{{_ "Jira link"}}
 					<div class="rc-user-info__link"  >
@@ -442,6 +446,7 @@
 						<a href={{sheetLink}} target="_blank">{{sheetLink}}</a>
 					</div>
 				</label>
+			{{/unless}}
 			{{/unless}}
 			<label class="rc-user-info__label">
 				{{_ "Announcement"}}

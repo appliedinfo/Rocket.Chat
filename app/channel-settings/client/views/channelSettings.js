@@ -39,6 +39,13 @@ const common = {
 		const { room: { t } } = Template.instance();
 		return t === 'd';
 	},
+	isDiscussion() {
+		const { _id } = Template.instance().room;
+		const{prid} = Template.instance().room;
+		const isDiscussion = Boolean(_id && prid);
+		return isDiscussion;
+	}
+	
 };
 
 function roomFilesOnly(room) {
@@ -304,7 +311,16 @@ Template.channelSettingsEditing.onCreated(function() {
 			type: 'markdown',
 			label: 'Gitlab',
 			getValue() {
-				return Template.instance().room.customFields.gitlabLink;
+				const { _id } = Template.instance().room;
+		        const{prid} = Template.instance().room;
+				const isDiscussion = Boolean(_id && prid);
+				if(isDiscussion){
+                return "";
+				}
+				else {
+					return Template.instance().room.customFields.gitlabLink;
+				}
+				
 			},
 			canView() {
 				return roomTypes.getConfig(room.t).allowRoomSettingChange(room, RoomSettingsEnum.CUSTOMFIELDS);
@@ -329,7 +345,16 @@ Template.channelSettingsEditing.onCreated(function() {
 			type: 'markdown',
 			label: 'Jira',
 			getValue() {
-				return Template.instance().room.customFields.jiraLink;
+			
+				const { _id } = Template.instance().room;
+		        const{prid} = Template.instance().room;
+				const isDiscussion = Boolean(_id && prid);
+				if(isDiscussion){
+                return "";
+				}
+				else {
+					return Template.instance().room.customFields.jiraLink;
+				}
 			},
 			canView() {
 				return roomTypes.getConfig(room.t).allowRoomSettingChange(room, RoomSettingsEnum.CUSTOMFIELDS);
@@ -353,7 +378,16 @@ Template.channelSettingsEditing.onCreated(function() {
 			type: 'markdown',
 			label: 'Drive',
 			getValue() {
-				return Template.instance().room.customFields.driveLink;
+				
+				const { _id } = Template.instance().room;
+		        const{prid} = Template.instance().room;
+				const isDiscussion = Boolean(_id && prid);
+				if(isDiscussion){
+                return "";
+				}
+				else {
+					return Template.instance().room.customFields.driveLink;
+				}
 			},
 			canView() {
 				return roomTypes.getConfig(room.t).allowRoomSettingChange(room, RoomSettingsEnum.CUSTOMFIELDS);
@@ -377,7 +411,15 @@ Template.channelSettingsEditing.onCreated(function() {
 			type: 'markdown',
 			label: 'Sheet',
 			getValue() {
-				return Template.instance().room.customFields.sheetLink;
+				const { _id } = Template.instance().room;
+		        const{prid} = Template.instance().room;
+				const isDiscussion = Boolean(_id && prid);
+				if(isDiscussion){
+                return "";
+				}
+				else {
+					return Template.instance().room.customFields.sheetLink;
+				}
 			},
 			canView() {
 				return roomTypes.getConfig(room.t).allowRoomSettingChange(room, RoomSettingsEnum.CUSTOMFIELDS);
@@ -820,11 +862,9 @@ Template.channelSettingsEditing.helpers({
 		return text === text2 ? '' : ret;
 	},
 	settings() {
-		console.log("settings is ",Template.instance().settings)
 		return Template.instance().settings;
 	},
 	editing(field) {
-		console.log("field",field)
 		return Template.instance().editing.get() === field;
 	},
 	isDisabled(field, room) {

@@ -60,7 +60,6 @@ Template.headerRoom.helpers({
 	roomName() {
 		const roomData = Session.get(`roomData${ this._id }`);
 		if (!roomData) { 
-			console.log("ddd",roomData);
 			return ''; }
 
 		return roomTypes.getRoomName(roomData.t, roomData);
@@ -135,7 +134,6 @@ Template.headerRoom.helpers({
 	},
 
 	isChannel() {
-		console.log("nnnn",Template.instance().currentChannel);
 		return Template.instance().currentChannel != null;
 	},
 
@@ -158,7 +156,7 @@ Template.headerRoom.helpers({
 		 return driveLink;
 	},
 	sheetLink(){
-		const room = Rooms.findOne(this._id);
+		 const room = Rooms.findOne(this._id);
 		 const sheetLink = room.customFields.sheetLink;
 		 return sheetLink;
 	},
@@ -203,7 +201,6 @@ Template.headerRoom.events({
 	},
 	'click .rc-header__content.rc-header__block'(event, instance) {
 		const { tabBar } = instance.parentTemplate();
-		console.log("tabbar",instance.parentTemplate());
 		const $flexTab = $('.flex-tab-container .flex-tab');
 
 		if (tabBar.getState() === 'opened' && (tabBar.getTemplate() === 'channelSettings' || tabBar.getTemplate() === 'membersList')) {
