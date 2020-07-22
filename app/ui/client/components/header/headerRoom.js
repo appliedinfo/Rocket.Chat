@@ -140,6 +140,46 @@ Template.headerRoom.helpers({
 	isSection() {
 		return Template.instance().data.sectionName != null;
 	},
+	isGitlabLink(){
+		const room = Rooms.findOne(this._id);
+		const gitlabLink = room.customFields.gitlabLink;
+		if(gitlabLink.length>0){
+			return true;
+		}
+		else {
+			return false;
+		}
+	},
+	isJiraLink(){
+		const room = Rooms.findOne(this._id);
+		const jiraLink = room.customFields.jiraLink;
+		if(jiraLink.length>0){
+			return true;
+		}
+		else {
+			return false;
+		}
+	},
+	isDriveLink(){
+		const room = Rooms.findOne(this._id);
+		const driveLink = room.customFields.driveLink;
+		if(driveLink.length>0){
+			return true;
+		}
+		else {
+			return false;
+		}
+	},
+	isSheetLink(){
+		const room = Rooms.findOne(this._id);
+		const sheetLink = room.customFields.sheetLink;
+		if(sheetLink.length>0){
+			return true;
+		}
+		else {
+			return false;
+		}
+	},
 	gitlabLink(){
  	const room = Rooms.findOne(this._id);
 	const gitlabLink = room.customFields.gitlabLink;
@@ -160,6 +200,7 @@ Template.headerRoom.helpers({
 		 const sheetLink = room.customFields.sheetLink;
 		 return sheetLink;
 	},
+	
 });
 
 Template.headerRoom.events({
