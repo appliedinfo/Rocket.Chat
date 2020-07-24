@@ -4,7 +4,7 @@
   src: url('/font/digital_italic.ttf') format('truetype')
 } 
 .clock-one {
-  color: #000; 
+  color: #a0a0a0; 
   font-family:digitalclockFont ; 
   margin-left: 8px;
   padding: 1px 4px; 
