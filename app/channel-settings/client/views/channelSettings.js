@@ -337,7 +337,7 @@ Template.channelSettingsEditing.onCreated(function() {
 				}
 				
 				return call('saveRoomSettings', room._id, RoomSettingsEnum.CUSTOMFIELDS, Template.instance().room.customFields).then(() => {
-					toastr.success(t('Room_GitlabLink_changed_successfully'));
+					toastr.success(t('Room GitlabLink changed successfully'));
 				});
 			},
 		},
@@ -370,7 +370,7 @@ Template.channelSettingsEditing.onCreated(function() {
 					sheetLink: Template.instance().room.customFields.sheetLink
 				}
 				return call('saveRoomSettings', room._id, RoomSettingsEnum.CUSTOMFIELDS, Template.instance().room.customFields).then(() => {
-					toastr.success(t('Room_JiraLink_changed_successfully'));
+					toastr.success(t('Room Jira Link changed successfully'));
 				});
 			},
 		},
@@ -403,7 +403,7 @@ Template.channelSettingsEditing.onCreated(function() {
 					sheetLink: Template.instance().room.customFields.sheetLink
 				}
 				return call('saveRoomSettings', room._id, RoomSettingsEnum.CUSTOMFIELDS, Template.instance().room.customFields).then(() => {
-					toastr.success(t('Room_DriveLink_changed_successfully'));
+					toastr.success(t('Room Drive Link changed successfully'));
 				});
 			},
 		},
@@ -435,7 +435,7 @@ Template.channelSettingsEditing.onCreated(function() {
 					sheetLink: value
 				}
 				return call('saveRoomSettings', room._id, RoomSettingsEnum.CUSTOMFIELDS, Template.instance().room.customFields).then(() => {
-					toastr.success(t('Room_SheetLink_changed_successfully'));
+					toastr.success(t('Room SheetLink changed successfully'));
 				});
 			},
 		},
