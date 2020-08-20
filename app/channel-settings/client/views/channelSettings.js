@@ -314,11 +314,15 @@ Template.channelSettingsEditing.onCreated(function() {
 				const { _id } = Template.instance().room;
 		        const{prid} = Template.instance().room;
 				const isDiscussion = Boolean(_id && prid);
+				let gitlabLinkList =Template.instance().room.customFields.gitlabLink;
 				if(isDiscussion){
                 return "";
 				}
+				else if(Array.isArray(gitlabLinkList)){
+					return gitlabLinkList.map(({ title, url }) => title + ":-" + url).join(';')
+				}
 				else {
-					return Template.instance().room.customFields.gitlabLink;
+					return gitlabLinkList;
 				}
 				
 			},
@@ -329,8 +333,14 @@ Template.channelSettingsEditing.onCreated(function() {
 				return hasAllPermission('edit-room', room._id);
 			},
 			save(value) {
+				 let gitlabLinksList = [] ; 
+				value.split(';').filter(Boolean).map(item => {
+					const [, title, url] = item.match(/^(.*?):-(.*)$/);
+					gitlabLinksList.push({ title, url });
+					return { title, url }
+				})
 				Template.instance().room.customFields = {
-					gitlabLink : value,
+					 gitlabLink : gitlabLinksList,
 					jiraLink : Template.instance().room.customFields.jiraLink,
 					driveLink: Template.instance().room.customFields.driveLink,
 					sheetLink: Template.instance().room.customFields.sheetLink
@@ -345,15 +355,18 @@ Template.channelSettingsEditing.onCreated(function() {
 			type: 'markdown',
 			label: 'Jira',
 			getValue() {
-			
 				const { _id } = Template.instance().room;
 		        const{prid} = Template.instance().room;
 				const isDiscussion = Boolean(_id && prid);
+				let jiraLinkList =Template.instance().room.customFields.jiraLink;
 				if(isDiscussion){
                 return "";
 				}
+				else if(Array.isArray(jiraLinkList)){
+					return jiraLinkList.map(({ title, url }) => title + ":-" + url).join(';')
+				}
 				else {
-					return Template.instance().room.customFields.jiraLink;
+					return jiraLinkList;
 				}
 			},
 			canView() {
@@ -363,12 +376,18 @@ Template.channelSettingsEditing.onCreated(function() {
 				return hasAllPermission('edit-room', room._id);
 			},
 			save(value) {
-				Template.instance().room.customFields = {
+				let jiraLinksList = [] ;
+			   value.split(';').filter(Boolean).map(item => {
+				   const [, title, url] = item.match(/^(.*?):-(.*)$/);
+				   jiraLinksList.push({ title, url });
+				   return { title, url }
+			   })
+			   Template.instance().room.customFields = {
 					gitlabLink : Template.instance().room.customFields.gitlabLink,
-					jiraLink : value,
-					driveLink: Template.instance().room.customFields.driveLink,
-					sheetLink: Template.instance().room.customFields.sheetLink
-				}
+				   jiraLink : jiraLinksList,
+				   driveLink: Template.instance().room.customFields.driveLink,
+				   sheetLink: Template.instance().room.customFields.sheetLink
+			   }
 				return call('saveRoomSettings', room._id, RoomSettingsEnum.CUSTOMFIELDS, Template.instance().room.customFields).then(() => {
 					toastr.success(t('Room Jira Link changed successfully'));
 				});
@@ -382,11 +401,15 @@ Template.channelSettingsEditing.onCreated(function() {
 				const { _id } = Template.instance().room;
 		        const{prid} = Template.instance().room;
 				const isDiscussion = Boolean(_id && prid);
+				let driveLinkList =Template.instance().room.customFields.driveLink;
 				if(isDiscussion){
                 return "";
 				}
+				else if(Array.isArray(driveLinkList)){
+					return driveLinkList.map(({ title, url }) => title + ":-" + url).join(';')
+				}
 				else {
-					return Template.instance().room.customFields.driveLink;
+					return driveLinkList;
 				}
 			},
 			canView() {
@@ -396,14 +419,20 @@ Template.channelSettingsEditing.onCreated(function() {
 				return hasAllPermission('edit-room', room._id);
 			},
 			save(value) {
-				 Template.instance().room.customFields = {
-					gitlabLink: Template.instance().room.customFields.gitlabLink,
-					jiraLink : Template.instance().room.customFields.jiraLink,
-					driveLink : value,										
-					sheetLink: Template.instance().room.customFields.sheetLink
-				}
+				let driveLinksList = [] ;
+			   value.split(';').filter(Boolean).map(item => {
+				   const [, title, url] = item.match(/^(.*?):-(.*)$/);
+				   driveLinksList.push({ title, url });
+				   return { title, url }
+			   })
+			   Template.instance().room.customFields = {
+					gitlabLink : Template.instance().room.customFields.gitlabLink,
+				   jiraLink : Template.instance().room.customFields.jiraLink,
+				   driveLink: driveLinksList,
+				   sheetLink: Template.instance().room.customFields.sheetLink
+			   }
 				return call('saveRoomSettings', room._id, RoomSettingsEnum.CUSTOMFIELDS, Template.instance().room.customFields).then(() => {
-					toastr.success(t('Room Drive Link changed successfully'));
+					toastr.success(t('Drive  Link changed successfully'));
 				});
 			},
 		},
@@ -414,11 +443,15 @@ Template.channelSettingsEditing.onCreated(function() {
 				const { _id } = Template.instance().room;
 		        const{prid} = Template.instance().room;
 				const isDiscussion = Boolean(_id && prid);
+				let sheetLinkList =Template.instance().room.customFields.sheetLink;
 				if(isDiscussion){
                 return "";
 				}
+				else if(Array.isArray(sheetLinkList)){
+					return sheetLinkList.map(({ title, url }) => title + ":-" + url).join(';')
+				}
 				else {
-					return Template.instance().room.customFields.sheetLink;
+					return sheetLinkList;
 				}
 			},
 			canView() {
@@ -428,11 +461,18 @@ Template.channelSettingsEditing.onCreated(function() {
 				return hasAllPermission('edit-room', room._id);
 			},
 			save(value) {
+				let sheetLinksList = [] ;
+			   value.split(';').filter(Boolean).map(item => {
+				   const [, title, url] = item.match(/^(.*?):-(.*)$/);
+				   sheetLinksList.push({ title, url });
+				   return { title, url }
+			   })
+			  
 				 Template.instance().room.customFields = {
 					gitlabLink: Template.instance().room.customFields.gitlabLink,
 					jiraLink : Template.instance().room.customFields.jiraLink,
 					driveLink: Template.instance().room.customFields.driveLink,
-					sheetLink: value
+					sheetLink: sheetLinksList
 				}
 				return call('saveRoomSettings', room._id, RoomSettingsEnum.CUSTOMFIELDS, Template.instance().room.customFields).then(() => {
 					toastr.success(t('Room SheetLink changed successfully'));
@@ -960,16 +1000,41 @@ Template.channelSettingsInfo.helpers({
 		return Template.instance().room.description;
 	},
 	gitlabLink(){
-      return Template.instance().room.customFields.gitlabLink;
+		let gitlabLinkList = Template.instance().room.customFields.gitlabLink;
+		if(Array.isArray(gitlabLinkList)){
+			return gitlabLinkList.map(({ title }) => title ).join(',');
+		}
+		else {
+			return Template.instance().room.customFields.gitlabLink;
+		}
+      
 	},
 	jiraLink(){
-		return Template.instance().room.customFields.jiraLink;
+		let jiraLinkList = Template.instance().room.customFields.gitlabLink;
+		if(Array.isArray(jiraLinkList)){
+			return jiraLinkList.map(({ title }) => title ).join(',');
+		}
+		else {
+			return Template.instance().room.customFields.jiraLink;
+		}	
 	},
 	sheetLink(){
-		return Template.instance().room.customFields.sheetLink;
+		let sheetLinkList = Template.instance().room.customFields.sheetLink;
+		if(Array.isArray(sheetLinkList)){
+			return sheetLinkList.map(({ title }) => title ).join(',');
+		}
+		else {
+			return Template.instance().room.customFields.sheetLink;
+		}
 	},
 	driveLink(){
-		return Template.instance().room.customFields.driveLink;
+		let driveLinkList = Template.instance().room.customFields.driveLink;
+		if(Array.isArray(driveLinkList)){
+			return driveLinkList.map(({ title }) => title ).join(',');
+		}
+		else {
+			return Template.instance().room.customFields.driveLink;
+		}
 	},
 	broadcast() {
 		return Template.instance().room.broadcast;
