@@ -1010,7 +1010,7 @@ Template.channelSettingsInfo.helpers({
       
 	},
 	jiraLink(){
-		let jiraLinkList = Template.instance().room.customFields.gitlabLink;
+		let jiraLinkList = Template.instance().room.customFields.jiraLink;
 		if(Array.isArray(jiraLinkList)){
 			return jiraLinkList.map(({ title }) => title ).join(',');
 		}
