@@ -200,10 +200,29 @@ Template.headerRoom.helpers({
 		 const sheetLink = room.customFields.sheetLink;
 		 return sheetLink;
 	},
+	showDropdown(){
+		console.log("showdrop",Session.get("showdrop"))
+		return Session.get("showdrop");
+	},
+	gitlabLinkList(){
+		const room = Rooms.findOne(this._id);
+	const gitlabLink = room.customFields.gitlabLink;
+	return gitlabLink;
+	}
 	
 });
 
 Template.headerRoom.events({
+
+	'click .dropbtn'(event,instance){
+		if(Session.get("showdrop") == "block"){
+			Session.set("showdrop","none");
+		}
+		else{
+			Session.set("showdrop","block");
+		}
+	},
+
 	'click .iframe-toolbar .js-iframe-action'(e) {
 		fireGlobalEvent('click-toolbar-button', { id: this.id });
 		e.currentTarget.querySelector('button').blur();
