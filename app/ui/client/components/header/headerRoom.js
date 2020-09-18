@@ -5,7 +5,6 @@ import { ReactiveVar } from 'meteor/reactive-var';
 import { Session } from 'meteor/session';
 import { Template } from 'meteor/templating';
 import { FlowRouter } from 'meteor/kadira:flow-router';
-
 import { t, roomTypes, handleError } from '../../../../utils';
 import { TabBar, fireGlobalEvent, call } from '../../../../ui-utils';
 import { ChatSubscription, Rooms, ChatRoom } from '../../../../models';
@@ -14,9 +13,11 @@ import { emoji } from '../../../../emoji';
 import { Markdown } from '../../../../markdown/client';
 import { hasAllPermission } from '../../../../authorization';
 import { getUidDirectMessage } from '../../../../ui-utils/client/lib/getUidDirectMessage';
-
+import { Mongo } from 'meteor/mongo'; 
 import './headerRoom.html';
 
+export default resourceLinks = new Mongo.Collection('rocketchat_resource_links');
+Meteor.subscribe('rocketchat_resource_links');
 const getUserStatus = (id) => {
 	const roomData = Session.get(`roomData${ id }`);
 	return roomTypes.getUserStatus(roomData.t, id);
@@ -142,7 +143,8 @@ Template.headerRoom.helpers({
 	},
 	isGitlabLink(){
 		const room = Rooms.findOne(this._id);
-		const gitlabLink = room.customFields.gitlabLink;
+		 let gitlabItem = resourceLinks.findOne({room_id:this._id})
+		const gitlabLink = gitlabItem.gitlabLinkList;
 		if(gitlabLink.length>0){
 			return true;
 		}
@@ -152,7 +154,8 @@ Template.headerRoom.helpers({
 	},
 	isJiraLink(){
 		const room = Rooms.findOne(this._id);
-		const jiraLink = room.customFields.jiraLink;
+		 let item = resourceLinks.findOne({room_id:this._id})
+		const jiraLink = item.jiraLinksList;
 		if(jiraLink.length>0){
 			return true;
 		}
@@ -162,7 +165,8 @@ Template.headerRoom.helpers({
 	},
 	isDriveLink(){
 		const room = Rooms.findOne(this._id);
-		const driveLink = room.customFields.driveLink;
+		 let item = resourceLinks.findOne({room_id:this._id})
+		const driveLink = item.driveLinkList;
 		if(driveLink.length>0){
 			return true;
 		}
@@ -172,13 +176,14 @@ Template.headerRoom.helpers({
 	},
 	isSheetLink(){
 		const room = Rooms.findOne(this._id);
-		const sheetLink = room.customFields.sheetLink;
-		if(sheetLink.length>0){
-			return true;
-		}
-		else {
-			return false;
-		}
+		let item = resourceLinks.findOne({room_id:this._id})
+	   const sheetLink = item.sheetLinkList;
+	   if(sheetLink.length>0){
+		   return true;
+	   }
+	   else {
+		   return false;
+	   }
 	},
 	gitlabLink(){
  	const room = Rooms.findOne(this._id);
@@ -201,12 +206,21 @@ Template.headerRoom.helpers({
 		 return sheetLink;
 	},
 	showDropdown(){
-		console.log("showdrop",Session.get("showdrop"))
 		return Session.get("showdrop");
+	},
+	jiraShowDropdown(){
+		return Session.get("showJiradrop");
+	},
+	driveShowDropdown(){
+		return Session.get("showDrivedrop");
+	},
+	sheetShowDropdown(){
+		return Session.get("showsheetdrop");
 	},
 	gitlabLinkList(){
 		const room = Rooms.findOne(this._id);
-	const gitlabLink = room.customFields.gitlabLink;
+		let gitlabItem = resourceLinks.findOne({room_id:this._id})
+		const gitlabLink = gitlabItem.gitlabLinkList;
 	return gitlabLink;
 	}
 	
@@ -220,9 +234,44 @@ Template.headerRoom.events({
 		}
 		else{
 			Session.set("showdrop","block");
+			Session.set("showJiradrop","none");
+			Session.set("showDrivedrop","none");
+			Session.set("showsheetdrop","none");
 		}
 	},
-
+	'click .jiraDropbtn'(event,instance){
+		if(Session.get("showJiradrop") == "block"){
+			Session.set("showJiradrop","none");
+		}
+		else{
+			Session.set("showJiradrop","block");
+			Session.set("showdrop","none");
+			Session.set("showDrivedrop","none");
+			Session.set("showsheetdrop","none");
+		}
+	},
+	'click .driveDropbtn'(event,instance){
+		if(Session.get("showDrivedrop") == "block"){
+			Session.set("showDrivedrop","none");
+		}
+		else{
+			Session.set("showDrivedrop","block");
+			Session.set("showJiradrop","none");
+			Session.set("showdrop","none");
+			Session.set("showsheetdrop","none");
+		}
+	},
+	'click .sheetDropBtn'(event,instance){
+		if(Session.get("showsheetdrop") == "block"){
+			Session.set("showsheetdrop","none");
+		}
+		else{
+			Session.set("showsheetdrop","block");
+			Session.set("showJiradrop","none");
+			Session.set("showdrop","none");
+			Session.set("showDrivedrop","none");
+		}
+	},
 	'click .iframe-toolbar .js-iframe-action'(e) {
 		fireGlobalEvent('click-toolbar-button', { id: this.id });
 		e.currentTarget.querySelector('button').blur();

@@ -14,8 +14,10 @@ import { hasPermission, hasAllPermission, hasRole, hasAtLeastOnePermission } fro
 import { t, roomTypes, RoomSettingsEnum } from '../../../utils';
 import { ChannelSettings } from '../lib/ChannelSettings';
 import { MessageTypesValues } from '../../../lib/lib/MessageTypes';
+import { Mongo } from 'meteor/mongo';
 
-
+import resourceLinks from '../../../../app/ui/client/components/header/headerRoom'
+Meteor.subscribe('rocketchat_resource_links');
 const common = {
 	canLeaveRoom() {
 		const { cl: canLeave, t: roomType } = Template.instance().room;
@@ -152,7 +154,15 @@ Template.channelSettingsEditing.events({
 		input.value = modified;
 	},
 	'input .js-input'(e) {
+		// console.log("thiss",e)
+		// let valuelist = [];
+		// valuelist.push(e.currentTarget.value)
 		this.value.set(e.currentTarget.value);
+		
+	},
+	'input .gitlab_fields'(e){
+		const { settings } = t;
+		
 	},
 	'change .js-input-check'(e) {
 		this.value.set(e.currentTarget.checked);
@@ -166,6 +176,197 @@ Template.channelSettingsEditing.events({
 	'click .js-reset'(e, t) {
 		const { settings } = t;
 		Object.keys(settings).forEach((key) => settings[key].value.set(settings[key].default.get()));
+	},
+	'click #remove_gitlab_field'(event,template){
+		const { _id } = Template.instance().room;
+		
+
+	},
+	'click #add_gitlab_field'(event,template){
+		// var inputs = template.inputs.get();
+        // inputs.push({value:"newValue"});
+		// template.inputs.set(inputs);
+		// console.log("add_gitlab_field clicked",template.inputs.get())
+		// let count = 1;
+		// let gitlabFieldsList = Session.get("gitlabFields") == undefined ? []: Session.get("gitlabFields")
+		// // gitlabFieldsList = Session.get("gitlabFields");
+		const { _id } = Template.instance().room;
+		const uniqueId = _id.concat("git")
+		console.log("uniq",uniqueId);
+		// gitlabFieldsList.push(count);
+		// count++;
+		// Session.set("gitlabFields",gitlabFieldsList);
+		let count =0;	
+		//let gitlabIdList ;
+		let gitlabItem = resourceLinks.findOne({room_id:_id,resourceName:"gitlabResources"})
+		if(gitlabItem == undefined || gitlabItem.gitlabLinkList.length==0){
+			count=1;
+			if(Session.get(uniqueId)==undefined){
+				count = 1;
+			}
+			else{
+				count =Session.get(uniqueId);
+			}
+			//gitlabIdList = ["gitlab_1"];
+		}
+		else{
+		  count =gitlabItem.gitlabLinkList.length;
+		  Session.set(uniqueId,count);
+		}
+		
+		// if(Session.get(_id)===undefined){
+		// 	gitlabIdList = ["gitlab_1"];
+		// }
+		// else{
+		// 	gitlabIdList = Session.get(_id);
+		// }
+		// //count = gitlabIdList.length;
+		count++;
+		// gitlabIdList.push("gitlab_"+count++);
+		// // for (let index = gitlabIdList.length-1; index < gitlabIdList.length; index++) {
+		// // 	gitlabIdList.push("gitlab"+""+index+1);
+			
+		// // }
+		
+		 Session.set(uniqueId,count);
+		// console.log("ids",gitlabIdList);
+		let field = `<div class="rc-input__wrapper" >
+		<input type="text" name="gitlab_${count}" value="" class="rc-input__element gitlab_fields" />
+ </div>`
+		$('#dynamicFields').append(field)
+		
+	},
+	'click #add_jira_field'(event,template){
+		const { _id } = Template.instance().room;
+		const uniqueId = _id.concat("jira")
+		console.log("uniq",uniqueId);
+		
+		let count =0;	
+		let item = resourceLinks.findOne({room_id:_id,resourceName:"gitlabResources"})
+		if(item == undefined || item.jiraLinksList.length==0){
+			count=1;
+			if(Session.get(uniqueId)==undefined){
+				count = 1;
+			}
+			else{
+				count =Session.get(uniqueId);
+			}
+			//gitlabIdList = ["gitlab_1"];
+		}
+		else{
+		  count =item.jiraLinksList.length;
+		  Session.set(uniqueId,count);
+		}
+		
+		// if(Session.get(_id)===undefined){
+		// 	gitlabIdList = ["gitlab_1"];
+		// }
+		// else{
+		// 	gitlabIdList = Session.get(_id);
+		// }
+		// //count = gitlabIdList.length;
+		count++;
+		// gitlabIdList.push("gitlab_"+count++);
+		// // for (let index = gitlabIdList.length-1; index < gitlabIdList.length; index++) {
+		// // 	gitlabIdList.push("gitlab"+""+index+1);
+			
+		// // }
+		
+		 Session.set(uniqueId,count);
+		// console.log("ids",gitlabIdList);
+		let field = `<div class="rc-input__wrapper" >
+		<input type="text" name="jira_${count}" value="" class="rc-input__element jira_fields" />
+ </div>`
+		$('#jiraDynamicFields').append(field)
+		
+	},
+	'click #add_drive_field'(event,template){
+		const { _id } = Template.instance().room;
+		const uniqueId = _id.concat("drive")
+		console.log("uniq",uniqueId);
+		
+		let count =0;	
+		let item = resourceLinks.findOne({room_id:_id,resourceName:"gitlabResources"})
+		if(item == undefined || item.driveLinkList.length==0){
+			count=1;
+			if(Session.get(uniqueId)==undefined){
+				count = 1;
+			}
+			else{
+				count =Session.get(uniqueId);
+			}
+			//gitlabIdList = ["gitlab_1"];
+		}
+		else{
+		  count =item.driveLinkList.length;
+		  Session.set(uniqueId,count);
+		}
+		
+		// if(Session.get(_id)===undefined){
+		// 	gitlabIdList = ["gitlab_1"];
+		// }
+		// else{
+		// 	gitlabIdList = Session.get(_id);
+		// }
+		// //count = gitlabIdList.length;
+		count++;
+		// gitlabIdList.push("gitlab_"+count++);
+		// // for (let index = gitlabIdList.length-1; index < gitlabIdList.length; index++) {
+		// // 	gitlabIdList.push("gitlab"+""+index+1);
+			
+		// // }
+		
+		 Session.set(uniqueId,count);
+		// console.log("ids",gitlabIdList);
+		let field = `<div class="rc-input__wrapper" >
+		<input type="text" name="drive_${count}" value="" class="rc-input__element drive_fields" />
+ </div>`
+		$('#driveDynamicFields').append(field)
+		
+	},
+	'click #add_sheet_field'(event,template){
+		const { _id } = Template.instance().room;
+		const uniqueId = _id.concat("sheet")
+		console.log("uniq",uniqueId);
+		
+		let count =0;	
+		let item = resourceLinks.findOne({room_id:_id,resourceName:"gitlabResources"})
+		if(item == undefined || item.sheetLinkList.length==0){
+			count=1;
+			if(Session.get(uniqueId)==undefined){
+				count = 1;
+			}
+			else{
+				count =Session.get(uniqueId);
+			}
+			//gitlabIdList = ["gitlab_1"];
+		}
+		else{
+		  count =item.sheetLinkList.length;
+		  Session.set(uniqueId,count);
+		}
+		
+		// if(Session.get(_id)===undefined){
+		// 	gitlabIdList = ["gitlab_1"];
+		// }
+		// else{
+		// 	gitlabIdList = Session.get(_id);
+		// }
+		// //count = gitlabIdList.length;
+		count++;
+		// gitlabIdList.push("gitlab_"+count++);
+		// // for (let index = gitlabIdList.length-1; index < gitlabIdList.length; index++) {
+		// // 	gitlabIdList.push("gitlab"+""+index+1);
+			
+		// // }
+		
+		 Session.set(uniqueId,count);
+		// console.log("ids",gitlabIdList);
+		let field = `<div class="rc-input__wrapper" >
+		<input type="text" name="sheet_${count}" value="" class="rc-input__element sheet_fields" />
+ </div>`
+		$('#sheetDynamicFields').append(field)
+		
 	},
 	'click .rc-user-info__config-value'(e) {
 		const options = [{
@@ -190,7 +391,7 @@ Template.channelSettingsEditing.events({
 		const falseOrDisabled = this.value.get() === false ? 'disabled' : 'default';
 		const value = this.value.get() ? 'enabled' : falseOrDisabled;
 		const config = {
-			popoverClass: 'notifications-preferences',
+			popoverClass: 'ngitlabInputFieldsotifications-preferences',
 			template: 'pushNotificationsPopover',
 			data: {
 				change: (value) => {
@@ -207,7 +408,81 @@ Template.channelSettingsEditing.events({
 		popover.open(config);
 	},
 	async 'click .js-save'(e, t) {
+		let gitlabLinksList = [] ;
 		const { settings } = t;
+		var formData = $('.gitlab_fields').serializeArray()
+		let formList = [];
+		formData.forEach(element => {
+			if(element.value !== ""){
+				formList.push(`${element.name}$*${element.value}`);
+			}
+		});
+		 let value = formList.join(';');
+		 
+		console.log("valueprint",formList)
+		value.split(';').map(item => {
+			const regex = /^(.*?)\$\*(.*?),(.*?)$/;
+			const [, name, title, url] = regex.exec(item);
+			gitlabLinksList.push({ name, title, url })
+			return { name, title, url }
+		})
+		 let jiraLinksList = [] ;
+		var jiraFormData = $('.jira_fields').serializeArray()
+		let jiraFormList = [];
+		jiraFormData.forEach(element => {
+			if(element.value !== ""){
+				jiraFormList.push(`${element.name}$*${element.value}`);
+			}
+		});
+		 let jiraValue = jiraFormList.join(';');
+		 
+		 jiraValue.split(';').map(item => {
+			const regex = /^(.*?)\$\*(.*?),(.*?)$/;
+			const [, name, title, url] = regex.exec(item);
+			jiraLinksList.push({ name, title, url })
+			return { name, title, url }
+		})
+		let driveLinkList = [] ;
+		var driveFormData = $('.drive_fields').serializeArray()
+		let driveFormList = [];
+		driveFormData.forEach(element => {
+			if(element.value !== ""){
+				driveFormList.push(`${element.name}$*${element.value}`);
+			}
+		});
+		 let driveValue = driveFormList.join(';');
+		 
+		 driveValue.split(';').map(item => {
+			const regex = /^(.*?)\$\*(.*?),(.*?)$/;
+			const [, name, title, url] = regex.exec(item);
+			driveLinkList.push({ name, title, url })
+			return { name, title, url }
+		})
+		let sheetLinkList = [] ;
+		var sheetFormData = $('.sheet_fields').serializeArray()
+		let sheetFormList = [];
+		sheetFormData.forEach(element => {
+			if(element.value !== ""){
+				sheetFormList.push(`${element.name}$*${element.value}`);
+			}
+		});
+		 let sheetValue = sheetFormList.join(';');
+		 
+		 sheetValue.split(';').map(item => {
+			const regex = /^(.*?)\$\*(.*?),(.*?)$/;
+			const [, name, title, url] = regex.exec(item);
+			sheetLinkList.push({ name, title, url })
+			return { name, title, url }
+		})
+	const { _id } = Template.instance().room;
+		let gitlabItem = resourceLinks.findOne({room_id:_id,resourceName:"gitlabResources"})
+		console.log("type of gitlabitem",gitlabItem)
+		if(typeof gitlabItem === "undefined" ){
+			Meteor.call('rocketchat_resource_links.insert',_id,gitlabLinksList,jiraLinksList,driveLinkList,[],"gitlabResources");
+	   }
+	   else {
+		Meteor.call('rocketchat_resource_links.update',_id,gitlabLinksList,jiraLinksList,driveLinkList,sheetLinkList,"gitlabResources");
+	   }
 		Object.keys(settings).forEach(async (name) => {
 			const setting = settings[name];
 			const value = setting.value.get();
@@ -218,12 +493,19 @@ Template.channelSettingsEditing.events({
 				}, console.log);
 			}
 		});
+	
 	},
 });
 
 Template.channelSettingsEditing.onCreated(function() {
+
+	this.editing = new ReactiveVar(false);
+	var self = Template.instance();
+	self.inputs = new ReactiveVar([{value:"initialValue"}])
+
 	const room = ChatRoom.findOne(this.data && this.data.rid);
 	this.room = room;
+	console.log("settings",this.settings);
 	this.settings = {
 		name: {
 			type: 'text',
@@ -304,178 +586,6 @@ Template.channelSettingsEditing.onCreated(function() {
 				return call('saveRoomSettings', room._id, RoomSettingsEnum.ANNOUNCEMENT, value).then(() => {
 					toastr.success(t('Room_announcement_changed_successfully'));
 					return callbacks.run('roomAnnouncementChanged', room);
-				});
-			},
-		},
-		gitlab: {
-			type: 'markdown',
-			label: 'Gitlab',
-			getValue() {
-				const { _id } = Template.instance().room;
-		        const{prid} = Template.instance().room;
-				const isDiscussion = Boolean(_id && prid);
-				let gitlabLinkList =Template.instance().room.customFields.gitlabLink;
-				if(isDiscussion){
-                return "";
-				}
-				else if(Array.isArray(gitlabLinkList)){
-					return gitlabLinkList.map(({ title, url }) => title + ":-" + url).join(';')
-				}
-				else {
-					return gitlabLinkList;
-				}
-				
-			},
-			canView() {
-				return roomTypes.getConfig(room.t).allowRoomSettingChange(room, RoomSettingsEnum.CUSTOMFIELDS);
-			},
-			canEdit() {
-				return hasAllPermission('edit-room', room._id);
-			},
-			save(value) {
-				 let gitlabLinksList = [] ; 
-				value.split(';').filter(Boolean).map(item => {
-					const [, title, url] = item.match(/^(.*?):-(.*)$/);
-					gitlabLinksList.push({ title, url });
-					return { title, url }
-				})
-				Template.instance().room.customFields = {
-					 gitlabLink : gitlabLinksList,
-					jiraLink : Template.instance().room.customFields.jiraLink,
-					driveLink: Template.instance().room.customFields.driveLink,
-					sheetLink: Template.instance().room.customFields.sheetLink
-				}
-				
-				return call('saveRoomSettings', room._id, RoomSettingsEnum.CUSTOMFIELDS, Template.instance().room.customFields).then(() => {
-					toastr.success(t('Room GitlabLink changed successfully'));
-				});
-			},
-		},
-		jira: {
-			type: 'markdown',
-			label: 'Jira',
-			getValue() {
-				const { _id } = Template.instance().room;
-		        const{prid} = Template.instance().room;
-				const isDiscussion = Boolean(_id && prid);
-				let jiraLinkList =Template.instance().room.customFields.jiraLink;
-				if(isDiscussion){
-                return "";
-				}
-				else if(Array.isArray(jiraLinkList)){
-					return jiraLinkList.map(({ title, url }) => title + ":-" + url).join(';')
-				}
-				else {
-					return jiraLinkList;
-				}
-			},
-			canView() {
-				return roomTypes.getConfig(room.t).allowRoomSettingChange(room, RoomSettingsEnum.CUSTOMFIELDS);
-			},
-			canEdit() {
-				return hasAllPermission('edit-room', room._id);
-			},
-			save(value) {
-				let jiraLinksList = [] ;
-			   value.split(';').filter(Boolean).map(item => {
-				   const [, title, url] = item.match(/^(.*?):-(.*)$/);
-				   jiraLinksList.push({ title, url });
-				   return { title, url }
-			   })
-			   Template.instance().room.customFields = {
-					gitlabLink : Template.instance().room.customFields.gitlabLink,
-				   jiraLink : jiraLinksList,
-				   driveLink: Template.instance().room.customFields.driveLink,
-				   sheetLink: Template.instance().room.customFields.sheetLink
-			   }
-				return call('saveRoomSettings', room._id, RoomSettingsEnum.CUSTOMFIELDS, Template.instance().room.customFields).then(() => {
-					toastr.success(t('Room Jira Link changed successfully'));
-				});
-			},
-		},
-		drive: {
-			type: 'markdown',
-			label: 'Drive',
-			getValue() {
-				
-				const { _id } = Template.instance().room;
-		        const{prid} = Template.instance().room;
-				const isDiscussion = Boolean(_id && prid);
-				let driveLinkList =Template.instance().room.customFields.driveLink;
-				if(isDiscussion){
-                return "";
-				}
-				else if(Array.isArray(driveLinkList)){
-					return driveLinkList.map(({ title, url }) => title + ":-" + url).join(';')
-				}
-				else {
-					return driveLinkList;
-				}
-			},
-			canView() {
-				return roomTypes.getConfig(room.t).allowRoomSettingChange(room, RoomSettingsEnum.CUSTOMFIELDS);
-			},
-			canEdit() {
-				return hasAllPermission('edit-room', room._id);
-			},
-			save(value) {
-				let driveLinksList = [] ;
-			   value.split(';').filter(Boolean).map(item => {
-				   const [, title, url] = item.match(/^(.*?):-(.*)$/);
-				   driveLinksList.push({ title, url });
-				   return { title, url }
-			   })
-			   Template.instance().room.customFields = {
-					gitlabLink : Template.instance().room.customFields.gitlabLink,
-				   jiraLink : Template.instance().room.customFields.jiraLink,
-				   driveLink: driveLinksList,
-				   sheetLink: Template.instance().room.customFields.sheetLink
-			   }
-				return call('saveRoomSettings', room._id, RoomSettingsEnum.CUSTOMFIELDS, Template.instance().room.customFields).then(() => {
-					toastr.success(t('Drive  Link changed successfully'));
-				});
-			},
-		},
-		sheet: {
-			type: 'markdown',
-			label: 'Sheet',
-			getValue() {
-				const { _id } = Template.instance().room;
-		        const{prid} = Template.instance().room;
-				const isDiscussion = Boolean(_id && prid);
-				let sheetLinkList =Template.instance().room.customFields.sheetLink;
-				if(isDiscussion){
-                return "";
-				}
-				else if(Array.isArray(sheetLinkList)){
-					return sheetLinkList.map(({ title, url }) => title + ":-" + url).join(';')
-				}
-				else {
-					return sheetLinkList;
-				}
-			},
-			canView() {
-				return roomTypes.getConfig(room.t).allowRoomSettingChange(room, RoomSettingsEnum.CUSTOMFIELDS);
-			},
-			canEdit() {
-				return hasAllPermission('edit-room', room._id);
-			},
-			save(value) {
-				let sheetLinksList = [] ;
-			   value.split(';').filter(Boolean).map(item => {
-				   const [, title, url] = item.match(/^(.*?):-(.*)$/);
-				   sheetLinksList.push({ title, url });
-				   return { title, url }
-			   })
-			  
-				 Template.instance().room.customFields = {
-					gitlabLink: Template.instance().room.customFields.gitlabLink,
-					jiraLink : Template.instance().room.customFields.jiraLink,
-					driveLink: Template.instance().room.customFields.driveLink,
-					sheetLink: sheetLinksList
-				}
-				return call('saveRoomSettings', room._id, RoomSettingsEnum.CUSTOMFIELDS, Template.instance().room.customFields).then(() => {
-					toastr.success(t('Room SheetLink changed successfully'));
 				});
 			},
 		},
@@ -902,6 +1012,7 @@ Template.channelSettingsEditing.helpers({
 		return text === text2 ? '' : ret;
 	},
 	settings() {
+		console.log("settts",this);
 		return Template.instance().settings;
 	},
 	editing(field) {
@@ -935,6 +1046,78 @@ Template.channelSettingsEditing.helpers({
 		const { room } = Template.instance();
 		return TAPi18n.__(label, { max: roomMaxAgeDefault(room.t) });
 	},
+	editing() {
+		return Template.instance().editing.get();
+	},
+	gitlabInputFields(){
+		const singleFieldList = [{"name": "gitlab_1","url":""}];
+		const { _id } = Template.instance().room;
+		let gitlabItem = resourceLinks.findOne({room_id:_id,resourceName:"gitlabResources"})
+		console.log("pinda",gitlabItem)
+		let fieldsDataList =[];
+		if(gitlabItem == undefined || gitlabItem.gitlabLinkList.length==0){
+			return singleFieldList;
+		}
+		else{
+			gitlabItem.gitlabLinkList.map(({ name,title, url }) => 
+			fieldsDataList.push({"name":name,"url":title + ","+url}));
+			console.log("fieldsDataList",fieldsDataList);
+			return fieldsDataList;
+		}
+		
+	},
+	jiraInputFields(){
+		const singleFieldList = [{"name": "jira_1","url":""}];
+		const { _id } = Template.instance().room;
+		let item = resourceLinks.findOne({room_id:_id,resourceName:"gitlabResources"})
+		let fieldsDataList =[];
+		if(item == undefined || item.jiraLinksList.length==0){
+			return singleFieldList;
+		}
+		else{
+			item.jiraLinksList.map(({ name,title, url }) => 
+			fieldsDataList.push({"name":name,"url":title + ","+url}));
+			return fieldsDataList;
+		}
+	},
+	driveInputFields(){
+		const singleFieldList = [{"name": "drive_1","url":""}];
+		const { _id } = Template.instance().room;
+		let item = resourceLinks.findOne({room_id:_id,resourceName:"gitlabResources"})
+		let fieldsDataList =[];
+		if(item == undefined || item.driveLinkList.length==0){
+			return singleFieldList;
+		}
+		else{
+			item.driveLinkList.map(({ name,title, url }) => 
+			fieldsDataList.push({"name":name,"url":title + ","+url}));
+			return fieldsDataList;
+		}
+	},
+	sheetInputFields(){
+		const singleFieldList = [{"name": "sheet_1","url":""}];
+		const { _id } = Template.instance().room;
+		let item = resourceLinks.findOne({room_id:_id,resourceName:"gitlabResources"})
+		let fieldsDataList =[];
+		if(item == undefined || item.sheetLinkList.length==0){
+			return singleFieldList;
+		}
+		else{
+			item.sheetLinkList.map(({ name,title, url }) => 
+			fieldsDataList.push({"name":name,"url":title + ","+url}));
+			return fieldsDataList;
+		}
+	},
+	inputs(){
+		let gitlabFieldsList = [1,2]
+	let	list = Template.instance().inputs.get();
+	console.log("aa",Template.instance().inputs.get())
+	if(list===undefined){
+		return gitlabFieldsList;
+	}
+
+		return Template.instance().inputs.get();
+	}
 });
 
 Template.channelSettings.helpers({
@@ -963,10 +1146,14 @@ Template.channelSettings.events({
 		hide(type, rid, name);
 	},
 	'click .js-cancel'(e, t) {
+		console.log("cancells",t);
 		t.editing.set(false);
 	},
 	'click .js-delete'() {
 		return erase(this.rid);
+	},
+	'click .js-save '(e,t){
+		t.editing.set(false);
 	},
 });
 
