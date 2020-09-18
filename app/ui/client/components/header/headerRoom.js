@@ -185,26 +185,6 @@ Template.headerRoom.helpers({
 		   return false;
 	   }
 	},
-	gitlabLink(){
- 	const room = Rooms.findOne(this._id);
-	const gitlabLink = room.customFields.gitlabLink;
-	return gitlabLink;
-	},
-	jiraLink(){
-		const room = Rooms.findOne(this._id);
-		 const jiraLink = room.customFields.jiraLink;
-		 return jiraLink;
-	},
-	driveLink(){
-		const room = Rooms.findOne(this._id);
-		 const driveLink = room.customFields.driveLink;
-		 return driveLink;
-	},
-	sheetLink(){
-		 const room = Rooms.findOne(this._id);
-		 const sheetLink = room.customFields.sheetLink;
-		 return sheetLink;
-	},
 	showDropdown(){
 		return Session.get("showdrop");
 	},
@@ -222,7 +202,25 @@ Template.headerRoom.helpers({
 		let gitlabItem = resourceLinks.findOne({room_id:this._id})
 		const gitlabLink = gitlabItem.gitlabLinkList;
 	return gitlabLink;
-	}
+	},
+	jiraLinkList(){
+		const room = Rooms.findOne(this._id);
+		let item = resourceLinks.findOne({room_id:this._id})
+		const jiraLinks = item.jiraLinksList;
+	return jiraLinks;
+	},
+	driveLinkList(){
+		const room = Rooms.findOne(this._id);
+		let item = resourceLinks.findOne({room_id:this._id})
+		const driveLinks = item.driveLinkList;
+	return driveLinks;
+	},
+	sheetLinkList(){
+		const room = Rooms.findOne(this._id);
+		let item = resourceLinks.findOne({room_id:this._id})
+		const sheetLinks = item.sheetLinkList;
+	return sheetLinks;
+	},
 	
 });
 

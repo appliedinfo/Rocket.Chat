@@ -20,9 +20,6 @@ import { AutoTranslate } from '../../autotranslate/client';
 import { Mongo } from 'meteor/mongo';
 import toastr from 'toastr';
 		 
-		      
-		 
-		      
 
 var moment = require('moment-timezone');
 let messageID ;
