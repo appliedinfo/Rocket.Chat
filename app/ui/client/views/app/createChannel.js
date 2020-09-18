@@ -221,62 +221,6 @@ Template.createChannel.events({
 			t.name.set(modified);
 		}
 	},
-	'input [name="gitlabLink"]'(e, t) { 
-		const input = e.target;
-		const position = input.selectionEnd || input.selectionStart;
-		const { length } = input.value; 
-		const value = input.value;
-		let gitlabLinksList = [] ; 
-		value.split(';').filter(Boolean).map(item => {
-			const [, title, url] = item.match(/^(.*?):-(.*)$/);
-			gitlabLinksList.push({ title, url });
-			return { title, url }
-		})
-		document.activeElement === input && e && /input/i.test(e.type) && (input.selectionEnd = position + input.value.length - length);
-		t.gitlabLink.set(gitlabLinksList)
-	},
-	'input [name="jiraLink"]'(e, t) { 
-		const input = e.target;
-		const position = input.selectionEnd || input.selectionStart;
-		const { length } = input.value; 
-		const value = input.value;
-		let jiraLinksList = [] ; 
-		value.split(';').filter(Boolean).map(item => {
-			const [, title, url] = item.match(/^(.*?):-(.*)$/);
-			jiraLinksList.push({ title, url });
-			return { title, url }
-		})
-		document.activeElement === input && e && /input/i.test(e.type) && (input.selectionEnd = position + input.value.length - length);
-		t.jiraLink.set(jiraLinksList)
-	},
-	'input [name="driveLink"]'(e, t) { 
-		const input = e.target;
-		const position = input.selectionEnd || input.selectionStart;
-		const { length } = input.value; 
-		const value = input.value;
-		let driveLinksList = [] ; 
-		value.split(';').filter(Boolean).map(item => {
-			const [, title, url] = item.match(/^(.*?):-(.*)$/);
-			driveLinksList.push({ title, url });
-			return { title, url }
-		})
-		document.activeElement === input && e && /input/i.test(e.type) && (input.selectionEnd = position + input.value.length - length);
-		t.driveLink.set(driveLinksList)
-	},
-	'input [name="sheetLink"]'(e, t) { 
-		const input = e.target;
-		const position = input.selectionEnd || input.selectionStart;
-		const { length } = input.value; 
-		const value = input.value;
-		let sheetLinksList = [] ; 
-		value.split(';').filter(Boolean).map(item => {
-			const [, title, url] = item.match(/^(.*?):-(.*)$/);
-			sheetLinksList.push({ title, url });
-			return { title, url }
-		})
-		document.activeElement === input && e && /input/i.test(e.type) && (input.selectionEnd = position + input.value.length - length);
-		t.sheetLink.set(sheetLinksList)
-	},
 	'submit .create-channel__content'(e, instance) {
 		e.preventDefault();
 		e.stopPropagation();

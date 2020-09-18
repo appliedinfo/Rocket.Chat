@@ -183,21 +183,10 @@ Template.channelSettingsEditing.events({
 
 	},
 	'click #add_gitlab_field'(event,template){
-		// var inputs = template.inputs.get();
-        // inputs.push({value:"newValue"});
-		// template.inputs.set(inputs);
-		// console.log("add_gitlab_field clicked",template.inputs.get())
-		// let count = 1;
-		// let gitlabFieldsList = Session.get("gitlabFields") == undefined ? []: Session.get("gitlabFields")
-		// // gitlabFieldsList = Session.get("gitlabFields");
 		const { _id } = Template.instance().room;
 		const uniqueId = _id.concat("git")
 		console.log("uniq",uniqueId);
-		// gitlabFieldsList.push(count);
-		// count++;
-		// Session.set("gitlabFields",gitlabFieldsList);
 		let count =0;	
-		//let gitlabIdList ;
 		let gitlabItem = resourceLinks.findOne({room_id:_id,resourceName:"gitlabResources"})
 		if(gitlabItem == undefined || gitlabItem.gitlabLinkList.length==0){
 			count=1;
@@ -207,28 +196,15 @@ Template.channelSettingsEditing.events({
 			else{
 				count =Session.get(uniqueId);
 			}
-			//gitlabIdList = ["gitlab_1"];
+			
 		}
 		else{
 		  count =gitlabItem.gitlabLinkList.length;
 		  Session.set(uniqueId,count);
 		}
 		
-		// if(Session.get(_id)===undefined){
-		// 	gitlabIdList = ["gitlab_1"];
-		// }
-		// else{
-		// 	gitlabIdList = Session.get(_id);
-		// }
-		// //count = gitlabIdList.length;
 		count++;
-		// gitlabIdList.push("gitlab_"+count++);
-		// // for (let index = gitlabIdList.length-1; index < gitlabIdList.length; index++) {
-		// // 	gitlabIdList.push("gitlab"+""+index+1);
-			
-		// // }
-		
-		 Session.set(uniqueId,count);
+	  Session.set(uniqueId,count);
 		// console.log("ids",gitlabIdList);
 		let field = `<div class="rc-input__wrapper" >
 		<input type="text" name="gitlab_${count}" value="" class="rc-input__element gitlab_fields" />
@@ -257,24 +233,9 @@ Template.channelSettingsEditing.events({
 		  count =item.jiraLinksList.length;
 		  Session.set(uniqueId,count);
 		}
-		
-		// if(Session.get(_id)===undefined){
-		// 	gitlabIdList = ["gitlab_1"];
-		// }
-		// else{
-		// 	gitlabIdList = Session.get(_id);
-		// }
-		// //count = gitlabIdList.length;
 		count++;
-		// gitlabIdList.push("gitlab_"+count++);
-		// // for (let index = gitlabIdList.length-1; index < gitlabIdList.length; index++) {
-		// // 	gitlabIdList.push("gitlab"+""+index+1);
-			
-		// // }
-		
 		 Session.set(uniqueId,count);
-		// console.log("ids",gitlabIdList);
-		let field = `<div class="rc-input__wrapper" >
+	   let field = `<div class="rc-input__wrapper" >
 		<input type="text" name="jira_${count}" value="" class="rc-input__element jira_fields" />
  </div>`
 		$('#jiraDynamicFields').append(field)
@@ -295,29 +256,14 @@ Template.channelSettingsEditing.events({
 			else{
 				count =Session.get(uniqueId);
 			}
-			//gitlabIdList = ["gitlab_1"];
+			
 		}
 		else{
 		  count =item.driveLinkList.length;
 		  Session.set(uniqueId,count);
 		}
-		
-		// if(Session.get(_id)===undefined){
-		// 	gitlabIdList = ["gitlab_1"];
-		// }
-		// else{
-		// 	gitlabIdList = Session.get(_id);
-		// }
-		// //count = gitlabIdList.length;
 		count++;
-		// gitlabIdList.push("gitlab_"+count++);
-		// // for (let index = gitlabIdList.length-1; index < gitlabIdList.length; index++) {
-		// // 	gitlabIdList.push("gitlab"+""+index+1);
-			
-		// // }
-		
-		 Session.set(uniqueId,count);
-		// console.log("ids",gitlabIdList);
+         Session.set(uniqueId,count);
 		let field = `<div class="rc-input__wrapper" >
 		<input type="text" name="drive_${count}" value="" class="rc-input__element drive_fields" />
  </div>`
@@ -345,23 +291,8 @@ Template.channelSettingsEditing.events({
 		  count =item.sheetLinkList.length;
 		  Session.set(uniqueId,count);
 		}
-		
-		// if(Session.get(_id)===undefined){
-		// 	gitlabIdList = ["gitlab_1"];
-		// }
-		// else{
-		// 	gitlabIdList = Session.get(_id);
-		// }
-		// //count = gitlabIdList.length;
 		count++;
-		// gitlabIdList.push("gitlab_"+count++);
-		// // for (let index = gitlabIdList.length-1; index < gitlabIdList.length; index++) {
-		// // 	gitlabIdList.push("gitlab"+""+index+1);
-			
-		// // }
-		
 		 Session.set(uniqueId,count);
-		// console.log("ids",gitlabIdList);
 		let field = `<div class="rc-input__wrapper" >
 		<input type="text" name="sheet_${count}" value="" class="rc-input__element sheet_fields" />
  </div>`
@@ -420,8 +351,6 @@ Template.channelSettingsEditing.events({
 		});
 		
 		 let value = formList.join(';');
-		 
-		console.log("valueprint",formList.length)
 		if(formList.length>1){
 			value.split(';').map(item => {
 				const regex = /^(.*?)\$\*(.*?),(.*?)$/;
@@ -439,6 +368,7 @@ Template.channelSettingsEditing.events({
 				gitlabLinksList.push({ name, title, url })
 				return { name, title, url }
 			})
+			
 		}
 		else{
 			
@@ -446,7 +376,6 @@ Template.channelSettingsEditing.events({
 		
 		 let jiraLinksList = [] ;
 		var jiraFormData = $('.jira_fields').serializeArray()
-		console.log("jiraformdataji",jiraFormData.length);
 		let jiraFormList = [];
 		jiraFormData.forEach(element => {
 			if(element.value !== ""){
@@ -454,7 +383,6 @@ Template.channelSettingsEditing.events({
 			}
 		});
 		 let jiraValue = jiraFormList.join(';');
-		 console.log("valueprint",jiraFormList)
 		 if(jiraFormList.length>1){
 			jiraValue.split(';').map(item => {
 				const regex = /^(.*?)\$\*(.*?),(.*?)$/;
@@ -462,6 +390,7 @@ Template.channelSettingsEditing.events({
 				jiraLinksList.push({ name, title, url })
 				return { name, title, url }
 			})
+			
 		}
 		else if(jiraFormList.length==1){
 			let singleJiraValue = []
@@ -528,7 +457,7 @@ Template.channelSettingsEditing.events({
 		else if(sheetFormList.length==1){
 			let singleSheetValue = []
 			singleSheetValue.push(sheetValue)
-			sheetValue.map(item => {
+			singleSheetValue.map(item => {
 				const regex = /^(.*?)\$\*(.*?),(.*?)$/;
 				const [, name, title, url] = regex.exec(item);
 				sheetLinkList.push({ name, title, url })
@@ -536,14 +465,14 @@ Template.channelSettingsEditing.events({
 			})
 		}
 		else{
-			
+
 		}
 		
 	const { _id } = Template.instance().room;
 		let gitlabItem = resourceLinks.findOne({room_id:_id,resourceName:"gitlabResources"})
 		console.log("type of gitlabitem",gitlabItem)
 		if(typeof gitlabItem === "undefined" ){
-			Meteor.call('rocketchat_resource_links.insert',_id,gitlabLinksList,jiraLinksList,driveLinkList,[],"gitlabResources");
+			Meteor.call('rocketchat_resource_links.insert',_id,gitlabLinksList,jiraLinksList,driveLinkList,sheetLinkList,"gitlabResources");
 	   }
 	   else {
 		Meteor.call('rocketchat_resource_links.update',_id,gitlabLinksList,jiraLinksList,driveLinkList,sheetLinkList,"gitlabResources");
@@ -570,7 +499,6 @@ Template.channelSettingsEditing.onCreated(function() {
 
 	const room = ChatRoom.findOne(this.data && this.data.rid);
 	this.room = room;
-	console.log("settings",this.settings);
 	this.settings = {
 		name: {
 			type: 'text',
@@ -1077,7 +1005,6 @@ Template.channelSettingsEditing.helpers({
 		return text === text2 ? '' : ret;
 	},
 	settings() {
-		console.log("settts",this);
 		return Template.instance().settings;
 	},
 	editing(field) {
