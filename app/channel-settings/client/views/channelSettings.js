@@ -412,22 +412,41 @@ Template.channelSettingsEditing.events({
 		const { settings } = t;
 		var formData = $('.gitlab_fields').serializeArray()
 		let formList = [];
+		console.log("jiraformdata",formData.length);
 		formData.forEach(element => {
 			if(element.value !== ""){
 				formList.push(`${element.name}$*${element.value}`);
 			}
 		});
+		
 		 let value = formList.join(';');
 		 
-		console.log("valueprint",formList)
-		value.split(';').map(item => {
-			const regex = /^(.*?)\$\*(.*?),(.*?)$/;
-			const [, name, title, url] = regex.exec(item);
-			gitlabLinksList.push({ name, title, url })
-			return { name, title, url }
-		})
+		console.log("valueprint",formList.length)
+		if(formList.length>1){
+			value.split(';').map(item => {
+				const regex = /^(.*?)\$\*(.*?),(.*?)$/;
+				const [, name, title, url] = regex.exec(item);
+				gitlabLinksList.push({ name, title, url })
+				return { name, title, url }
+			})
+		}
+		else if(formList.length==1){
+			let singleValue = []
+			singleValue.push(value)
+			singleValue.map(item => {
+				const regex = /^(.*?)\$\*(.*?),(.*?)$/;
+				const [, name, title, url] = regex.exec(item);
+				gitlabLinksList.push({ name, title, url })
+				return { name, title, url }
+			})
+		}
+		else{
+			
+		}
+		
 		 let jiraLinksList = [] ;
 		var jiraFormData = $('.jira_fields').serializeArray()
+		console.log("jiraformdataji",jiraFormData.length);
 		let jiraFormList = [];
 		jiraFormData.forEach(element => {
 			if(element.value !== ""){
@@ -435,13 +454,29 @@ Template.channelSettingsEditing.events({
 			}
 		});
 		 let jiraValue = jiraFormList.join(';');
-		 
-		 jiraValue.split(';').map(item => {
-			const regex = /^(.*?)\$\*(.*?),(.*?)$/;
-			const [, name, title, url] = regex.exec(item);
-			jiraLinksList.push({ name, title, url })
-			return { name, title, url }
-		})
+		 console.log("valueprint",jiraFormList)
+		 if(jiraFormList.length>1){
+			jiraValue.split(';').map(item => {
+				const regex = /^(.*?)\$\*(.*?),(.*?)$/;
+				const [, name, title, url] = regex.exec(item);
+				jiraLinksList.push({ name, title, url })
+				return { name, title, url }
+			})
+		}
+		else if(jiraFormList.length==1){
+			let singleJiraValue = []
+			singleJiraValue.push(jiraValue)
+			singleJiraValue.map(item => {
+				const regex = /^(.*?)\$\*(.*?),(.*?)$/;
+				const [, name, title, url] = regex.exec(item);
+				jiraLinksList.push({ name, title, url })
+				return { name, title, url }
+			})
+		}
+		else{
+			
+		}
+		
 		let driveLinkList = [] ;
 		var driveFormData = $('.drive_fields').serializeArray()
 		let driveFormList = [];
@@ -452,12 +487,27 @@ Template.channelSettingsEditing.events({
 		});
 		 let driveValue = driveFormList.join(';');
 		 
-		 driveValue.split(';').map(item => {
-			const regex = /^(.*?)\$\*(.*?),(.*?)$/;
-			const [, name, title, url] = regex.exec(item);
-			driveLinkList.push({ name, title, url })
-			return { name, title, url }
-		})
+		if(driveFormList.length>1){
+			driveValue.split(';').map(item => {
+				const regex = /^(.*?)\$\*(.*?),(.*?)$/;
+				const [, name, title, url] = regex.exec(item);
+				driveLinkList.push({ name, title, url })
+				return { name, title, url }
+			})
+		}
+		else if(driveFormList.length==1){
+			let singleDriveValue = []
+			singleDriveValue.push(driveValue)
+			singleDriveValue.map(item => {
+				const regex = /^(.*?)\$\*(.*?),(.*?)$/;
+				const [, name, title, url] = regex.exec(item);
+				driveLinkList.push({ name, title, url })
+				return { name, title, url }
+			})
+		}
+		else{
+
+		}
 		let sheetLinkList = [] ;
 		var sheetFormData = $('.sheet_fields').serializeArray()
 		let sheetFormList = [];
@@ -467,13 +517,28 @@ Template.channelSettingsEditing.events({
 			}
 		});
 		 let sheetValue = sheetFormList.join(';');
-		 
-		 sheetValue.split(';').map(item => {
-			const regex = /^(.*?)\$\*(.*?),(.*?)$/;
-			const [, name, title, url] = regex.exec(item);
-			sheetLinkList.push({ name, title, url })
-			return { name, title, url }
-		})
+		if(sheetFormList.length>1){
+			sheetValue.split(';').map(item => {
+				const regex = /^(.*?)\$\*(.*?),(.*?)$/;
+				const [, name, title, url] = regex.exec(item);
+				sheetLinkList.push({ name, title, url })
+				return { name, title, url }
+			})
+		} 
+		else if(sheetFormList.length==1){
+			let singleSheetValue = []
+			singleSheetValue.push(sheetValue)
+			sheetValue.map(item => {
+				const regex = /^(.*?)\$\*(.*?),(.*?)$/;
+				const [, name, title, url] = regex.exec(item);
+				sheetLinkList.push({ name, title, url })
+				return { name, title, url }
+			})
+		}
+		else{
+			
+		}
+		
 	const { _id } = Template.instance().room;
 		let gitlabItem = resourceLinks.findOne({room_id:_id,resourceName:"gitlabResources"})
 		console.log("type of gitlabitem",gitlabItem)
