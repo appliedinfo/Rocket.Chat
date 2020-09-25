@@ -354,7 +354,6 @@ Template.channelSettingsEditing.events({
 			value.split(';').map(item => {
 				const regex = /^(.*?)\$\*(.*?),(.*?)$/;
 				const [, name, title, url] = regex.exec(item);
-				console.log("regexv",url);
 				gitlabLinksList.push({ name, title, url })
 				return { name, title, url }
 			})
@@ -1045,7 +1044,6 @@ Template.channelSettingsEditing.helpers({
 		const singleFieldList = [{"name": "gitlab_1","url":""}];
 		const { _id } = Template.instance().room;
 		let gitlabItem = resourceLinks.findOne({room_id:_id,resourceName:"gitlabResources"})
-		console.log("pinda",gitlabItem)
 		let fieldsDataList =[];
 		if(gitlabItem == undefined || gitlabItem.gitlabLinkList.length==0){
 			return singleFieldList;
@@ -1053,7 +1051,6 @@ Template.channelSettingsEditing.helpers({
 		else{
 			gitlabItem.gitlabLinkList.map(({ name,title, url }) => 
 			fieldsDataList.push({"name":name,"url":title + ","+url}));
-			console.log("fieldsDataList",fieldsDataList);
 			return fieldsDataList;
 		}
 		
