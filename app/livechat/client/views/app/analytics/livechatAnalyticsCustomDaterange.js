@@ -38,5 +38,7 @@ Template.livechatAnalyticsCustomDaterange.events({
 		}
 
 		popover.close();
+		
+		
 	},
 });

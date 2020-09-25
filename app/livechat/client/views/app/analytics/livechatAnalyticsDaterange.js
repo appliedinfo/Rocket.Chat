@@ -18,7 +18,7 @@ Template.livechatAnalyticsDaterange.events({
 		const value = e.currentTarget.getAttribute('type') === 'checkbox' ? e.currentTarget.checked : e.currentTarget.value;
 
 		popover.close();
-
+		
 		switch (value) {
 			case 'custom':
 				const target = document.getElementsByClassName('lc-date-picker-btn')[0];

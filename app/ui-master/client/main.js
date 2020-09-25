@@ -79,6 +79,10 @@ Template.body.onRendered(function() {
 		const { target } = e;
 		if (e.ctrlKey === true || e.metaKey === true) {
 			popover.close();
+			Session.set("showsheetdrop","none");
+			Session.set("showJiradrop","none");
+			Session.set("showdrop","none");
+			Session.set("showDrivedrop","none");
 			return;
 		}
 		if (!((e.keyCode > 45 && e.keyCode < 91) || e.keyCode === 8)) {
@@ -93,7 +97,12 @@ Template.body.onRendered(function() {
 		}
 
 		popover.close();
+		Session.set("showsheetdrop","none");
+		Session.set("showJiradrop","none");
+		Session.set("showdrop","none");
+		Session.set("showDrivedrop","none");
 
+		
 		if (document.querySelector('.rc-modal-wrapper dialog[open]')) {
 			return;
 		}

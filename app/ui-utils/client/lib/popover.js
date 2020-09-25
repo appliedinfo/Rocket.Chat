@@ -50,6 +50,7 @@ Template.popover.onRendered(function() {
 	$('.rc-popover').click(function(e) {
 		if (e.currentTarget === e.target) {
 			popover.close();
+		
 		}
 	});
 	const { offsetVertical = 0, offsetHorizontal = 0 } = this.data;
@@ -152,9 +153,11 @@ Template.popover.events({
 	'click .js-action'(e, instance) {
 		!this.action || this.action.call(this, e, instance.data.data);
 		popover.close();
+	
 	},
 	'click .js-close'() {
 		popover.close();
+		
 	},
 	'click [data-type="messagebox-action"]'(event, t) {
 		const { id } = event.currentTarget.dataset;
@@ -174,11 +177,13 @@ Template.popover.events({
 		if ((button != null ? button.action : undefined) != null) {
 			button.action.call(t.data.data, e, t.data.instance);
 			popover.close();
+		
 			return false;
 		}
 	},
 	'click [data-type="sidebar-item"]'(e, instance) {
 		popover.close();
+	
 		const { rid, name, template } = instance.data.data;
 		const action = e.currentTarget.dataset.id;
 
@@ -216,6 +221,7 @@ Template.popover.events({
 		if (action === 'favorite') {
 			Meteor.call('toggleFavorite', rid, !$(e.currentTarget).hasClass('rc-popover__item--star-filled'), function(err) {
 				popover.close();
+			
 				if (err) {
 					handleError(err);
 				}

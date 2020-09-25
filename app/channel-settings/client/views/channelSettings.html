@@ -49,51 +49,57 @@
 		{{/with}}
 		
 		{{#unless isDiscussion}}
+		
 		<div class="rc-input__title" style="display: inline-block; align-self: center;">
-			GitlabLink
+			Gitlab (title,Url)
 		</div>
-		<div id="add_gitlab_field" class="rc-input__title" style= "margin-top: 20px; display: inline-block; align-self: center;"><svg fill="#000000" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" width="30px" height="30px"><path d="M25,2C12.317,2,2,12.317,2,25s10.317,23,23,23s23-10.317,23-23S37.683,2,25,2z M37,26H26v11h-2V26H13v-2h11V13h2v11h11V26z"/></svg>
+		<div id="add_gitlab_field" class="rc-input__title" style= " display: inline-block; align-self: center;">
+			<svg height="22px" style="margin-bottom: -6px; margin-left: 4px" viewBox="0 0 512 512" width="22px" xmlns="http://www.w3.org/2000/svg"><path d="m256 0c-141.164062 0-256 114.835938-256 256s114.835938 256 256 256 256-114.835938 256-256-114.835938-256-256-256zm0 0" fill="#2196f3"/><path d="m368 277.332031h-90.667969v90.667969c0 11.777344-9.554687 21.332031-21.332031 21.332031s-21.332031-9.554687-21.332031-21.332031v-90.667969h-90.667969c-11.777344 0-21.332031-9.554687-21.332031-21.332031s9.554687-21.332031 21.332031-21.332031h90.667969v-90.667969c0-11.777344 9.554687-21.332031 21.332031-21.332031s21.332031 9.554687 21.332031 21.332031v90.667969h90.667969c11.777344 0 21.332031 9.554687 21.332031 21.332031s-9.554687 21.332031-21.332031 21.332031zm0 0" fill="#fafafa"/></svg>
 		</div>
+	
 		{{#each gitlabInputFields}}
 		<div id="dynamicFields">
 			<div class="rc-input__wrapper" >
-					<input type="text" name="{{name}}" value="{{url}}" class="rc-input__element gitlab_fields" />
+					<input type="text" placeholder="appliedinformatics,https://gitlab.com" name="{{name}}" value="{{url}}" class="rc-input__element gitlab_fields" />
 				</div>
 	</div>
 	{{/each}}
 	<div class="rc-input__title" style="display: inline-block; align-self: center;">
-		JiraLink
+		Jira(title,url)
 	</div>
-	<div id="add_jira_field" class="rc-input__title" style= "margin-top: 20px; display: inline-block; align-self: center;"><svg fill="#000000" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" width="30px" height="30px"><path d="M25,2C12.317,2,2,12.317,2,25s10.317,23,23,23s23-10.317,23-23S37.683,2,25,2z M37,26H26v11h-2V26H13v-2h11V13h2v11h11V26z"/></svg>
-	</div>
+	<div id="add_jira_field" class="rc-input__title" style= "margin-top: 20px; display: inline-block; align-self: center;">
+		<svg height="22px" style="margin-bottom: -6px; margin-left: 4px" viewBox="0 0 512 512" width="22px" xmlns="http://www.w3.org/2000/svg"><path d="m256 0c-141.164062 0-256 114.835938-256 256s114.835938 256 256 256 256-114.835938 256-256-114.835938-256-256-256zm0 0" fill="#2196f3"/><path d="m368 277.332031h-90.667969v90.667969c0 11.777344-9.554687 21.332031-21.332031 21.332031s-21.332031-9.554687-21.332031-21.332031v-90.667969h-90.667969c-11.777344 0-21.332031-9.554687-21.332031-21.332031s9.554687-21.332031 21.332031-21.332031h90.667969v-90.667969c0-11.777344 9.554687-21.332031 21.332031-21.332031s21.332031 9.554687 21.332031 21.332031v90.667969h90.667969c11.777344 0 21.332031 9.554687 21.332031 21.332031s-9.554687 21.332031-21.332031 21.332031zm0 0" fill="#fafafa"/></svg>
+		</div>
 	{{#each jiraInputFields}}
 		<div id="jiraDynamicFields">
 			<div class="rc-input__wrapper" >
-					<input type="text" name="{{name}}" value="{{url}}" class="rc-input__element jira_fields" />
+					<input type="text" placeholder="appliedinformatics,https://gitlab.com" name="{{name}}" value="{{url}}" class="rc-input__element jira_fields" />
 				</div>
 	</div>
 	{{/each}}
 	<div class="rc-input__title" style="display: inline-block; align-self: center;">
-		DriveLink
+		Drive(title,url)
 	</div>
-	<div id="add_drive_field" class="rc-input__title" style= "margin-top: 20px; display: inline-block; align-self: center;"><svg fill="#000000" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" width="30px" height="30px"><path d="M25,2C12.317,2,2,12.317,2,25s10.317,23,23,23s23-10.317,23-23S37.683,2,25,2z M37,26H26v11h-2V26H13v-2h11V13h2v11h11V26z"/></svg>
-	</div>
+	<div id="add_drive_field" class="rc-input__title" style= "margin-top: 20px; display: inline-block; align-self: center;">
+		<svg height="22px" style="margin-bottom: -6px; margin-left: 4px" viewBox="0 0 512 512" width="22px" xmlns="http://www.w3.org/2000/svg"><path d="m256 0c-141.164062 0-256 114.835938-256 256s114.835938 256 256 256 256-114.835938 256-256-114.835938-256-256-256zm0 0" fill="#2196f3"/><path d="m368 277.332031h-90.667969v90.667969c0 11.777344-9.554687 21.332031-21.332031 21.332031s-21.332031-9.554687-21.332031-21.332031v-90.667969h-90.667969c-11.777344 0-21.332031-9.554687-21.332031-21.332031s9.554687-21.332031 21.332031-21.332031h90.667969v-90.667969c0-11.777344 9.554687-21.332031 21.332031-21.332031s21.332031 9.554687 21.332031 21.332031v90.667969h90.667969c11.777344 0 21.332031 9.554687 21.332031 21.332031s-9.554687 21.332031-21.332031 21.332031zm0 0" fill="#fafafa"/></svg>
+			</div>
 	{{#each driveInputFields}}
 		<div id="driveDynamicFields">
 			<div class="rc-input__wrapper" >
-					<input type="text" name="{{name}}" value="{{url}}" class="rc-input__element drive_fields" />
+					<input type="text" placeholder="appliedinformatics,https://gitlab.com" name="{{name}}" value="{{url}}" class="rc-input__element drive_fields" />
 				</div>
 	</div>
 	{{/each}}
 	<div class="rc-input__title" style="display: inline-block; align-self: center;">
-		SheetLink
+		Sheet(title,url)
 	</div>
-	<div id="add_sheet_field" class="rc-input__title" style= "margin-top: 20px; display: inline-block; align-self: center;"><svg fill="#000000" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" width="30px" height="30px"><path d="M25,2C12.317,2,2,12.317,2,25s10.317,23,23,23s23-10.317,23-23S37.683,2,25,2z M37,26H26v11h-2V26H13v-2h11V13h2v11h11V26z"/></svg>
+	<div id="add_sheet_field" class="rc-input__title" style= "margin-top: 20px; display: inline-block; align-self: center;">
+		<svg height="22px" style="margin-bottom: -6px; margin-left: 4px" viewBox="0 0 512 512" width="22px" xmlns="http://www.w3.org/2000/svg"><path d="m256 0c-141.164062 0-256 114.835938-256 256s114.835938 256 256 256 256-114.835938 256-256-114.835938-256-256-256zm0 0" fill="#2196f3"/><path d="m368 277.332031h-90.667969v90.667969c0 11.777344-9.554687 21.332031-21.332031 21.332031s-21.332031-9.554687-21.332031-21.332031v-90.667969h-90.667969c-11.777344 0-21.332031-9.554687-21.332031-21.332031s9.554687-21.332031 21.332031-21.332031h90.667969v-90.667969c0-11.777344 9.554687-21.332031 21.332031-21.332031s21.332031 9.554687 21.332031 21.332031v90.667969h90.667969c11.777344 0 21.332031 9.554687 21.332031 21.332031s-9.554687 21.332031-21.332031 21.332031zm0 0" fill="#fafafa"/></svg>
 	</div>
 	{{#each sheetInputFields}}
 		<div id="sheetDynamicFields">
 			<div class="rc-input__wrapper" >
-					<input type="text" name="{{name}}" value="{{url}}" class="rc-input__element sheet_fields" />
+					<input type="text" placeholder="appliedinformatics,https://gitlab.com" name="{{name}}" value="{{url}}" class="rc-input__element sheet_fields" />
 				</div>
 	</div>
 	{{/each}}

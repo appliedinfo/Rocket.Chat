@@ -17,6 +17,8 @@ const setStatus = (status, statusText) => {
 	AccountBox.setStatus(status, statusText);
 	callbacks.run('userStatusManuallySet', status);
 	popover.close();
+	
+
 };
 
 const showToolbar = new ReactiveVar(false);
@@ -164,6 +166,8 @@ const toolbarButtons = (/* user */) => [{
 					SideNav.openFlex();
 					FlowRouter.go('admin', { group: 'info' });
 					popover.close();
+				
+
 				},
 			};
 		}
@@ -181,6 +185,8 @@ const toolbarButtons = (/* user */) => [{
 									action = () => {
 										FlowRouter.go(item.href);
 										popover.close();
+										
+
 									};
 								}
 
@@ -189,6 +195,9 @@ const toolbarButtons = (/* user */) => [{
 										SideNav.setFlex(item.sideNav);
 										SideNav.openFlex();
 										popover.close();
+										
+
+										
 									};
 								}
 
@@ -319,6 +328,8 @@ Template.sidebarHeader.events({
 											SideNav.openFlex();
 											FlowRouter.go('account');
 											popover.close();
+											
+
 										},
 									},
 									{
@@ -332,6 +343,8 @@ Template.sidebarHeader.events({
 												Meteor.call('logoutCleanUp', user);
 												FlowRouter.go('home');
 												popover.close();
+												
+
 											});
 										},
 									},

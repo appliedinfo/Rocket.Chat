@@ -117,6 +117,8 @@ const commonEvents = {
 		t.tabBar.open(this);
 
 		popover.close();
+	
+
 	},
 };
 const action = function(e, t) {
@@ -139,6 +141,7 @@ const action = function(e, t) {
 	t.tabBar.open(this);
 
 	popover.close();
+	
 };
 
 Template.flexTabBar.events({

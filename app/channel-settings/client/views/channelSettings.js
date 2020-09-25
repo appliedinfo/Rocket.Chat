@@ -265,7 +265,7 @@ Template.channelSettingsEditing.events({
 		count++;
          Session.set(uniqueId,count);
 		let field = `<div class="rc-input__wrapper" >
-		<input type="text" name="drive_${count}" value="" class="rc-input__element drive_fields" />
+		<input type="text"  name="drive_${count}" value="" class="rc-input__element drive_fields" />
  </div>`
 		$('#driveDynamicFields').append(field)
 		
@@ -343,7 +343,6 @@ Template.channelSettingsEditing.events({
 		const { settings } = t;
 		var formData = $('.gitlab_fields').serializeArray()
 		let formList = [];
-		console.log("jiraformdata",formData.length);
 		formData.forEach(element => {
 			if(element.value !== ""){
 				formList.push(`${element.name}$*${element.value}`);
@@ -355,6 +354,7 @@ Template.channelSettingsEditing.events({
 			value.split(';').map(item => {
 				const regex = /^(.*?)\$\*(.*?),(.*?)$/;
 				const [, name, title, url] = regex.exec(item);
+				console.log("regexv",url);
 				gitlabLinksList.push({ name, title, url })
 				return { name, title, url }
 			})

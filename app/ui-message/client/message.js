@@ -61,7 +61,12 @@ const renderBody = (msg, settings) => {
 
 
 Template.message.events({
-	
+	'click .message': function(){
+        Session.set("showsheetdrop","none");
+        Session.set("showJiradrop","none");
+        Session.set("showdrop","none");
+        Session.set("showDrivedrop","none");
+    },
 	'click #tag_a_id' : function(){
 		console.log("thisisa",$(this));
 		const {msg} = this;
