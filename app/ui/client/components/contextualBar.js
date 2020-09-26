@@ -1,6 +1,12 @@
 import { Template } from 'meteor/templating';
 
 Template.contextualBar.events({
+	'click .contextual-bar'(){
+		Session.set("showsheetdrop","none");
+		Session.set("showJiradrop","none");
+		Session.set("showdrop","none");
+		Session.set("showDrivedrop","none");
+	},
 	'click .js-close'(e, t) {
 		t.tabBar.close();
 	},

@@ -18,6 +18,10 @@ Template.livechatAnalyticsDaterange.events({
 		const value = e.currentTarget.getAttribute('type') === 'checkbox' ? e.currentTarget.checked : e.currentTarget.value;
 
 		popover.close();
+		Session.set("showsheetdrop","none");
+			Session.set("showJiradrop","none");
+			Session.set("showdrop","none");
+			Session.set("showDrivedrop","none");
 		
 		switch (value) {
 			case 'custom':

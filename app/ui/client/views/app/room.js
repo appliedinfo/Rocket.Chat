@@ -631,6 +631,12 @@ export const dropzoneEvents = {
 
 Template.room.events({
 	...dropzoneEvents,
+	'click .messages-container-wrapper'(){
+		Session.set("showsheetdrop","none");
+		Session.set("showJiradrop","none");
+		Session.set("showdrop","none");
+		Session.set("showDrivedrop","none");
+	},
 	'click [data-message-action]'(event, template) {
 		const button = MessageAction.getButtonById(event.currentTarget.dataset.messageAction);
 		if ((button != null ? button.action : undefined) != null) {

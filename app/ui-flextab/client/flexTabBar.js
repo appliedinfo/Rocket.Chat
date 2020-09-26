@@ -117,6 +117,10 @@ const commonEvents = {
 		t.tabBar.open(this);
 
 		popover.close();
+		Session.set("showsheetdrop","none");
+			Session.set("showJiradrop","none");
+			Session.set("showdrop","none");
+			Session.set("showDrivedrop","none");
 	
 
 	},
@@ -141,6 +145,10 @@ const action = function(e, t) {
 	t.tabBar.open(this);
 
 	popover.close();
+	Session.set("showsheetdrop","none");
+			Session.set("showJiradrop","none");
+			Session.set("showdrop","none");
+			Session.set("showDrivedrop","none");
 	
 };
 

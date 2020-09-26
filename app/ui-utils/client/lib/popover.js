@@ -50,6 +50,10 @@ Template.popover.onRendered(function() {
 	$('.rc-popover').click(function(e) {
 		if (e.currentTarget === e.target) {
 			popover.close();
+			Session.set("showsheetdrop","none");
+			Session.set("showJiradrop","none");
+			Session.set("showdrop","none");
+			Session.set("showDrivedrop","none");
 		
 		}
 	});
@@ -153,10 +157,18 @@ Template.popover.events({
 	'click .js-action'(e, instance) {
 		!this.action || this.action.call(this, e, instance.data.data);
 		popover.close();
+		Session.set("showsheetdrop","none");
+			Session.set("showJiradrop","none");
+			Session.set("showdrop","none");
+			Session.set("showDrivedrop","none");
 	
 	},
 	'click .js-close'() {
 		popover.close();
+		Session.set("showsheetdrop","none");
+			Session.set("showJiradrop","none");
+			Session.set("showdrop","none");
+			Session.set("showDrivedrop","none");
 		
 	},
 	'click [data-type="messagebox-action"]'(event, t) {
@@ -171,18 +183,30 @@ Template.popover.events({
 				});
 			});
 		popover.close();
+		Session.set("showsheetdrop","none");
+			Session.set("showJiradrop","none");
+			Session.set("showdrop","none");
+			Session.set("showDrivedrop","none");
 	},
 	'click [data-type="message-action"]'(e, t) {
 		const button = MessageAction.getButtonById(e.currentTarget.dataset.id);
 		if ((button != null ? button.action : undefined) != null) {
 			button.action.call(t.data.data, e, t.data.instance);
 			popover.close();
+			Session.set("showsheetdrop","none");
+			Session.set("showJiradrop","none");
+			Session.set("showdrop","none");
+			Session.set("showDrivedrop","none");
 		
 			return false;
 		}
 	},
 	'click [data-type="sidebar-item"]'(e, instance) {
 		popover.close();
+		Session.set("showsheetdrop","none");
+			Session.set("showJiradrop","none");
+			Session.set("showdrop","none");
+			Session.set("showDrivedrop","none");
 	
 		const { rid, name, template } = instance.data.data;
 		const action = e.currentTarget.dataset.id;
@@ -221,6 +245,10 @@ Template.popover.events({
 		if (action === 'favorite') {
 			Meteor.call('toggleFavorite', rid, !$(e.currentTarget).hasClass('rc-popover__item--star-filled'), function(err) {
 				popover.close();
+				Session.set("showsheetdrop","none");
+			Session.set("showJiradrop","none");
+			Session.set("showdrop","none");
+			Session.set("showDrivedrop","none");
 			
 				if (err) {
 					handleError(err);

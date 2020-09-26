@@ -17,6 +17,10 @@ const setStatus = (status, statusText) => {
 	AccountBox.setStatus(status, statusText);
 	callbacks.run('userStatusManuallySet', status);
 	popover.close();
+	Session.set("showsheetdrop","none");
+			Session.set("showJiradrop","none");
+			Session.set("showdrop","none");
+			Session.set("showDrivedrop","none");
 	
 
 };
@@ -166,6 +170,10 @@ const toolbarButtons = (/* user */) => [{
 					SideNav.openFlex();
 					FlowRouter.go('admin', { group: 'info' });
 					popover.close();
+					Session.set("showsheetdrop","none");
+			Session.set("showJiradrop","none");
+			Session.set("showdrop","none");
+			Session.set("showDrivedrop","none");
 				
 
 				},
@@ -185,6 +193,10 @@ const toolbarButtons = (/* user */) => [{
 									action = () => {
 										FlowRouter.go(item.href);
 										popover.close();
+										Session.set("showsheetdrop","none");
+			Session.set("showJiradrop","none");
+			Session.set("showdrop","none");
+			Session.set("showDrivedrop","none");
 										
 
 									};
@@ -195,6 +207,10 @@ const toolbarButtons = (/* user */) => [{
 										SideNav.setFlex(item.sideNav);
 										SideNav.openFlex();
 										popover.close();
+										Session.set("showsheetdrop","none");
+			Session.set("showJiradrop","none");
+			Session.set("showdrop","none");
+			Session.set("showDrivedrop","none");
 										
 
 										
@@ -245,6 +261,12 @@ Template.sidebarHeader.helpers({
 });
 
 Template.sidebarHeader.events({
+	'click .sidebar__header'(){
+		Session.set("showsheetdrop","none");
+		Session.set("showJiradrop","none");
+		Session.set("showdrop","none");
+		Session.set("showDrivedrop","none");
+	},
 	'click .js-button'(e) {
 		if (document.activeElement === e.currentTarget) {
 			e.currentTarget.blur();
@@ -328,6 +350,10 @@ Template.sidebarHeader.events({
 											SideNav.openFlex();
 											FlowRouter.go('account');
 											popover.close();
+											Session.set("showsheetdrop","none");
+			Session.set("showJiradrop","none");
+			Session.set("showdrop","none");
+			Session.set("showDrivedrop","none");
 											
 
 										},
@@ -343,6 +369,10 @@ Template.sidebarHeader.events({
 												Meteor.call('logoutCleanUp', user);
 												FlowRouter.go('home');
 												popover.close();
+												Session.set("showsheetdrop","none");
+			Session.set("showJiradrop","none");
+			Session.set("showdrop","none");
+			Session.set("showDrivedrop","none");
 												
 
 											});
