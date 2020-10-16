@@ -65,6 +65,7 @@ import './methods/setUserActiveStatus';
 import './methods/setUserPassword';
 import './methods/tagmessage';
 import './methods/addResourceLinks';
+import './methods/addTagsToRoom';
 import './methods/toogleFavorite';
 import './methods/unmuteUserInRoom';
 import './methods/userSetUtcOffset';

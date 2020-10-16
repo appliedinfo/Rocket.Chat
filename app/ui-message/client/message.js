@@ -19,11 +19,13 @@ import './messageTag.css';
 import { AutoTranslate } from '../../autotranslate/client';
 import { Mongo } from 'meteor/mongo';
 import toastr from 'toastr';
+import { async } from 'q';
 		 
 
 var moment = require('moment-timezone');
 let messageID ;
-
+export default roomTags = new Mongo.Collection('rocketchat_room_tags');
+Meteor.subscribe('rocketchat_room_tags');
 var TaggedMessages = new Mongo.Collection('rocketchat_taggedmessages');
 Meteor.subscribe('rocketchat_taggedmessages');
 	
@@ -66,6 +68,24 @@ Template.message.events({
         Session.set("showJiradrop","none");
         Session.set("showdrop","none");
         Session.set("showDrivedrop","none");
+    },
+    'click .tags_action':function(event,t){ 
+        let selectedTag = $(event.target).data('value')
+        const {_id} = this.room;
+        let tags = roomTags.findOne({room_id:_id})
+        const tagList = tags.roomtagsList;
+        const tagName = tagList[selectedTag];
+        const {msg} = this;
+		const msgId = msg._id;
+        console.log("events",tagList[selectedTag])
+        let taggedMsg = TaggedMessages.findOne({messageId:msg._id,tagName:tagName})
+        console.log("tagged",taggedMsg)
+		if(typeof taggedMsg === "undefined"){
+			Meteor.call('rocketchat_taggedmessages.insert',msg.msg,msg._id,tagName)
+	   }
+	   else {
+		   console.log("TAGa is already tagged");
+	   }
     },
 	'click #tag_a_id' : function(){
 		console.log("thisisa",$(this));
@@ -112,11 +132,11 @@ Template.message.events({
 	   }
 	},
 	'click #opendropdown_for-actions__button' : function(e,t){
-		if(Session.get("showdrop") == "block"){
-			Session.set("showdrop","none");
+		if(Session.get("showTagDropdown") == "block"){
+			Session.set("showTagDropdown","none");
 		}
 		else{
-			Session.set("showdrop","block");
+			Session.set("showTagDropdown","block");
 		}
 
 		
@@ -533,7 +553,53 @@ Template.message.helpers({
     showStar() {
 		const { msg } = this;
 		return msg.starred && !(msg.actionContext === 'starred' || this.context === 'starred');
-	},
+    },
+    showTagDropdown(){
+        return Session.get("showTagDropdown")
+    },
+    roomTags(){
+        
+        const {_id} = this.room;
+        let tags = roomTags.findOne({room_id:_id})
+        const tagList = tags.roomtagsList;
+	return tagList;
+    },
+    messageTags(){
+        const {msg} = this;
+        const {_id} = this.room;
+        const msgId = msg._id;
+        let uniqueId = msgId;
+        let taggedMsg;
+         function getTaggedMsgs(){
+             taggedMsg = TaggedMessages.findOne({messageId:msg._id})
+             console.log("tageddd",taggedMsg);
+            return taggedMsg;
+        }
+       function returnTaggedMsgs(){
+         getTaggedMsgs()
+       
+        let tagList = [];
+        if(taggedMsg==undefined){
+            return undefined;
+        }
+        else{
+
+       
+        if(Session.get(uniqueId)==undefined){
+            tagList.push({tagName:taggedMsg.tagName})
+            Session.set(uniqueId,tagList);
+        }
+        else{
+            tagList = Session.get(uniqueId);
+            tagList.push({tagName:taggedMsg.tagName})
+            Session.set(uniqueId,tagList);
+        }
+        console.log("taged final",Session.get(uniqueId));
+        return Session.get(uniqueId);
+        }
+    }
+    returnTaggedMsgs()
+    },
 });
 
 

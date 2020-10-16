@@ -15,9 +15,11 @@ import { t, roomTypes, RoomSettingsEnum } from '../../../utils';
 import { ChannelSettings } from '../lib/ChannelSettings';
 import { MessageTypesValues } from '../../../lib/lib/MessageTypes';
 import { Mongo } from 'meteor/mongo';
-
 import resourceLinks from '../../../../app/ui/client/components/header/headerRoom'
 Meteor.subscribe('rocketchat_resource_links');
+import roomTags from '../../../../app/ui-message/client/message';
+Meteor.subscribe('rocketchat_room_tags');
+
 const common = {
 	canLeaveRoom() {
 		const { cl: canLeave, t: roomType } = Template.instance().room;
@@ -152,6 +154,10 @@ Template.channelSettingsEditing.events({
 		const input = e.currentTarget;
 		const modified = fixRoomName(input.value);
 		input.value = modified;
+	},
+	'input [name="tags"]'(e) {
+		const input = e.currentTarget;
+		
 	},
 	'input .js-input'(e) {
 		// console.log("thiss",e)
@@ -339,6 +345,20 @@ Template.channelSettingsEditing.events({
 		popover.open(config);
 	},
 	async 'click .js-save'(e, t) {
+
+		let tagsData = $('.room_tags').serializeArray();
+		let tagValues = "";
+		let tagList = [];
+		tagsData.forEach(element => {
+			if(element.value !== ""){
+				tagValues = element.value
+			}
+		});
+		tagValues.split(',').map(item => {
+			tagList.push(item)
+			
+		})
+		console.log("tagslist",tagList);
 		let gitlabLinksList = [] ;
 		const { settings } = t;
 		var formData = $('.gitlab_fields').serializeArray()
@@ -466,16 +486,27 @@ Template.channelSettingsEditing.events({
 		else{
 
 		}
+
 		
 	const { _id } = Template.instance().room;
+	let tagItem = roomTags.findOne({room_id:_id});
+	if(typeof tagItem ==="undefined"){
+		Meteor.call('rocketchat_room_tags.insert',_id,tagList);
+	}
+	else{
+		Meteor.call('rocketchat_room_tags.update',_id,tagList);
+	}
+
+
 		let gitlabItem = resourceLinks.findOne({room_id:_id,resourceName:"gitlabResources"})
-		console.log("type of gitlabitem",gitlabItem)
 		if(typeof gitlabItem === "undefined" ){
 			Meteor.call('rocketchat_resource_links.insert',_id,gitlabLinksList,jiraLinksList,driveLinkList,sheetLinkList,"gitlabResources");
 	   }
 	   else {
 		Meteor.call('rocketchat_resource_links.update',_id,gitlabLinksList,jiraLinksList,driveLinkList,sheetLinkList,"gitlabResources");
 	   }
+
+
 		Object.keys(settings).forEach(async (name) => {
 			const setting = settings[name];
 			const value = setting.value.get();

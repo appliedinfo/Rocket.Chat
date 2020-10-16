@@ -49,7 +49,12 @@
 		{{/with}}
 		
 		{{#unless isDiscussion}}
-		
+		<div class="rc-input__title" style="display: inline-block; align-self: center;">
+			Room Tags (Tag1,Tag2)
+		</div>
+		<div class="rc-input__wrapper" >
+			<input type="text" placeholder="tagA,TagB" name="tags" class="rc-input__element room_tags" />
+		</div>
 		<div class="rc-input__title" style="display: inline-block; align-self: center;">
 			Gitlab (title,Url)
 		</div>
