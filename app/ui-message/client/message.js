@@ -78,11 +78,29 @@ Template.message.events({
         const {msg} = this;
 		const msgId = msg._id;
         console.log("events",tagList[selectedTag])
-        let taggedMsg = TaggedMessages.findOne({messageId:msg._id,tagName:tagName})
+        let taggedList = [];
+        // if(Session.get(msgId)==undefined){
+        //     taggedList.push(tagList[selectedTag])
+        // }
+        // else{
+        //   taggedList =  Session.get(msgId);
+        //   taggedList.push(tagList[selectedTag])
+        // }
+       
+        let taggedMsg = TaggedMessages.findOne({messageId:msg._id})
         console.log("tagged",taggedMsg)
 		if(typeof taggedMsg === "undefined"){
-			Meteor.call('rocketchat_taggedmessages.insert',msg.msg,msg._id,tagName)
-	   }
+            taggedList.push(tagList[selectedTag])
+			Meteor.call('rocketchat_taggedmessages.insert',msg.msg,msg._id,taggedList)
+       }
+       else if(taggedMsg.taggedList.length>0){
+           taggedList = taggedMsg.taggedList;
+           if(taggedList.indexOf(tagList[selectedTag])===-1){
+            taggedList.push(tagList[selectedTag])
+           }
+           
+           Meteor.call('rocketchat_taggedmessages.update',msg.msg,msg._id,taggedList)
+       }
 	   else {
 		   console.log("TAGa is already tagged");
 	   }
@@ -566,39 +584,50 @@ Template.message.helpers({
     },
     messageTags(){
         const {msg} = this;
-        const {_id} = this.room;
-        const msgId = msg._id;
-        let uniqueId = msgId;
-        let taggedMsg;
-         function getTaggedMsgs(){
-             taggedMsg = TaggedMessages.findOne({messageId:msg._id})
-             console.log("tageddd",taggedMsg);
-            return taggedMsg;
-        }
-       function returnTaggedMsgs(){
-         getTaggedMsgs()
-       
-        let tagList = [];
-        if(taggedMsg==undefined){
+        let taggedMsg = TaggedMessages.findOne({messageId:msg._id})
+        if(typeof taggedMsg === "undefined"){
             return undefined;
-        }
-        else{
+           
+       }
+       else{
+           let taggedLabelList = taggedMsg.taggedList;
+           return taggedLabelList;
+       }
+    //     const {msg} = this;
+    //     const {_id} = this.room;
+    //     const msgId = msg._id;
+    //     let uniqueId = msgId;
+    //     let taggedMsg;
+    //    async  function getTaggedMsgs(){
+    //          taggedMsg = TaggedMessages.findOne({messageId:msg._id})
+    //          console.log("tageddd",taggedMsg);
+    //         return taggedMsg;
+    //     }
+    //   async function returnTaggedMsgs(){
+    //    await  getTaggedMsgs()
+       
+    //     let tagList = [];
+    //     if(taggedMsg==undefined){
+    //         return undefined;
+    //     }
+    //     else{
 
        
-        if(Session.get(uniqueId)==undefined){
-            tagList.push({tagName:taggedMsg.tagName})
-            Session.set(uniqueId,tagList);
-        }
-        else{
-            tagList = Session.get(uniqueId);
-            tagList.push({tagName:taggedMsg.tagName})
-            Session.set(uniqueId,tagList);
-        }
-        console.log("taged final",Session.get(uniqueId));
-        return Session.get(uniqueId);
-        }
-    }
-    returnTaggedMsgs()
+    //     if(Session.get(uniqueId)==undefined){
+    //         tagList.push({tagName:taggedMsg.tagName})
+    //         Session.set(uniqueId,tagList);
+    //     }
+    //     else{
+    //         tagList = Session.get(uniqueId);
+    //         tagList.push({tagName:taggedMsg.tagName})
+    //         Session.set(uniqueId,tagList);
+    //     }
+    //     console.log("taged final",Session.get(uniqueId));
+    //     return Session.get(uniqueId);
+    //     }
+    // }
+    // returnTaggedMsgs()
+    return 0;
     },
 });
 

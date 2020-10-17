@@ -45,8 +45,8 @@
 					{{/if}}
 					<time class="time" title='{{date}} {{time}} {{zoneAbbr}}' datetime='{{date}} {{time}} {{zoneAbbr}}'>{{time}} {{zoneAbbr}}</time>
 					<time class="time" title='{{dateinNextZone}}  {{zoneAbbrInNextLabel}}' datetime='{{dateinNextZone}} {{timeInNextZone}} {{zoneAbbrInNextLabel}}'>{{timeInNextZone}} {{zoneAbbrInNextLabel}}</time>
-					{{#each messageTags}}
-					<span class="role-tag color-secondary-color border-component-color" >{{tagName}}</span>
+					{{#each value in messageTags}}
+					<span class="role-tag color-secondary-color border-component-color" >{{value}}</span>
 
 					{{/each}}
 					{{ #if isTaggedA}}
