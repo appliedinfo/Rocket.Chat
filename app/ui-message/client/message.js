@@ -69,6 +69,32 @@ Template.message.events({
         Session.set("showdrop","none");
         Session.set("showDrivedrop","none");
     },
+    'click .tag-click':function(e,t){
+        const userRoles = UserRoles.findOne(this.u._id).roles;
+        console.log(userRoles)
+        let taggedList = [];
+        let msgOwner = this.msg.u._id
+       let  tagOwner = $(e.target).closest('.tag-click').attr("taggedBy");
+       let tagValue = $(e.target).closest('.tag-click').attr("value");
+       const {msg} = this;
+       let taggedMsg = TaggedMessages.findOne({messageId:msg._id})
+       taggedList = taggedMsg.taggedList;
+       if(userRoles.includes('admin') || this.u._id === msgOwner || this.u._id === tagOwner){
+        let isConfirm = confirm("Are you the Sure, you want to delete this tag?");
+        if(isConfirm){
+            if(taggedList.length>1){
+                let updatedList = taggedList.filter(e => e.tagName != tagValue)
+                Meteor.call('rocketchat_taggedmessages.update',msg.msg,msg._id,updatedList)
+                }
+                else{
+                    Meteor.call('rocketchat_taggedmessages.remove',msg._id)
+                }
+                alert("Tag has been deleted succesfully")
+        }
+        
+          
+       }
+    },
     'click .tags_action':function(event,t){ 
         let selectedTag = $(event.target).data('value')
         const {_id} = this.room;
@@ -79,27 +105,24 @@ Template.message.events({
 		const msgId = msg._id;
         console.log("events",tagList[selectedTag])
         let taggedList = [];
-        // if(Session.get(msgId)==undefined){
-        //     taggedList.push(tagList[selectedTag])
-        // }
-        // else{
-        //   taggedList =  Session.get(msgId);
-        //   taggedList.push(tagList[selectedTag])
-        // }
-       
-        let taggedMsg = TaggedMessages.findOne({messageId:msg._id})
+        const{u} = this;
+         let taggedMsg = TaggedMessages.findOne({messageId:msg._id})
         console.log("tagged",taggedMsg)
 		if(typeof taggedMsg === "undefined"){
-            taggedList.push(tagList[selectedTag])
-			Meteor.call('rocketchat_taggedmessages.insert',msg.msg,msg._id,taggedList)
+            taggedList.push({tagName:tagList[selectedTag],taggedBy:this.u.username,userId:this.u._id,taggedAt:new Date()})
+            Meteor.call('rocketchat_taggedmessages.insert',msg.msg,msg._id,taggedList)
+            console.log("lister",taggedList);
        }
        else if(taggedMsg.taggedList.length>0){
            taggedList = taggedMsg.taggedList;
-           if(taggedList.indexOf(tagList[selectedTag])===-1){
-            taggedList.push(tagList[selectedTag])
+           if(taggedList.some(e => e.tagName === tagList[selectedTag])){
+               console.log("already tagged here")
            }
-           
-           Meteor.call('rocketchat_taggedmessages.update',msg.msg,msg._id,taggedList)
+           else{
+            taggedList.push({tagName:tagList[selectedTag],taggedBy:this.u.username,userId:this.u._id,taggedAt:new Date()})
+            Meteor.call('rocketchat_taggedmessages.update',msg.msg,msg._id,taggedList)
+           }
+          
        }
 	   else {
 		   console.log("TAGa is already tagged");
