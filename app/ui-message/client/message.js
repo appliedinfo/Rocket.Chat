@@ -67,6 +67,8 @@ Template.message.events({
     'click #modal_tag' :function(event,t){
     },
     'click .SearchTag' :function(){
+        Session.set("tagClicked",false)
+        Session.set("tagSearchClicked",true)
     },
     'click .DeleteTag':function(e,t){
      const tagObj=   Session.get("tagObj");
@@ -90,6 +92,16 @@ Template.message.events({
         }
         else {
             Session.set("tagClicked",false)
+        }
+
+      
+    },
+    'click .rc-tagSearchmodal-wrapper'(event, instance) {
+        if(event.target.closest('.rc-tagSearchmodal')){
+           return ;
+        }
+        else {
+            Session.set("tagSearchClicked",false)
         }
 
       
@@ -663,6 +675,9 @@ Template.message.helpers({
     },
     isTagClicked(){
         return  Session.get("tagClicked");
+    },
+    isTagSearchClicked(){
+        return Session.get("tagSearchClicked")
     }
 });
 
