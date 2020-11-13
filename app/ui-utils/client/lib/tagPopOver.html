@@ -1,0 +1,16 @@
+<template name="tagPopOver">
+        <div class="rc-popover rc-popover--{{popoverClass}}" data-popover="popover" style="display: block; visibility: hidden;">
+            <div style="display: flex;" class="rc-popover__content {{#if isSafariIos}}rc-popover__content--safariIos{{/if}}">
+                {{#if template}}
+                    {{> Template.dynamic template=template data=data}}
+                {{else}}
+                {{#each column in columns}}
+                <div class="rc-popover__column">
+                   {{column}}
+                   </div>
+            {{/each}}
+                {{/if}}
+            </div>
+        </div>
+    </template>
+    

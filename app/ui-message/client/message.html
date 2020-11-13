@@ -238,4 +238,36 @@
 			{{/unless}}
 		{{/if}}
 	</li>
+
+	{{#if isTagClicked}}
+
+	<div class="rc-tagmodal-wrapper">
+		<dialog id="modal_tag" class="rc-tagmodal">
+				<header class="rc-tagmodal__header">
+					<h1 class="rc-tagmodal__title">
+					Please Confirm the Action
+					</h1>
+				
+				</header>
+
+				<!-- <section  class="rc-tagmodal__content">
+				hellooooo
+						<div style="margin-bottom: 90px;">
+							"text"
+						</div>
+					
+					</section> -->
+					<!-- {{# if showFooter }} -->
+						<footer class="rc-tagmodal__footer rc-modal__footer--empty">
+							<div >
+								<button class="tagModalBtns SearchTag">Search Tag</button>
+								<button class="tagModalBtns DeleteTag">Delete Tag</button>
+								 </div>
+						</footer>
+					<!-- {{/if}} -->
+			
+			</dialog>
+		
+	</div>
+	{{/if}}
 </template>

@@ -16,6 +16,7 @@ import { upsertMessage } from '../../ui-utils/client/lib/RoomHistoryManager';
 import './message.html';
 import './messageThread.html';
 import './messageTag.css';
+import './tagModal.css';
 import { AutoTranslate } from '../../autotranslate/client';
 import { Mongo } from 'meteor/mongo';
 import toastr from 'toastr';
@@ -63,6 +64,36 @@ const renderBody = (msg, settings) => {
 
 
 Template.message.events({
+    'click #modal_tag' :function(event,t){
+    },
+    'click .SearchTag' :function(){
+    },
+    'click .DeleteTag':function(e,t){
+     const tagObj=   Session.get("tagObj");
+     let taggedList = tagObj.taggedList;
+     let msg = tagObj.msg;
+        if(taggedList.length>1){
+            let updatedList = taggedList.filter(e => e.tagName != tagObj.tagValue)
+            Meteor.call('rocketchat_taggedmessages.update',msg.msg,msg._id,updatedList)
+            }
+            else{
+                Meteor.call('rocketchat_taggedmessages.remove',msg._id)
+            }
+           
+            Session.set("tagClicked",false)
+            toastr.success('Tag Deleted Successfully');
+    },
+    'click .rc-tagmodal-wrapper'(event, instance) {
+        if(event.target.closest('.rc-tagmodal')){
+            console.log("modal clicked")
+          return ;
+        }
+        else {
+            Session.set("tagClicked",false)
+        }
+
+      
+	},
 	'click .message': function(){
         Session.set("showsheetdrop","none");
         Session.set("showJiradrop","none");
@@ -79,23 +110,35 @@ Template.message.events({
        const {msg} = this;
        let taggedMsg = TaggedMessages.findOne({messageId:msg._id})
        taggedList = taggedMsg.taggedList;
-       if(userRoles.includes('admin') || this.u._id === msgOwner || this.u._id === tagOwner){
-        let isConfirm = confirm("Are you the Sure, you want to delete this tag?");
-        if(isConfirm){
-            if(taggedList.length>1){
-                let updatedList = taggedList.filter(e => e.tagName != tagValue)
-                Meteor.call('rocketchat_taggedmessages.update',msg.msg,msg._id,updatedList)
-                }
-                else{
-                    Meteor.call('rocketchat_taggedmessages.remove',msg._id)
-                }
-                alert("Tag has been deleted succesfully")
-        }
-        
-          
+
+       const taggedObject = {
+          taggedList,
+          msg,
+          tagValue
+
+
        }
+       if(userRoles.includes('admin') || this.u._id === msgOwner || this.u._id === tagOwner){
+           Session.set("tagObj",taggedObject);
+        //let isConfirm = confirm("Are you the Sure, you want to delete this tag?");
+        // if(isConfirm){
+        //     if(taggedList.length>1){
+        //         let updatedList = taggedList.filter(e => e.tagName != tagValue)
+        //         Meteor.call('rocketchat_taggedmessages.update',msg.msg,msg._id,updatedList)
+        //         }
+        //         else{
+        //             Meteor.call('rocketchat_taggedmessages.remove',msg._id)
+        //         }
+        //         alert("Tag has been deleted succesfully")
+        // }
+
+
+       }
+       Session.set("tagClicked",true)
+       
     },
     'click .tags_action':function(event,t){ 
+
         let selectedTag = $(event.target).data('value')
         const {_id} = this.room;
         let tags = roomTags.findOne({room_id:_id})
@@ -616,42 +659,11 @@ Template.message.helpers({
            let taggedLabelList = taggedMsg.taggedList;
            return taggedLabelList;
        }
-    //     const {msg} = this;
-    //     const {_id} = this.room;
-    //     const msgId = msg._id;
-    //     let uniqueId = msgId;
-    //     let taggedMsg;
-    //    async  function getTaggedMsgs(){
-    //          taggedMsg = TaggedMessages.findOne({messageId:msg._id})
-    //          console.log("tageddd",taggedMsg);
-    //         return taggedMsg;
-    //     }
-    //   async function returnTaggedMsgs(){
-    //    await  getTaggedMsgs()
-       
-    //     let tagList = [];
-    //     if(taggedMsg==undefined){
-    //         return undefined;
-    //     }
-    //     else{
-
-       
-    //     if(Session.get(uniqueId)==undefined){
-    //         tagList.push({tagName:taggedMsg.tagName})
-    //         Session.set(uniqueId,tagList);
-    //     }
-    //     else{
-    //         tagList = Session.get(uniqueId);
-    //         tagList.push({tagName:taggedMsg.tagName})
-    //         Session.set(uniqueId,tagList);
-    //     }
-    //     console.log("taged final",Session.get(uniqueId));
-    //     return Session.get(uniqueId);
-    //     }
-    // }
-    // returnTaggedMsgs()
-    return 0;
+    
     },
+    isTagClicked(){
+        return  Session.get("tagClicked");
+    }
 });
 
 
@@ -811,3 +823,4 @@ Template.message.onRendered(function() {
     const currentNode = this.firstNode;
     this.autorun(() => processSequentials({ currentNode, ...Template.currentData() }));
 });
+
