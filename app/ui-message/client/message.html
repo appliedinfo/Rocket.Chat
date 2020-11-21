@@ -250,6 +250,9 @@
 				
 				</header>
 
+
+				
+
 				<!-- <section  class="rc-tagmodal__content">
 				hellooooo
 						<div style="margin-bottom: 90px;">
@@ -281,14 +284,236 @@
 					</h1>
 				
 				</header>
+				
 
-				<!-- <section  class="rc-tagmodal__content">
+
+				<section style="max-height: 80%;" class="rc-tagmodal__content">
 				hellooooo
-						<div style="margin-bottom: 90px;">
-							"text"
+						
+				{{#each item in listOfTaggedMsgs}}
+				<li style="margin-top: 20px;" id="{{templatePrefix}}{{item._id}}" data-id="{{item._id}}" data-context={{actionContext}} class="message {{ignoredClass}} {{system}} {{t}} {{own}} {{isTemp}} {{chatops}} {{collapsed}} {{customClass}}" data-username="{{item.u.username}}" data-tmid="{{item.tmid}}" data-groupable="{{isGroupable}}" data-date="{{date}}" data-timestamp="{{timestamp}}" data-alias="{{item.alias}}">
+					{{#if isThreadReply}}
+					{{else}}
+						{{#if item.avatar}}
+							{{#if avatarFromUsername}}
+								<button aria-label="{{item.u.username}}" class="thumb user-card-message" data-username="{{item.u.username}}">
+									{{> avatar username=avatarFromUsername}}
+								</button>
+							{{else}}
+								<button aria-label="{{item.u.username}}" class="thumb user-card-message" data-username="{{item.u.username}}">
+									<div class="avatar">
+										<div class="avatar-image" style="background-image:url({{encodeURI msg.avatar}})"></div>
+									</div>
+								</button>
+							{{/if}}
+						{{else}}
+							{{#if msg.emoji}}
+								<button aria-label="{{item.u.username}}" class="thumb user-card-message" data-username="{{item.u.username}}">
+									<div class="avatar">
+										{{> renderEmoji msg.emoji}}
+									</div>
+								</button>
+							{{else}}
+								<button aria-label="{{item.u.username}}" class="thumb user-card-message" data-username="{{item.u.username}}">
+									{{> avatar username=msg.u.username}}
+								</button>
+							{{/if}}
+						{{/if}}
+						<div class="message-body-wrapper">
+							<div class="title border-component-color color-info-font-color">
+								<button type="button" class="user user-card-message color-primary-font-color" data-username="{{item.u.username}}" tabindex="1">
+									{{getName}}{{#if showUsername}} <span class="message-alias border-component-color color-info-font-color">@{{item.u.username}}</span>{{/if}}
+								</button>
+								{{#if getStatus}}
+									<button class="message-custom-status rc-tooltip rc-tooltip--up rc-tooltip--start" aria-label="{{getStatus}}">💬</button>
+								{{/if}}
+								<span class="info border-component-color color-info-font-color"></span>
+								{{#each role in roleTags}}
+									<span class="role-tag color-secondary-color border-component-color" data-role="{{role.description}}">{{role.description}}</span>
+								{{/each}}
+								{{#if isBot}}
+									<span class="is-bot color-secondary-color border-component-color">{{_ "Bot"}}</span>
+								{{/if}}
+								<time class="time" title='{{date}} {{time}} {{zoneAbbr}}' datetime='{{date}} {{time}} {{zoneAbbr}}'>{{time}} {{zoneAbbr}}</time>
+								<time class="time" title='{{dateinNextZone}}  {{zoneAbbrInNextLabel}}' datetime='{{dateinNextZone}} {{timeInNextZone}} {{zoneAbbrInNextLabel}}'>{{timeInNextZone}} {{zoneAbbrInNextLabel}}</time>
+				
+								
+								{{#if showTranslated}}
+									<span class="translated">
+										<i class="icon-language {{#if msg.autoTranslateFetching}}loading{{/if}}" aria-label="{{_ "Translated"}}"></i>
+										<span class="translation-provider">{{ translationProvider }}</span>
+									</span>
+								{{/if}}
+								{{#if msg.sentByEmail}}
+									<span class="sent-by-email">
+										<i class="icon-mail" title='{{_ "Message_sent_by_email"}}' aria-label='{{_ "Message_sent_by_email"}}'></i>
+									</span>
+								{{/if}}
+								{{#if edited}}
+									<span class="edited" title='{{_ "edited"}} {{_ "at"}} {{editTime}} {{_ "by"}} {{editedBy}}'>
+										<i class="icon-pencil{{#if $neq editedBy msg.u.username}} error-color{{/if}}" aria-label="{{_ "Edited"}}"></i>
+									</span>
+								{{/if}}
+								
+								{{#if msg.private}}
+									<span class="private">{{_ "Only_you_can_see_this_message"}}</span>
+								{{/if}}
+								{{#if fromSearch}}
+									<span class="user color-info-font-color">
+										{{>icon icon=roomIcon}}{{channelName}}
+									</span>
+								{{/if}}
+								{{#if isIgnored}}
+									<span class="toggle-hidden icon-right-dir" data-message="{{msg._id}}"> {{_ "Message_Ignored"}} </span>
+								{{/if}}
+							</div>
+							<div class="body {{bodyClass}}" dir="auto" data-unread-text="{{_ "item.msg"}}">
+								{{#if isSnippet}}
+									<div class="snippet-name">{{_ "Snippet_name"}}: {{snippetName}}</div>
+								{{/if}}
+								{{#if item.blocks}}
+									<div class='rc-ui-kit'>
+										{{> Blocks blocks=item.blocks rid=item.rid mid=item._id}}
+									</div>
+								{{else}}
+									{{#if isDecrypting}}
+										<span>******</span>
+									{{else}}
+										{{item.msg}}
+									{{/if}}
+								{{/if}}
+							</div>
 						</div>
+			
+						{{#if hasOembed}}
+							{{#each msg.urls}}
+								{{injectMessage . ../msg}}
+								{{injectSettings . ../settings}}
+								{{injectIndex . @index}}
+								{{> oembedBaseWidget}}
+							{{/each}}
+						{{/if}}
+						{{#each msg.attachments}}
+							{{injectMessage . ../msg}}
+							{{injectSettings . ../settings}}
+							{{injectIndex . @index}}
+							{{> messageAttachment}}
+						{{/each}}
+			
+						{{#if msg.drid}}
+							<div class="message-discussion">
+								{{#if $gt msg.dcount 0}}
+									<button class="js-navigate-to-discussion rc-button rc-button--primary rc-button--small" data-rid={{roomId}}>
+										<!-- {{> icon icon="discussion"}} -->
+										<span>{{{_ 'message_counter' counter=i18nDiscussionCounter count=msg.dcount }}}</span>
+									</button>
+								{{else}}
+									<button class="js-navigate-to-discussion rc-button rc-button--primary rc-button--small no-replies" data-rid={{roomId}}>
+										{{_ "No_messages_yet" }}
+									</button>
+								{{/if}}
+								<span class="discussion-reply-lm">{{ formatDateAndTime msg.dlm }}</span>
+							</div>
+						{{/if}}
+			
+						{{#if $and settings.showReplyButton msg.tcount}}
+							<div class="message-discussion">
+								<button class="js-open-thread rc-button rc-button--primary rc-button--small" data-rid={{roomId}}>
+									{{> icon icon="thread"}}
+									<span>{{{_ 'reply_counter' counter=i18nReplyCounter count=msg.tcount }}}</span>
+								</button>
+								<span class="discussion-reply-lm">{{ formatDateAndTime msg.tlm}}</span>
+							</div>
+						{{/if}}
+			
+						{{#with readReceipt}}
+							<div class="read-receipt {{readByEveryone}}">
+								{{> icon icon="check" }}
+							</div>
+						{{/with}}
+						{{#unless hideMessageActions}}
+							<div class="message-actions" >
+							   <div  class = "dropdown">
+								<button id="opendropdown_for-actions__button" style="margin: 0.2rem;"><svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+									width="15px" height="15px" viewBox="0 0 432.544 432.544" style="enable-background:new 0 0 432.544 432.544;"
+									xml:space="preserve">
+							   <g>
+								   <path d="M421.985,229.833L217.847,25.981c-7.235-7.238-16.94-13.374-29.121-18.416C176.541,2.522,165.407,0,155.318,0H36.547
+									   C26.648,0,18.083,3.619,10.85,10.848C3.617,18.081,0.002,26.646,0.002,36.545v118.771c0,10.088,2.519,21.219,7.564,33.404
+									   s11.182,21.792,18.417,28.837L230.118,421.98c7.043,7.043,15.602,10.564,25.697,10.564c9.89,0,18.558-3.521,25.98-10.564
+									   l140.186-140.47c7.043-7.046,10.561-15.604,10.561-25.693C432.542,245.919,429.024,237.258,421.985,229.833z M117.202,117.201
+									   c-7.142,7.138-15.752,10.709-25.841,10.709c-10.085,0-18.699-3.571-25.837-10.709c-7.138-7.139-10.706-15.749-10.706-25.837
+									   c0-10.089,3.568-18.702,10.706-25.837c7.139-7.139,15.752-10.71,25.837-10.71c10.089,0,18.702,3.571,25.841,10.71
+									   c7.135,7.135,10.706,15.749,10.706,25.837C127.908,101.452,124.341,110.062,117.202,117.201z"/>
+							   </g><g></g>
+							   <g> </g><g></g><g> </g> <g></g> <g></g> <g> </g> <g></g> <g> </g><g> </g><g> </g> <g> </g> <g></g> <g> </g> <g> </g>
+							   </svg></button>
+								<div id="myDropdown" class="dropdown-content " style = "margin-left: 4px; display:{{showTagDropdown}}">
+								  {{#each value in roomTags}}
+								  <div data-value="{{@index}}" id="{{@index}}" class="tags_action" style="cursor: pointer;">
+									{{value}}
+								</div >
+								  {{/each}}
+								</div>
+							  </div>
+								<div class="message-actions__buttons">
+									{{#each action in messageActions 'message'}}
+										<button class="message-actions__button"  data-message-action="{{action.id}}" title="{{_ action.label}}">
+												{{> icon block="message-actions__button-icon" icon=action.icon}}
+										</button>
+									{{/each}}
+								</div>
+								<div class="message-actions__menu" aria-haspopup="true">
+									{{> icon block="message-actions__menu-icon" icon="menu"}}
+								</div>
+							</div>
+						{{/unless}}
+						{{#unless hideActionLinks}}
+						<ul class="actionLinks">
+							{{#each actionLink in actionLinks}}
+								<li class="color-primary-action-color">
+									<span class="rc-button rc-button--primary rc-button--small" style="display: inline-block; line-height: 1.75rem" data-actionlink="{{actionLink.id}}">
+										{{#if actionLink.icon}}
+											<i class="{{actionLink.icon}}"></i>
+										{{/if}}
+										{{#if actionLink.i18nLabel}}
+											{{_ actionLink.i18nLabel}}
+										{{else}}
+											{{actionLink.label}}
+										{{/if}}
+									</span>
+								</li>
+							{{/each}}
+						</ul>
+						{{/unless}}
+						{{#if broadcast}}
+							<button type="button" class="js-reply-broadcast rc-button rc-button--primary rc-button--small rc-button--outline" name="button">
+								{{> icon icon="reply"}} {{_'Reply'}}
+							</button>
+						{{/if}}
+						{{#unless hideReactions}}
+						<ul class="reactions">
+							{{#each reaction in reactions}}
+								<li data-emoji="{{reaction.emoji}}" {{markUserReaction reaction}}>
+									<span class="reaction-emoji">{{> renderEmoji reaction.emoji}}</span>
+									<span class="reaction-count">{{reaction.count}}</span>
+									<span class="people" style="font-weight: bold">
+										{{reaction.usernames}} <span style="color: #aaa;">{{reaction.reaction}}</span>
+									</span>
+								</li>
+							{{/each}}
+							<li class="add-reaction">
+								<span class="icon-people-plus"></span>
+							</li>
+						</ul>
+						{{/unless}}
+					{{/if}}
+				</li>
+
+				{{/each}}
+
 					
-					</section> -->
+					</section>
 					<!-- {{# if showFooter }} -->
 						<footer class="rc-tagSearchmodal__footer rc-modal__footer--empty">
 							<div >

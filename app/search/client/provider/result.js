@@ -88,6 +88,7 @@ Template.DefaultSearchResultTemplate.events({
 
 Template.DefaultSearchResultTemplate.helpers({
 	result() {
+		console.log("mmm",Template.instance().data.result.get())
 		return Template.instance().data.result.get();
 	},
 	globalSearchEnabled() {

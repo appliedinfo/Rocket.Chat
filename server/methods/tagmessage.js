@@ -1,6 +1,9 @@
 import { Mongo } from 'meteor/mongo';
 import { Meteor } from 'meteor/meteor';
 
+
+
+
 var TaggedMessages = new Mongo.Collection('rocketchat_taggedmessages');
 // TaggedMessages.allow({
 //   insert: function (userId, doc) {
@@ -16,7 +19,7 @@ var TaggedMessages = new Mongo.Collection('rocketchat_taggedmessages');
 // });
 
 Meteor.publish("rocketchat_taggedmessages", function () {
-  console.log("teggle",TaggedMessages.find())
+  console.log("tegglea",TaggedMessages.find())
   return TaggedMessages.find();
 }); 
 

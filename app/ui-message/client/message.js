@@ -30,7 +30,40 @@ Meteor.subscribe('rocketchat_room_tags');
 var TaggedMessages = new Mongo.Collection('rocketchat_taggedmessages');
 Meteor.subscribe('rocketchat_taggedmessages');
 	
+msgCollection = new Mongo.Collection('rocketchat_message')
+Meteor.subscribe('rocketchat_message')
 
+
+const renderTaggedBody = (msg, settings) => {
+    const searchedText = msg.searchedText ? msg.searchedText : '';
+    const isSystemMessage = MessageTypes.isSystemMessage(msg);
+    const messageType = MessageTypes.getType(msg) || {};
+
+    if (messageType.render) {
+        msg = messageType.render(msg);
+    } else if (messageType.template) {
+        // render template
+    } else if (messageType.message) {
+        msg.msg = s.escapeHTML(msg.msg);
+        msg = TAPi18n.__(messageType.message, {...typeof messageType.data === 'function' && messageType.data(msg) });
+    } else if (msg.u && msg.u.username === settings.Chatops_Username) {
+        msg.html = msg.msg;
+        msg = callbacks.run('renderMentions', msg);
+        msg = msg.html;
+    } else {
+        msg = renderMessageBody(msg);
+    }
+
+    if (isSystemMessage) {
+        msg.html = Markdown.parse(msg.html);
+    }
+
+	if (searchedText) {
+		msg = msg.replace(new RegExp(searchedText, 'gi'), (str) => `<mark>${ str }</mark>`);
+	}
+
+    return msg;
+};
 const renderBody = (msg, settings) => {
     const searchedText = msg.searchedText ? msg.searchedText : '';
     const isSystemMessage = MessageTypes.isSystemMessage(msg);
@@ -67,6 +100,17 @@ Template.message.events({
     'click #modal_tag' :function(event,t){
     },
     'click .SearchTag' :function(){
+        let taggedMsgList = []
+        let msgs = []
+        const tagObj=   Session.get("tagObj");
+        TaggedMessages.find({taggedList:{$elemMatch:{tagName:tagObj.tagValue}}}).fetch().forEach(element => 
+                   taggedMsgList.push(element.messageId)
+           );
+           console.log("teres",taggedMsgList)
+           taggedMsgList.map((itemId) => 
+           msgs.push(Messages.findOne({ _id: itemId })) );
+
+        Session.set("listOfTaggedMsgs",msgs)
         Session.set("tagClicked",false)
         Session.set("tagSearchClicked",true)
     },
@@ -253,6 +297,10 @@ Template.message.events({
 });
 
 Template.message.helpers({
+
+    taggedBody(){
+        
+    },
     body() {
         const { msg, settings } = this;
         return Tracker.nonreactive(() => renderBody(msg, settings));
@@ -328,7 +376,7 @@ Template.message.helpers({
     },
     avatarFromUsername() {
         const { msg } = this;
-
+        console.log("avat",msg)
         if (msg.avatar != null && msg.avatar[0] === '@') {
             return msg.avatar.replace(/^@/, '');
         }
@@ -661,7 +709,11 @@ Template.message.helpers({
 	return tagList;
     },
     messageTags(){
+
         const {msg} = this;
+
+
+        console.log("jinn",Messages.findOne({ _id: "EboaAMdmQKFD7ntGL" }))
         let taggedMsg = TaggedMessages.findOne({messageId:msg._id})
         if(typeof taggedMsg === "undefined"){
             return undefined;
@@ -678,6 +730,9 @@ Template.message.helpers({
     },
     isTagSearchClicked(){
         return Session.get("tagSearchClicked")
+    },
+    listOfTaggedMsgs(){
+      return  Session.get("listOfTaggedMsgs")
     }
 });
 
