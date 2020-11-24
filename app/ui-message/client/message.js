@@ -656,6 +656,7 @@ Template.message.helpers({
         const { msg } = this;
         return msg.actionContext;
     },
+
     messageActions(group) {
         const { msg, context: ctx } = this;
         let messageGroup = group;
@@ -732,7 +733,15 @@ Template.message.helpers({
         return Session.get("tagSearchClicked")
     },
     listOfTaggedMsgs(){
-      return  Session.get("listOfTaggedMsgs")
+        let list = Session.get("listOfTaggedMsgs")
+        const {settings} = this
+        list.forEach(element =>{
+            console.log("tush",Tracker.nonreactive(() => renderBody(element, settings)))
+            element.bodyMsg = Tracker.nonreactive(() => renderBody(element, settings));
+            element.actionContext =  element.actionContext;
+        });
+        console.log("tmm",list)
+      return  list;
     }
 });
 

@@ -291,7 +291,7 @@
 				hellooooo
 						
 				{{#each item in listOfTaggedMsgs}}
-				<li style="margin-top: 20px;" id="{{templatePrefix}}{{item._id}}" data-id="{{item._id}}" data-context={{actionContext}} class="message {{ignoredClass}} {{system}} {{t}} {{own}} {{isTemp}} {{chatops}} {{collapsed}} {{customClass}}" data-username="{{item.u.username}}" data-tmid="{{item.tmid}}" data-groupable="{{isGroupable}}" data-date="{{date}}" data-timestamp="{{timestamp}}" data-alias="{{item.alias}}">
+				<li style="margin-top: 20px;" id="{{templatePrefix}}{{item._id}}" data-id="{{item._id}}" data-context={{item.actionContext}} class="message {{ignoredClass}} {{system}} {{t}} {{own}} {{isTemp}} {{chatops}} {{collapsed}} {{customClass}}" data-username="{{item.u.username}}" data-tmid="{{item.tmid}}" data-groupable="{{isGroupable}}" data-date="{{date}}" data-timestamp="{{timestamp}}" data-alias="{{item.alias}}">
 					{{#if isThreadReply}}
 					{{else}}
 						{{#if item.avatar}}
@@ -302,7 +302,7 @@
 							{{else}}
 								<button aria-label="{{item.u.username}}" class="thumb user-card-message" data-username="{{item.u.username}}">
 									<div class="avatar">
-										<div class="avatar-image" style="background-image:url({{encodeURI msg.avatar}})"></div>
+										<div class="avatar-image" style="background-image:url({{encodeURI item.avatar}})"></div>
 									</div>
 								</button>
 							{{/if}}
@@ -310,12 +310,12 @@
 							{{#if msg.emoji}}
 								<button aria-label="{{item.u.username}}" class="thumb user-card-message" data-username="{{item.u.username}}">
 									<div class="avatar">
-										{{> renderEmoji msg.emoji}}
+										{{> renderEmoji item.emoji}}
 									</div>
 								</button>
 							{{else}}
 								<button aria-label="{{item.u.username}}" class="thumb user-card-message" data-username="{{item.u.username}}">
-									{{> avatar username=msg.u.username}}
+									{{> avatar username=item.u.username}}
 								</button>
 							{{/if}}
 						{{/if}}
@@ -379,22 +379,22 @@
 									{{#if isDecrypting}}
 										<span>******</span>
 									{{else}}
-										{{item.msg}}
+										{{{item.bodyMsg}}}
 									{{/if}}
 								{{/if}}
 							</div>
 						</div>
 			
 						{{#if hasOembed}}
-							{{#each msg.urls}}
-								{{injectMessage . ../msg}}
+							{{#each item.urls}}
+								{{injectMessage . ../item}}
 								{{injectSettings . ../settings}}
 								{{injectIndex . @index}}
 								{{> oembedBaseWidget}}
 							{{/each}}
 						{{/if}}
-						{{#each msg.attachments}}
-							{{injectMessage . ../msg}}
+						{{#each item.attachments}}
+							{{injectMessage . ../item}}
 							{{injectSettings . ../settings}}
 							{{injectIndex . @index}}
 							{{> messageAttachment}}
