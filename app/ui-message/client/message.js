@@ -20,7 +20,8 @@ import './tagModal.css';
 import { AutoTranslate } from '../../autotranslate/client';
 import { Mongo } from 'meteor/mongo';
 import toastr from 'toastr';
-import { async } from 'q';
+import { async, Promise } from 'q';
+import { resolve } from 'url';
 		 
 
 var moment = require('moment-timezone');
@@ -100,19 +101,36 @@ Template.message.events({
     'click #modal_tag' :function(event,t){
     },
     'click .SearchTag' :function(){
-        let taggedMsgList = []
-        let msgs = []
-        const tagObj=   Session.get("tagObj");
-        TaggedMessages.find({taggedList:{$elemMatch:{tagName:tagObj.tagValue}}}).fetch().forEach(element => 
-                   taggedMsgList.push(element.messageId)
-           );
-           console.log("teres",taggedMsgList)
-           taggedMsgList.map((itemId) => 
-           msgs.push(Messages.findOne({ _id: itemId })) );
 
-        Session.set("listOfTaggedMsgs",msgs)
+        console.log("clickedsearchtag")
         Session.set("tagClicked",false)
         Session.set("tagSearchClicked",true)
+        Session.set("listOfTaggedMsgs",[])
+        let taggedMsgList = []
+        let msgs = []
+
+        const tagObj=   Session.get("tagObj");
+        async function queryDbForTaggedMsgs(){
+           let query=  new Promise(resolve => {
+          resolve(TaggedMessages.find({taggedList:{$elemMatch:{tagName:tagObj.tagValue}}}).fetch()) 
+           }) 
+           let queryResult = await query
+           queryResult.forEach(element => 
+                   taggedMsgList.push(element.messageId)
+           );
+           
+       await new Promise(resolve => {
+           resolve(taggedMsgList.map((itemId) => 
+           msgs.push(Messages.findOne({ _id: itemId })) ))
+                   
+        })
+        Session.set("listOfTaggedMsgs",msgs)
+        }
+        
+       queryDbForTaggedMsgs()
+
+      
+        
     },
     'click .DeleteTag':function(e,t){
      const tagObj=   Session.get("tagObj");
@@ -733,15 +751,19 @@ Template.message.helpers({
         return Session.get("tagSearchClicked")
     },
     listOfTaggedMsgs(){
-        let list = Session.get("listOfTaggedMsgs")
-        const {settings} = this
-        list.forEach(element =>{
-            console.log("tush",Tracker.nonreactive(() => renderBody(element, settings)))
-            element.bodyMsg = Tracker.nonreactive(() => renderBody(element, settings));
-            element.actionContext =  element.actionContext;
-        });
-        console.log("tmm",list)
-      return  list;
+        console.log("helpercalled")
+        if(Session.get("tagSearchClicked")){
+            let list = Session.get("listOfTaggedMsgs")
+            const {settings} = this
+            list.forEach(element =>{
+                console.log("tush",Tracker.nonreactive(() => renderTaggedBody(element, settings)))
+                element.bodyMsg = Tracker.nonreactive(() => renderTaggedBody(element, settings));
+                element.actionContext =  "search";
+            });
+            console.log("tmm",list)
+          return  list;
+        }
+        
     }
 });
 
@@ -776,6 +798,10 @@ const findParentMessage = (() => {
 })();
 
 Template.message.onCreated(function() {
+    
+
+    console.log("oncreate is called")
+
     const { msg, shouldCollapseReplies } = Template.currentData();
     if (shouldCollapseReplies && msg.tmid && !msg.threadMsg) {
         findParentMessage(msg.tmid);
