@@ -36,7 +36,7 @@ Meteor.subscribe('rocketchat_message')
 
 
 const renderTaggedBody = (msg, settings) => {
-    const searchedText = msg.searchedText ? msg.searchedText : '';
+   // const searchedText = msg.searchedText ? msg.searchedText : '';
     const isSystemMessage = MessageTypes.isSystemMessage(msg);
     const messageType = MessageTypes.getType(msg) || {};
 
@@ -47,21 +47,20 @@ const renderTaggedBody = (msg, settings) => {
     } else if (messageType.message) {
         msg.msg = s.escapeHTML(msg.msg);
         msg = TAPi18n.__(messageType.message, {...typeof messageType.data === 'function' && messageType.data(msg) });
-    } else if (msg.u && msg.u.username === settings.Chatops_Username) {
-        msg.html = msg.msg;
-        msg = callbacks.run('renderMentions', msg);
-        msg = msg.html;
     } else {
-        msg = renderMessageBody(msg);
+       
+            msg = renderMessageBody(msg);
+       
+       
     }
 
     if (isSystemMessage) {
         msg.html = Markdown.parse(msg.html);
     }
 
-	if (searchedText) {
-		msg = msg.replace(new RegExp(searchedText, 'gi'), (str) => `<mark>${ str }</mark>`);
-	}
+	// if (searchedText) {
+	// 	msg = msg.replace(new RegExp(searchedText, 'gi'), (str) => `<mark>${ str }</mark>`);
+	// }
 
     return msg;
 };
@@ -77,11 +76,13 @@ const renderBody = (msg, settings) => {
     } else if (messageType.message) {
         msg.msg = s.escapeHTML(msg.msg);
         msg = TAPi18n.__(messageType.message, {...typeof messageType.data === 'function' && messageType.data(msg) });
-    } else if (msg.u && msg.u.username === settings.Chatops_Username) {
+    }
+         else if (msg.u && msg.u.username === settings.Chatops_Username) {
         msg.html = msg.msg;
         msg = callbacks.run('renderMentions', msg);
         msg = msg.html;
-    } else {
+    } 
+    else {
         msg = renderMessageBody(msg);
     }
 
@@ -100,7 +101,7 @@ const renderBody = (msg, settings) => {
 Template.message.events({
     'click #modal_tag' :function(event,t){
     },
-    'click .SearchTag' :function(){
+    'click .SearchTag' :function(e,t){
 
         console.log("clickedsearchtag")
         Session.set("tagClicked",false)
@@ -120,17 +121,40 @@ Template.message.events({
            );
            
        await new Promise(resolve => {
-           resolve(taggedMsgList.map((itemId) => 
-           msgs.push(Messages.findOne({ _id: itemId })) ))
+           resolve(taggedMsgList.map((itemId) => {
+
+            let messageObj ={
+                messageObject : Messages.findOne({ _id: itemId }),
+                messageSettings : tagObj.settings
+            }
+            msgs.push(messageObj)
+           }
+           )
+           )
                    
         })
         Session.set("listOfTaggedMsgs",msgs)
+        Session.set("renderTags",true)
+
+
+        let list = Session.get("listOfTaggedMsgs")
+        let taggedMessageList = []
+        console.log("eventy",this)
+        list.forEach(element =>{
+            console.log("evento",element)
+
+           element.messageObject.bodyMsg = Tracker.nonreactive(() => renderTaggedBody(element.messageObject, element.settings));
+           element.messageObject.date =DateFormat.formatDate(element.messageObject.ts);
+           element.messageObject.time =DateFormat.formatTime(element.messageObject.ts);
+           taggedMessageList.push(element.messageObject)
+        });
+        console.log("eventom",list)
+        t.listOfTaggedMsgs.set(taggedMessageList)
         }
         
        queryDbForTaggedMsgs()
 
-      
-        
+
     },
     'click .DeleteTag':function(e,t){
      const tagObj=   Session.get("tagObj");
@@ -181,31 +205,20 @@ Template.message.events({
         let msgOwner = this.msg.u._id
        let  tagOwner = $(e.target).closest('.tag-click').attr("taggedBy");
        let tagValue = $(e.target).closest('.tag-click').attr("value");
-       const {msg} = this;
+       const {msg,settings} = this;
        let taggedMsg = TaggedMessages.findOne({messageId:msg._id})
        taggedList = taggedMsg.taggedList;
 
        const taggedObject = {
           taggedList,
           msg,
-          tagValue
+          tagValue,
+          settings
 
 
        }
        if(userRoles.includes('admin') || this.u._id === msgOwner || this.u._id === tagOwner){
            Session.set("tagObj",taggedObject);
-        //let isConfirm = confirm("Are you the Sure, you want to delete this tag?");
-        // if(isConfirm){
-        //     if(taggedList.length>1){
-        //         let updatedList = taggedList.filter(e => e.tagName != tagValue)
-        //         Meteor.call('rocketchat_taggedmessages.update',msg.msg,msg._id,updatedList)
-        //         }
-        //         else{
-        //             Meteor.call('rocketchat_taggedmessages.remove',msg._id)
-        //         }
-        //         alert("Tag has been deleted succesfully")
-        // }
-
 
        }
        Session.set("tagClicked",true)
@@ -220,14 +233,14 @@ Template.message.events({
         const tagName = tagList[selectedTag];
         const {msg} = this;
 		const msgId = msg._id;
-        console.log("events",tagList[selectedTag])
+        console.log("eventse",this)
         let taggedList = [];
         const{u} = this;
          let taggedMsg = TaggedMessages.findOne({messageId:msg._id})
-        console.log("tagged",taggedMsg)
+        console.log("tagged",this)
 		if(typeof taggedMsg === "undefined"){
             taggedList.push({tagName:tagList[selectedTag],taggedBy:this.u.username,userId:this.u._id,taggedAt:new Date()})
-            Meteor.call('rocketchat_taggedmessages.insert',msg.msg,msg._id,taggedList)
+            Meteor.call('rocketchat_taggedmessages.insert',msg._id,this.settings,taggedList)
             console.log("lister",taggedList);
        }
        else if(taggedMsg.taggedList.length>0){
@@ -237,7 +250,7 @@ Template.message.events({
            }
            else{
             taggedList.push({tagName:tagList[selectedTag],taggedBy:this.u.username,userId:this.u._id,taggedAt:new Date()})
-            Meteor.call('rocketchat_taggedmessages.update',msg.msg,msg._id,taggedList)
+            Meteor.call('rocketchat_taggedmessages.update',msg._id,this.settings,taggedList)
            }
           
        }
@@ -300,18 +313,7 @@ Template.message.events({
 		
 	
 	},
-	// 'click #tag_message-actions__button' : function(){
-	// 	const { msg} = this;
-	// 	console.log("msgg",this);
-	// 	// TaggedMessages.insert({
-	// 	// message:msg.msg,
-	// 	// messageId : msg._id,
-	// 	// taggedAt: new Date(),
-		
-	// 	// });	
-	// 	Meteor.call('rocketchat_taggedmessages.insert',msg.msg,msg._id)
-	// 	console.log("cllick",""+TaggedMessages.find());
-	// }
+
 });
 
 Template.message.helpers({
@@ -732,7 +734,6 @@ Template.message.helpers({
         const {msg} = this;
 
 
-        console.log("jinn",Messages.findOne({ _id: "EboaAMdmQKFD7ntGL" }))
         let taggedMsg = TaggedMessages.findOne({messageId:msg._id})
         if(typeof taggedMsg === "undefined"){
             return undefined;
@@ -751,19 +752,16 @@ Template.message.helpers({
         return Session.get("tagSearchClicked")
     },
     listOfTaggedMsgs(){
-        console.log("helpercalled")
-        if(Session.get("tagSearchClicked")){
-            let list = Session.get("listOfTaggedMsgs")
-            const {settings} = this
-            list.forEach(element =>{
-                console.log("tush",Tracker.nonreactive(() => renderTaggedBody(element, settings)))
-                element.bodyMsg = Tracker.nonreactive(() => renderTaggedBody(element, settings));
-                element.actionContext =  "search";
-            });
-            console.log("tmm",list)
-          return  list;
-        }
-        
+        // console.log("helpercalled")
+        // if(Session.get("tagSearchClicked") && Session.get("renderTags")){
+           
+        //   return  list;
+        // }
+        // else {
+        //   return  Session.get("finalList")
+        // }
+        console.log("pinto",Template.instance().listOfTaggedMsgs.get())
+        return Template.instance().listOfTaggedMsgs.get()
     }
 });
 
@@ -801,7 +799,7 @@ Template.message.onCreated(function() {
     
 
     console.log("oncreate is called")
-
+    this.listOfTaggedMsgs = new ReactiveVar([]);
     const { msg, shouldCollapseReplies } = Template.currentData();
     if (shouldCollapseReplies && msg.tmid && !msg.threadMsg) {
         findParentMessage(msg.tmid);

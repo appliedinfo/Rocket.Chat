@@ -289,7 +289,7 @@
 						<ul>
 							
 				{{#each item in listOfTaggedMsgs}}
-				<li style="margin-top: 20px;" id="{{templatePrefix}}{{item._id}}" data-id="{{item._id}}" data-context={{item.actionContext}} class=" message {{ignoredClass}} {{system}} {{t}} {{own}} {{isTemp}} {{chatops}} {{collapsed}} {{customClass}}" data-username="{{item.u.username}}" data-tmid="{{item.tmid}}" data-groupable="{{isGroupable}}" data-date="{{date}}" data-timestamp="{{timestamp}}" data-alias="{{item.alias}}">
+				<li style="margin-top: 20px;" id="{{templatePrefix}}{{item._id}}" data-id="{{item._id}}" class=" message {{ignoredClass}} {{system}} {{t}} {{own}} {{isTemp}} {{chatops}} {{collapsed}} {{customClass}}" data-username="{{item.u.username}}" data-tmid="{{item.tmid}}" data-groupable="{{isGroupable}}" data-date="{{date}}" data-timestamp="{{timestamp}}" data-alias="{{item.alias}}">
 					{{#if isThreadReply}}
 					{{else}}
 						{{#if item.avatar}}
@@ -332,10 +332,8 @@
 								{{#if isBot}}
 									<span class="is-bot color-secondary-color border-component-color">{{_ "Bot"}}</span>
 								{{/if}}
-								<time class="time" title='{{date}} {{time}} {{zoneAbbr}}' datetime='{{date}} {{time}} {{zoneAbbr}}'>{{time}} {{zoneAbbr}}</time>
-								<time class="time" title='{{dateinNextZone}}  {{zoneAbbrInNextLabel}}' datetime='{{dateinNextZone}} {{timeInNextZone}} {{zoneAbbrInNextLabel}}'>{{timeInNextZone}} {{zoneAbbrInNextLabel}}</time>
-				
-								
+								<time class="time" title='{{item.date}} {{item.time}}' datetime='{{item.date}} {{item.time}}'>{{item.time}}</time>
+										
 								{{#if showTranslated}}
 									<span class="translated">
 										<i class="icon-language {{#if msg.autoTranslateFetching}}loading{{/if}}" aria-label="{{_ "Translated"}}"></i>

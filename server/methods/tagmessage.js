@@ -25,18 +25,18 @@ Meteor.publish("rocketchat_taggedmessages", function () {
 
 Meteor.methods({
   
-'rocketchat_taggedmessages.insert'(message,messageId,taggedList ){
+'rocketchat_taggedmessages.insert'(messageId,msgSettings,taggedList ){
   TaggedMessages.insert({
     taggedList,
-    message,
-    messageId
+    messageId,
+    msgSettings
   });
 },
-'rocketchat_taggedmessages.update'(message,messageId,taggedList ){
+'rocketchat_taggedmessages.update'(messageId,msgSettings,taggedList ){
   TaggedMessages.update({messageId:messageId},{
     taggedList,
-    message,
     messageId ,
+    msgSettings
   });
 },
 'rocketchat_taggedmessages.remove'(messageId){
