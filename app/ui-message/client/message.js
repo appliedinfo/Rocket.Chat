@@ -113,7 +113,13 @@ Template.message.events({
         const tagObj=   Session.get("tagObj");
         async function queryDbForTaggedMsgs(){
            let query=  new Promise(resolve => {
-          resolve(TaggedMessages.find({taggedList:{$elemMatch:{tagName:tagObj.tagValue}}}).fetch()) 
+            const selector = {
+                taggedList:{ $elemMatch:{ tagName:tagObj.tagValue } }
+              }
+              const options = {
+                sort: { messageTimestamp : -1 }
+              }
+          resolve(TaggedMessages.find(selector,options).fetch()) 
            }) 
            let queryResult = await query
            queryResult.forEach(element => 
@@ -160,9 +166,11 @@ Template.message.events({
      const tagObj=   Session.get("tagObj");
      let taggedList = tagObj.taggedList;
      let msg = tagObj.msg;
+     let ts = tagObj.msgTs;
+     let sett = tagObj.settings;
         if(taggedList.length>1){
             let updatedList = taggedList.filter(e => e.tagName != tagObj.tagValue)
-            Meteor.call('rocketchat_taggedmessages.update',msg.msg,msg._id,updatedList)
+            Meteor.call('rocketchat_taggedmessages.update',msg._id,ts,sett,updatedList)
             }
             else{
                 Meteor.call('rocketchat_taggedmessages.remove',msg._id)
@@ -208,10 +216,11 @@ Template.message.events({
        const {msg,settings} = this;
        let taggedMsg = TaggedMessages.findOne({messageId:msg._id})
        taggedList = taggedMsg.taggedList;
-
+       let msgTs = taggedMsg.messageTimestamp
        const taggedObject = {
           taggedList,
           msg,
+          msgTs,
           tagValue,
           settings
 
@@ -240,7 +249,7 @@ Template.message.events({
         console.log("tagged",this)
 		if(typeof taggedMsg === "undefined"){
             taggedList.push({tagName:tagList[selectedTag],taggedBy:this.u.username,userId:this.u._id,taggedAt:new Date()})
-            Meteor.call('rocketchat_taggedmessages.insert',msg._id,this.settings,taggedList)
+            Meteor.call('rocketchat_taggedmessages.insert',msg._id,msg.ts,this.settings,taggedList)
             console.log("lister",taggedList);
        }
        else if(taggedMsg.taggedList.length>0){
@@ -250,7 +259,7 @@ Template.message.events({
            }
            else{
             taggedList.push({tagName:tagList[selectedTag],taggedBy:this.u.username,userId:this.u._id,taggedAt:new Date()})
-            Meteor.call('rocketchat_taggedmessages.update',msg._id,this.settings,taggedList)
+            Meteor.call('rocketchat_taggedmessages.update',msg._id,msg.ts,this.settings,taggedList)
            }
           
        }
