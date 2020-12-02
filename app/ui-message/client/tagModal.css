@@ -7,12 +7,36 @@
     text-decoration: none;
     display: inline-block;
     font-size: 16px;
-    margin: 4px 2px;
+    margin: 4px 2px 10px;
     cursor: pointer;
   }
   
+
+
+
+  .footer__dialog{
+	  display: flex;
+	  align-items: center;
+	  flex: 1;
+  }
+
+.close_tagged_message_dialog{
+
+	cursor: pointer;
+}
+  
+
   .SearchTag {background-color: #4CAF50;} /* Green */
-  .DeleteTag {background-color: #FF0000;} /* Blue */
+  .Cancel_tag {background-color:  #cbced1;
+	color: black !important;
+
+} 
+ 
+  .delete_the_tag {
+	 
+	  margin-left: auto;
+	  
+	} /* Blue */
 
 .rc-tagmodal {
 	display: flex;

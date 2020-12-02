@@ -162,22 +162,25 @@ Template.message.events({
 
 
     },
-    'click .DeleteTag':function(e,t){
-     const tagObj=   Session.get("tagObj");
-     let taggedList = tagObj.taggedList;
-     let msg = tagObj.msg;
-     let ts = tagObj.msgTs;
-     let sett = tagObj.settings;
-        if(taggedList.length>1){
-            let updatedList = taggedList.filter(e => e.tagName != tagObj.tagValue)
-            Meteor.call('rocketchat_taggedmessages.update',msg._id,ts,sett,updatedList)
-            }
-            else{
-                Meteor.call('rocketchat_taggedmessages.remove',msg._id)
-            }
-           
+    'click .delete_the_tag':function(e,t){
+        const tagObj=   Session.get("tagObj");
+        let taggedList = tagObj.taggedList;
+        let msg = tagObj.msg;
+        let ts = tagObj.msgTs;
+        let sett = tagObj.settings;
+           if(taggedList.length>1){
+               let updatedList = taggedList.filter(e => e.tagName != tagObj.tagValue)
+               Meteor.call('rocketchat_taggedmessages.update',msg._id,ts,sett,updatedList)
+               }
+               else{
+                   Meteor.call('rocketchat_taggedmessages.remove',msg._id)
+               }
+              
+               Session.set("tagClicked",false)
+               toastr.success('Tag Deleted Successfully');
+       },
+    'click .Cancel_tag':function(e,t){
             Session.set("tagClicked",false)
-            toastr.success('Tag Deleted Successfully');
     },
     'click .rc-tagmodal-wrapper'(event, instance) {
         if(event.target.closest('.rc-tagmodal')){
@@ -206,6 +209,7 @@ Template.message.events({
         Session.set("showdrop","none");
         Session.set("showDrivedrop","none");
     },
+
     'click .tag-click':function(e,t){
         const userRoles = UserRoles.findOne(this.u._id).roles;
         console.log(userRoles)
@@ -232,6 +236,9 @@ Template.message.events({
        }
        Session.set("tagClicked",true)
        
+    },
+    'click .close_tagged_message_dialog':function(e,t){
+        Session.set("tagSearchClicked",false)
     },
     'click .tags_action':function(event,t){ 
 
@@ -753,6 +760,10 @@ Template.message.helpers({
            return taggedLabelList;
        }
     
+    },
+    tagName(){
+        const tagObj=   Session.get("tagObj");
+        return tagObj.tagValue
     },
     isTagClicked(){
         return  Session.get("tagClicked");
