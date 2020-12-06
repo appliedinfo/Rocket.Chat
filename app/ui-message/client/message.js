@@ -36,7 +36,7 @@ Meteor.subscribe('rocketchat_message')
 
 
 const renderTaggedBody = (msg, settings) => {
-    const searchedText = msg.searchedText ? msg.searchedText : '';
+    // const searchedText = msg.searchedText ? msg.searchedText : '';
     const isSystemMessage = MessageTypes.isSystemMessage(msg);
     const messageType = MessageTypes.getType(msg) || {};
 
@@ -47,10 +47,17 @@ const renderTaggedBody = (msg, settings) => {
     } else if (messageType.message) {
         msg.msg = s.escapeHTML(msg.msg);
         msg = TAPi18n.__(messageType.message, {...typeof messageType.data === 'function' && messageType.data(msg) });
-    } else {
+    }   
+     else if (msg.u && msg.u.username === settings.Chatops_Username) {
+         msg.html = msg.msg;
+        msg = callbacks.run('renderMentions', msg);
+         msg = msg.html;
+     }  
+    
+    else {
       
               msg = renderMessageBody(msg);
-           
+              
     }
 
     if (isSystemMessage) {
@@ -68,7 +75,8 @@ const renderBody = (msg, settings) => {
     const isSystemMessage = MessageTypes.isSystemMessage(msg);
     const messageType = MessageTypes.getType(msg) || {};
 
-    
+    console.log("opss",msg)
+    console.log("opss",settings)
     
     if (messageType.render) {
         msg = messageType.render(msg);
@@ -79,6 +87,8 @@ const renderBody = (msg, settings) => {
         msg = TAPi18n.__(messageType.message, {...typeof messageType.data === 'function' && messageType.data(msg) });
     }
          else if (msg.u && msg.u.username === settings.Chatops_Username) {
+             console.log("opss",msg)
+             console.log("opss",settings)
         msg.html = msg.msg;
         msg = callbacks.run('renderMentions', msg);
         msg = msg.html;
@@ -115,7 +125,7 @@ Template.message.events({
         async function queryDbForTaggedMsgs(){
            let query=  new Promise(resolve => {
             const selector = {
-                taggedList:{ $elemMatch:{ tagName:tagObj.tagValue } }
+                taggedList:{ $elemMatch:{ tagName:tagObj.tagValue } },roomId:tagObj.roomId
               }
               const options = {
                 sort: { messageTimestamp : -1 }
@@ -150,7 +160,7 @@ Template.message.events({
         list.forEach(element =>{
             console.log("evento",element)
 
-           element.messageObject.bodyMsg = Tracker.nonreactive(() => renderTaggedBody(element.messageObject, element.settings));
+           element.messageObject.bodyMsg = Tracker.nonreactive(() => renderTaggedBody(element.messageObject, element.messageSettings));
            element.messageObject.date =DateFormat.formatDate(element.messageObject.ts);
            element.messageObject.time =DateFormat.formatTime(element.messageObject.ts);
            taggedMessageList.push(element.messageObject)
@@ -169,9 +179,10 @@ Template.message.events({
         let msg = tagObj.msg;
         let ts = tagObj.msgTs;
         let sett = tagObj.settings;
+        let roomId = tagObj.roomId;
            if(taggedList.length>1){
                let updatedList = taggedList.filter(e => e.tagName != tagObj.tagValue)
-               Meteor.call('rocketchat_taggedmessages.update',msg._id,ts,sett,updatedList)
+               Meteor.call('rocketchat_taggedmessages.update',roomId,msg._id,ts,sett,updatedList)
                }
                else{
                    Meteor.call('rocketchat_taggedmessages.remove',msg._id)
@@ -219,22 +230,28 @@ Template.message.events({
        let  tagOwner = $(e.target).closest('.tag-click').attr("taggedBy");
        let tagValue = $(e.target).closest('.tag-click').attr("value");
        const {msg,settings} = this;
+       
        let taggedMsg = TaggedMessages.findOne({messageId:msg._id})
        taggedList = taggedMsg.taggedList;
        let msgTs = taggedMsg.messageTimestamp
+       let roomId = this.room._id;
        const taggedObject = {
           taggedList,
           msg,
           msgTs,
           tagValue,
-          settings
+          settings,
+          roomId
 
 
        }
-       if(userRoles.includes('admin') || this.u._id === msgOwner || this.u._id === tagOwner){
-           Session.set("tagObj",taggedObject);
+    //    if(userRoles.includes('admin') || this.u._id === msgOwner || this.u._id === tagOwner){
+    //        Session.set("tagObj",taggedObject);
 
-       }
+    //    }
+
+       console.log("fbs",taggedObject);
+       Session.set("tagObj",taggedObject);
        Session.set("tagClicked",true)
        
     },
@@ -251,14 +268,14 @@ Template.message.events({
         const tagName = tagList[selectedTag];
         const {msg} = this;
 		const msgId = msg._id;
-        console.log("eventse",event.target.value)
+        console.log("eventse",this.room._id)
         let taggedList = [];
         const{u} = this;
          let taggedMsg = TaggedMessages.findOne({messageId:msg._id})
         console.log("tagged",this)
 		if(typeof taggedMsg === "undefined"){
             taggedList.push({tagName:tagList[selectedTag],taggedBy:this.u.username,userId:this.u._id,taggedAt:new Date()})
-            Meteor.call('rocketchat_taggedmessages.insert',msg._id,msg.ts,this.settings,taggedList)
+            Meteor.call('rocketchat_taggedmessages.insert',this.room._id,msg._id,msg.ts,this.settings,taggedList)
             console.log("lister",taggedList);
        }
        else if(taggedMsg.taggedList.length>0){
@@ -268,7 +285,7 @@ Template.message.events({
            }
            else{
             taggedList.push({tagName:tagList[selectedTag],taggedBy:this.u.username,userId:this.u._id,taggedAt:new Date()})
-            Meteor.call('rocketchat_taggedmessages.update',msg._id,msg.ts,this.settings,taggedList)
+            Meteor.call('rocketchat_taggedmessages.update',this.room._id,msg._id,msg.ts,this.settings,taggedList)
            }
           
        }

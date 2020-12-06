@@ -192,7 +192,7 @@
 				   </g><g></g>
 				   <g> </g><g></g><g> </g> <g></g> <g></g> <g> </g> <g></g> <g> </g><g> </g><g> </g> <g> </g> <g></g> <g> </g> <g> </g>
 				   </svg>
-						<select style="width: 18px; border: 0; outline: 0;" class="tags_action">
+						<select style="width: 18px; border: 0; outline: none;" class="tags_action">
 								{{#each value in roomTags}}
 								<option  value="{{@index}}" id="{{@index}}">{{value}}</option>
 								 
@@ -303,7 +303,7 @@
 		<dialog  class="rc-tagSearchmodal">
 				<header class="rc-tagSearchmodal__header">
 					<h1 class="rc-tagSearchmodal__title">
-					Tagged Messages {{tagName}}
+					Tagged Messages  ({{tagName}}) 
 					</h1>
 					<h1 class="close_tagged_message_dialog"  title="Close" >
 							<svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 18 18"><path d="M14.53 4.53l-1.06-1.06L9 7.94 4.53 3.47 3.47 4.53 7.94 9l-4.47 4.47 1.06 1.06L9 10.06l4.47 4.47 1.06-1.06L10.06 9z"/></svg>								
@@ -316,9 +316,10 @@
 						<ul>
 							
 				{{#each item in listOfTaggedMsgs}}
-				<li style="margin-top: 20px;" id="{{templatePrefix}}{{item._id}}" data-id="{{item._id}}" class=" message {{ignoredClass}} {{system}} {{t}} {{own}} {{isTemp}} {{chatops}} {{collapsed}} {{customClass}}" data-username="{{item.u.username}}" data-tmid="{{item.tmid}}" data-groupable="{{isGroupable}}" data-date="{{date}}" data-timestamp="{{timestamp}}" data-alias="{{item.alias}}">
-					<!-- {{#if isThreadReply}}
-					{{else}} -->
+				<li style="margin-top: 20px;" id="{{templatePrefix}}{{item._id}}" data-id="{{item._id}}" class=" message {{ignoredClass}} {{system}} {{t}} {{own}} {{isTemp}} {{chatops}} {{customClass}}" data-username="{{item.u.username}}" data-tmid="{{item.tmid}}" data-groupable="{{isGroupable}}" data-date="{{date}}" data-timestamp="{{timestamp}}" data-alias="{{item.alias}}">
+					{{#if item.isThreadReply}}
+					<!-- {{> messageThread parentMessage=parentMessage threadMessage=threadMessage following=msg.following avatar=msg.u.username msg=msg body=body class=bodyClass}} -->
+					{{else}}
 						{{#if item.avatar}}
 							{{#if avatarFromUsername}}
 								<button aria-label="{{item.u.username}}" class="thumb user-card-message" data-username="{{item.u.username}}">
@@ -394,7 +395,9 @@
 								{{#if isSnippet}}
 									<div class="snippet-name">{{_ "Snippet_name"}}: {{snippetName}}</div>
 								{{/if}}
-								{{#if item.blocks}}
+
+								
+								 {{#if item.blocks}}
 									<div class='rc-ui-kit'>
 										{{> Blocks blocks=item.blocks rid=item.rid mid=item._id}}
 									</div>
@@ -426,7 +429,7 @@
 					
 						
 					
-					<!-- {{/if}} -->
+					{{/if}}
 				</li>
 
 				{{/each}}
