@@ -49,7 +49,7 @@ const renderTaggedBody = (msg, settings) => {
         msg = TAPi18n.__(messageType.message, {...typeof messageType.data === 'function' && messageType.data(msg) });
     } else {
        
-            msg = renderMessageBody(msg);
+             msg = renderMessageBody(msg);
        
        
     }
@@ -149,7 +149,7 @@ Template.message.events({
         list.forEach(element =>{
             console.log("evento",element)
 
-           element.messageObject.bodyMsg = Tracker.nonreactive(() => renderTaggedBody(element.messageObject, element.settings));
+           element.messageObject.bodyMsg = Tracker.nonreactive(() => renderBody(element.messageObject, element.settings));
            element.messageObject.date =DateFormat.formatDate(element.messageObject.ts);
            element.messageObject.time =DateFormat.formatTime(element.messageObject.ts);
            taggedMessageList.push(element.messageObject)
@@ -240,16 +240,17 @@ Template.message.events({
     'click .close_tagged_message_dialog':function(e,t){
         Session.set("tagSearchClicked",false)
     },
-    'click .tags_action':function(event,t){ 
+    'change select':function(event,t){ 
 
-        let selectedTag = $(event.target).data('value')
+        // let selectedTag = $(event.target).data('value')
+        let selectedTag = event.target.value
         const {_id} = this.room;
         let tags = roomTags.findOne({room_id:_id})
         const tagList = tags.roomtagsList;
         const tagName = tagList[selectedTag];
         const {msg} = this;
 		const msgId = msg._id;
-        console.log("eventse",this)
+        console.log("eventse",event.target.value)
         let taggedList = [];
         const{u} = this;
          let taggedMsg = TaggedMessages.findOne({messageId:msg._id})
