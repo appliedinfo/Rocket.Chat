@@ -36,7 +36,7 @@ Meteor.subscribe('rocketchat_message')
 
 
 const renderTaggedBody = (msg, settings) => {
-   // const searchedText = msg.searchedText ? msg.searchedText : '';
+    const searchedText = msg.searchedText ? msg.searchedText : '';
     const isSystemMessage = MessageTypes.isSystemMessage(msg);
     const messageType = MessageTypes.getType(msg) || {};
 
@@ -48,10 +48,9 @@ const renderTaggedBody = (msg, settings) => {
         msg.msg = s.escapeHTML(msg.msg);
         msg = TAPi18n.__(messageType.message, {...typeof messageType.data === 'function' && messageType.data(msg) });
     } else {
-       
-             msg = renderMessageBody(msg);
-       
-       
+      
+              msg = renderMessageBody(msg);
+           
     }
 
     if (isSystemMessage) {
@@ -69,6 +68,8 @@ const renderBody = (msg, settings) => {
     const isSystemMessage = MessageTypes.isSystemMessage(msg);
     const messageType = MessageTypes.getType(msg) || {};
 
+    
+    
     if (messageType.render) {
         msg = messageType.render(msg);
     } else if (messageType.template) {
@@ -149,7 +150,7 @@ Template.message.events({
         list.forEach(element =>{
             console.log("evento",element)
 
-           element.messageObject.bodyMsg = Tracker.nonreactive(() => renderBody(element.messageObject, element.settings));
+           element.messageObject.bodyMsg = Tracker.nonreactive(() => renderTaggedBody(element.messageObject, element.settings));
            element.messageObject.date =DateFormat.formatDate(element.messageObject.ts);
            element.messageObject.time =DateFormat.formatTime(element.messageObject.ts);
            taggedMessageList.push(element.messageObject)
