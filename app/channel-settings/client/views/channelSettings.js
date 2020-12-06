@@ -160,9 +160,6 @@ Template.channelSettingsEditing.events({
 		
 	},
 	'input .js-input'(e) {
-		// console.log("thiss",e)
-		// let valuelist = [];
-		// valuelist.push(e.currentTarget.value)
 		this.value.set(e.currentTarget.value);
 		
 	},
@@ -191,7 +188,6 @@ Template.channelSettingsEditing.events({
 	'click #add_gitlab_field'(event,template){
 		const { _id } = Template.instance().room;
 		const uniqueId = _id.concat("git")
-		console.log("uniq",uniqueId);
 		let count =0;	
 		let gitlabItem = resourceLinks.findOne({room_id:_id,resourceName:"gitlabResources"})
 		if(gitlabItem == undefined || gitlabItem.gitlabLinkList.length==0){
@@ -211,7 +207,6 @@ Template.channelSettingsEditing.events({
 		
 		count++;
 	  Session.set(uniqueId,count);
-		// console.log("ids",gitlabIdList);
 		let field = `<div class="rc-input__wrapper" >
 		<input type="text" name="gitlab_${count}" value="" class="rc-input__element gitlab_fields" />
  </div>`
@@ -221,7 +216,6 @@ Template.channelSettingsEditing.events({
 	'click #add_jira_field'(event,template){
 		const { _id } = Template.instance().room;
 		const uniqueId = _id.concat("jira")
-		console.log("uniq",uniqueId);
 		
 		let count =0;	
 		let item = resourceLinks.findOne({room_id:_id,resourceName:"gitlabResources"})
@@ -250,7 +244,6 @@ Template.channelSettingsEditing.events({
 	'click #add_drive_field'(event,template){
 		const { _id } = Template.instance().room;
 		const uniqueId = _id.concat("drive")
-		console.log("uniq",uniqueId);
 		
 		let count =0;	
 		let item = resourceLinks.findOne({room_id:_id,resourceName:"gitlabResources"})
@@ -279,7 +272,6 @@ Template.channelSettingsEditing.events({
 	'click #add_sheet_field'(event,template){
 		const { _id } = Template.instance().room;
 		const uniqueId = _id.concat("sheet")
-		console.log("uniq",uniqueId);
 		
 		let count =0;	
 		let item = resourceLinks.findOne({room_id:_id,resourceName:"gitlabResources"})
@@ -358,7 +350,6 @@ Template.channelSettingsEditing.events({
 			tagList.push(item)
 			
 		})
-		console.log("tagslist",tagList);
 		let gitlabLinksList = [] ;
 		const { settings } = t;
 		var formData = $('.gitlab_fields').serializeArray()
@@ -1074,8 +1065,7 @@ Template.channelSettingsEditing.helpers({
 	roomTags(){
 		const { _id } = Template.instance().room;
 	let tagItem = roomTags.findOne({room_id:_id});
-	console.log("roomstagss",tagItem);
-	return tagItem.roomtagsList.join(',')
+	return tagItem.roomtagsList.join(',');
 	},
 	gitlabInputFields(){
 		const singleFieldList = [{"name": "gitlab_1","url":""}];
@@ -1137,7 +1127,6 @@ Template.channelSettingsEditing.helpers({
 	inputs(){
 		let gitlabFieldsList = [1,2]
 	let	list = Template.instance().inputs.get();
-	console.log("aa",Template.instance().inputs.get())
 	if(list===undefined){
 		return gitlabFieldsList;
 	}
@@ -1172,7 +1161,6 @@ Template.channelSettings.events({
 		hide(type, rid, name);
 	},
 	'click .js-cancel'(e, t) {
-		console.log("cancells",t);
 		t.editing.set(false);
 	},
 	'click .js-delete'() {

@@ -757,6 +757,15 @@ Template.message.helpers({
     showTagDropdown(){
         return Session.get("showTagDropdown")
     },
+    isRoomtags(){
+        const {_id} = this.room;
+        let tags = roomTags.findOne({room_id:_id})
+        console.log("tagsler",tags);
+        if(tags.roomtagsList.length<2){
+            return false;
+        }
+        return true;
+    },
     roomTags(){
         
         const {_id} = this.room;
