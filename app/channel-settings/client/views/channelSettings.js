@@ -1071,6 +1071,12 @@ Template.channelSettingsEditing.helpers({
 	editing() {
 		return Template.instance().editing.get();
 	},
+	roomTags(){
+		const { _id } = Template.instance().room;
+	let tagItem = roomTags.findOne({room_id:_id});
+	console.log("roomstagss",tagItem);
+	return tagItem.roomtagsList.join(',')
+	},
 	gitlabInputFields(){
 		const singleFieldList = [{"name": "gitlab_1","url":""}];
 		const { _id } = Template.instance().room;
