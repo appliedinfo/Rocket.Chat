@@ -317,8 +317,8 @@
 							
 				{{#each item in listOfTaggedMsgs}}
 				<li style="margin-top: 20px;" id="{{templatePrefix}}{{item._id}}" data-id="{{item._id}}" class=" message {{ignoredClass}} {{system}} {{t}} {{own}} {{isTemp}} {{chatops}} {{collapsed}} {{customClass}}" data-username="{{item.u.username}}" data-tmid="{{item.tmid}}" data-groupable="{{isGroupable}}" data-date="{{date}}" data-timestamp="{{timestamp}}" data-alias="{{item.alias}}">
-					{{#if isThreadReply}}
-					{{else}}
+					<!-- {{#if isThreadReply}}
+					{{else}} -->
 						{{#if item.avatar}}
 							{{#if avatarFromUsername}}
 								<button aria-label="{{item.u.username}}" class="thumb user-card-message" data-username="{{item.u.username}}">
@@ -426,7 +426,7 @@
 					
 						
 					
-					{{/if}}
+					<!-- {{/if}} -->
 				</li>
 
 				{{/each}}
