@@ -221,7 +221,6 @@ Template.message.events({
         Session.set("showdrop","none");
         Session.set("showDrivedrop","none");
     },
-
     'click .tag-click':function(e,t){
         // const userRoles = UserRoles.findOne(this.u._id).roles;
         // console.log(userRoles)
@@ -262,10 +261,13 @@ Template.message.events({
 
         // let selectedTag = $(event.target).data('value')
         let selectedTag = event.target.value
+        
         const {_id} = this.room;
         let tags = roomTags.findOne({room_id:_id})
         const tagList = tags.roomtagsList;
         const tagName = tagList[selectedTag];
+        console.log("selec",selectedTag)
+        console.log("selec",tagName)
         const {msg} = this;
 		const msgId = msg._id;
         console.log("eventse",this.room._id)
