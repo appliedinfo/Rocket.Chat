@@ -223,8 +223,8 @@ Template.message.events({
     },
 
     'click .tag-click':function(e,t){
-        const userRoles = UserRoles.findOne(this.u._id).roles;
-        console.log(userRoles)
+        // const userRoles = UserRoles.findOne(this.u._id).roles;
+        // console.log(userRoles)
         let taggedList = [];
         let msgOwner = this.msg.u._id
        let  tagOwner = $(e.target).closest('.tag-click').attr("taggedBy");
