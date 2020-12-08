@@ -28,11 +28,11 @@ var moment = require('moment-timezone');
 let messageID ;
 export default roomTags = new Mongo.Collection('rocketchat_room_tags');
 Meteor.subscribe('rocketchat_room_tags');
-var TaggedMessages = new Mongo.Collection('rocketchat_taggedmessages');
+export var TaggedMessages = new Mongo.Collection('rocketchat_taggedmessages');
 Meteor.subscribe('rocketchat_taggedmessages');
-	
-msgCollection = new Mongo.Collection('rocketchat_message')
-Meteor.subscribe('rocketchat_message')
+    
+
+
 
 
 const renderTaggedBody = (msg, settings) => {

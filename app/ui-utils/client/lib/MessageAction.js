@@ -302,6 +302,7 @@ Meteor.startup(async function() {
 		color: 'alert',
 		action() {
 			const { msg } = messageArgs(this);
+			console.log("deleted msgs")
 			getChatMessagesFrom(msg).confirmDeleteMsg(msg);
 		},
 		condition({ msg: message, subscription }) {

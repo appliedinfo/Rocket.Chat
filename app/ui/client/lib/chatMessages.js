@@ -29,6 +29,8 @@ import { Messages, Rooms, ChatMessage, ChatSubscription } from '../../../models/
 import { emoji } from '../../../emoji/client';
 import { generateTriggerId } from '../../../ui-message/client/ActionManager';
 
+Meteor.subscribe('rocketchat_taggedmessages');
+
 
 const messageBoxState = {
 	saveValue: _.debounce(({ rid, tmid }, value) => {
@@ -469,8 +471,9 @@ export class ChatMessages {
 			if (this.editing.id === message._id) {
 				this.clearEditing();
 			}
-
 			this.deleteMsg(message);
+		 	Meteor.call('rocketchat_taggedmessages.remove',message._id)
+			
 
 			this.$input.focus();
 			done();

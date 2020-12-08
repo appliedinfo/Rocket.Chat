@@ -49,6 +49,14 @@ Template.sideNav.helpers({
 });
 
 Template.sideNav.events({
+	'click .sidebar'(){
+		Session.set("showsheetdrop","none");
+		Session.set("showJiradrop","none");
+		Session.set("showdrop","none");
+		Session.set("showDrivedrop","none");
+		Session.set("tagSearchClicked",false)
+		Session.set("tagClicked",false)
+	},
 	'click .rooms-list'(){
 		Session.set("showsheetdrop","none");
 		Session.set("showJiradrop","none");
