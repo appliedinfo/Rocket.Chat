@@ -197,6 +197,10 @@ Template.RoomsActionMore.onCreated(function() {
 Template.RoomsActionTab.events({
 	...commonEvents,
 	'click .js-more'(e, t) {
+		Session.set("showsheetdrop","none");
+Session.set("showJiradrop","none");
+Session.set("showdrop","none");
+Session.set("showDrivedrop","none");
 		$(e.currentTarget).blur();
 		e.preventDefault();
 		const buttons = TabBar.getButtons().filter((button) => filterButtons(button, t.anonymous, t.data.rid));

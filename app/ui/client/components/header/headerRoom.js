@@ -315,7 +315,10 @@ Template.headerRoom.events({
 	'click .rc-header__content.rc-header__block'(event, instance) {
 		const { tabBar } = instance.parentTemplate();
 		const $flexTab = $('.flex-tab-container .flex-tab');
-
+		Session.set("showsheetdrop","none");
+        Session.set("showJiradrop","none");
+        Session.set("showdrop","none");
+        Session.set("showDrivedrop","none");
 		if (tabBar.getState() === 'opened' && (tabBar.getTemplate() === 'channelSettings' || tabBar.getTemplate() === 'membersList')) {
 			$flexTab.attr('template', '');
 			return tabBar.close();
