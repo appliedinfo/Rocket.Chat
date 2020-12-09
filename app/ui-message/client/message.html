@@ -353,17 +353,9 @@
 								<button type="button" class="user user-card-message color-primary-font-color" data-username="{{item.u.username}}" tabindex="1">
 									{{item.u.username}}{{#if showUsername}} <span class="message-alias border-component-color color-info-font-color">@{{item.u.username}}</span>{{/if}}
 								</button>
-								{{#if getStatus}}
-									<button class="message-custom-status rc-tooltip rc-tooltip--up rc-tooltip--start" aria-label="{{getStatus}}">💬</button>
-								{{/if}}
+								
 								<span class="info border-component-color color-info-font-color"></span>
-								{{#each role in roleTags}}
-									<span class="role-tag color-secondary-color border-component-color" data-role="{{role.description}}">{{role.description}}</span>
-								{{/each}}
-								{{#if isBot}}
-
-									<span class="is-bot color-secondary-color border-component-color">{{_ "Bot"}}</span>
-								{{/if}}
+							
 								<time class="time" title='{{item.date}} {{item.time}}' datetime='{{item.date}} {{item.time}}'>{{item.time}}</time>
 										
 								{{#if showTranslated}}
