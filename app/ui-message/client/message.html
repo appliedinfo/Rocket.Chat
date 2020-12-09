@@ -46,21 +46,10 @@
 					<time class="time" title='{{date}} {{time}} {{zoneAbbr}}' datetime='{{date}} {{time}} {{zoneAbbr}}'>{{time}} {{zoneAbbr}}</time>
 					<time class="time" title='{{dateinNextZone}}  {{zoneAbbrInNextLabel}}' datetime='{{dateinNextZone}} {{timeInNextZone}} {{zoneAbbrInNextLabel}}'>{{timeInNextZone}} {{zoneAbbrInNextLabel}}</time>
 					{{#each value in messageTags}}
-					<span style="border-color: #f2f3f5;background: rgba(0,0,0,0.05); border-radius: 8px; border-width: 2px ; " taggedBy = {{value.userId}} value={{value.tagName}} class="tag-click role-tag color-secondary-color border-component-color" >{{value.tagName}}</span>
+					<span style="border-color: #f2f3f5;background: rgba(0,0,0,0.05); border-radius: 8px; border-width: 2px ;cursor: pointer; " taggedBy = {{value.userId}} value={{value.tagName}} class="tag-click role-tag color-secondary-color border-component-color" >{{value.tagName}}</span>
 
 					{{/each}}
-					{{ #if isTaggedA}}
-					<span class="role-tag color-secondary-color border-component-color" >TAG A</span>
-
-					{{/if}}
-					{{ #if isTaggedB}}
-					<span class="role-tag color-secondary-color border-component-color" >TAG B</span>
 					
-					{{/if}}
-					{{ #if isTaggedC}}
-					<span class="role-tag color-secondary-color border-component-color" >TAG C</span>
-				 
-					{{/if}}
 					
 					{{#if showTranslated}}
 						<span class="translated">

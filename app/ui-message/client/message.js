@@ -295,50 +295,6 @@ Template.message.events({
 		   console.log("TAGa is already tagged");
 	   }
     },
-	'click #tag_a_id' : function(){
-		console.log("thisisa",$(this));
-		const {msg} = this;
-		const msgId = msg._id;
-		console.log("messagID",messageID);
-		const tagName = "tagA";
-		console.log("taga",msg._id,+ "" +TaggedMessages.findOne({messageId:msgId,tagName:"tagA"}));
-		let taggedMsg = TaggedMessages.findOne({messageId:msg._id,tagName:"tagA"})
-		if(typeof taggedMsg === "undefined"){
-			Meteor.call('rocketchat_taggedmessages.insert',msg.msg,msg._id,"tagA")
-	   }
-	   else {
-		   console.log("TAGa is already tagged");
-	   }
-	},
-	'click #tag_b_id' : function(){
-		console.log("thisisb",this);
-		const {msg} = this;
-		
-		const msgId = msg._id;
-		const tagName = "tagB";
-		console.log("tagb",msg._id,+ "" +TaggedMessages.findOne({messageId:msgId,tagName:"tagB"}));
-		let taggedMsg = TaggedMessages.findOne({messageId:msgId,tagName:"tagB"})
-		if(typeof taggedMsg === "undefined" ){
-			Meteor.call('rocketchat_taggedmessages.insert',msg.msg,msg._id,"tagB")
-	   }
-	   else {
-		   console.log("TAGB is already tagged");
-	   }
-	},
-	'click #tag_c_id' : function(){
-		console.log("thisisc",this);
-		const {msg} = this;
-		const msgId = msg._id;
-		const tagName = "tagC";
-		console.log("tagc",msg._id,+ "" +TaggedMessages.findOne({messageId:msgId,tagName:"tagC"}));
-		let taggedMsg = TaggedMessages.findOne({messageId:msgId,tagName:"tagC"})
-		if(typeof taggedMsg === "undefined" ){
-			Meteor.call('rocketchat_taggedmessages.insert',msg.msg,msg._id,"tagC")
-	   }
-	   else {
-		   console.log("TAGC is already tagged");
-	   }
-	},
 	'click #opendropdown_for-actions__button' : function(e,t){
 		if(Session.get("showTagDropdown") == "block"){
 			Session.set("showTagDropdown","none");
