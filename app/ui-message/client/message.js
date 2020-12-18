@@ -145,28 +145,28 @@ Template.message.events({
                 messageSettings : tagObj.settings
             }
             msgs.push(messageObj)
+            Session.set("listOfTaggedMsgs",msgs)
+            Session.set("renderTags",true)
+            let list = Session.get("listOfTaggedMsgs")
+            let taggedMessageList = []
+            list.forEach(element =>{
+                console.log("evento",element)
+               element.messageObject.bodyMsg = Tracker.nonreactive(() => renderTaggedBody(element.messageObject, element.messageSettings));
+               element.messageObject.date =DateFormat.formatDate(element.messageObject.ts);
+               element.messageObject.time =DateFormat.formatTime(element.messageObject.ts);
+               taggedMessageList.push(element.messageObject)
+            });
+            t.listOfTaggedMsgs.set(taggedMessageList)
            }
            )
            )
                    
         })
-        Session.set("listOfTaggedMsgs",msgs)
-        Session.set("renderTags",true)
+
+        
 
 
-        let list = Session.get("listOfTaggedMsgs")
-        let taggedMessageList = []
-        console.log("eventy",this)
-        list.forEach(element =>{
-            console.log("evento",element)
-
-           element.messageObject.bodyMsg = Tracker.nonreactive(() => renderTaggedBody(element.messageObject, element.messageSettings));
-           element.messageObject.date =DateFormat.formatDate(element.messageObject.ts);
-           element.messageObject.time =DateFormat.formatTime(element.messageObject.ts);
-           taggedMessageList.push(element.messageObject)
-        });
-        console.log("eventom",list)
-        t.listOfTaggedMsgs.set(taggedMessageList)
+       
         }
         
        queryDbForTaggedMsgs()
