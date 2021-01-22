@@ -74,9 +74,6 @@ const renderBody = (msg, settings) => {
     const searchedText = msg.searchedText ? msg.searchedText : '';
     const isSystemMessage = MessageTypes.isSystemMessage(msg);
     const messageType = MessageTypes.getType(msg) || {};
-
-    console.log("opss",msg)
-    console.log("opss",settings)
     
     if (messageType.render) {
         msg = messageType.render(msg);
@@ -87,8 +84,6 @@ const renderBody = (msg, settings) => {
         msg = TAPi18n.__(messageType.message, {...typeof messageType.data === 'function' && messageType.data(msg) });
     }
          else if (msg.u && msg.u.username === settings.Chatops_Username) {
-             console.log("opss",msg)
-             console.log("opss",settings)
         msg.html = msg.msg;
         msg = callbacks.run('renderMentions', msg);
         msg = msg.html;
@@ -114,7 +109,6 @@ Template.message.events({
     },
     'click .SearchTag' :function(e,t){
 
-        console.log("clickedsearchtag")
         Session.set("tagClicked",false)
         Session.set("tagSearchClicked",true)
         Session.set("listOfTaggedMsgs",[])
@@ -150,7 +144,6 @@ Template.message.events({
             let list = Session.get("listOfTaggedMsgs")
             let taggedMessageList = []
             list.forEach(element =>{
-                console.log("evento",element)
                element.messageObject.bodyMsg = Tracker.nonreactive(() => renderTaggedBody(element.messageObject, element.messageSettings));
                element.messageObject.date =DateFormat.formatDate(element.messageObject.ts);
                element.messageObject.time =DateFormat.formatTime(element.messageObject.ts);
@@ -196,7 +189,6 @@ Template.message.events({
     },
     'click .rc-tagmodal-wrapper'(event, instance) {
         if(event.target.closest('.rc-tagmodal')){
-            console.log("modal clicked")
           return ;
         }
         else {
@@ -223,7 +215,6 @@ Template.message.events({
     },
     'click .tag-click':function(e,t){
         // const userRoles = UserRoles.findOne(this.u._id).roles;
-        // console.log(userRoles)
         let taggedList = [];
         let msgOwner = this.msg.u._id
        let  tagOwner = $(e.target).closest('.tag-click').attr("taggedBy");
@@ -244,12 +235,7 @@ Template.message.events({
 
 
        }
-    //    if(userRoles.includes('admin') || this.u._id === msgOwner || this.u._id === tagOwner){
-    //        Session.set("tagObj",taggedObject);
 
-    //    }
-
-       console.log("fbs",taggedObject);
        Session.set("tagObj",taggedObject);
        Session.set("tagClicked",true)
        
@@ -266,19 +252,14 @@ Template.message.events({
         let tags = roomTags.findOne({room_id:_id})
         const tagList = tags.roomtagsList;
         const tagName = tagList[selectedTag];
-        console.log("selec",selectedTag)
-        console.log("selec",tagName)
         const {msg} = this;
 		const msgId = msg._id;
-        console.log("eventse",this.room._id)
         let taggedList = [];
         const{u} = this;
          let taggedMsg = TaggedMessages.findOne({messageId:msg._id})
-        console.log("tagged",this)
 		if(typeof taggedMsg === "undefined"){
             taggedList.push({tagName:tagList[selectedTag],taggedBy:this.u.username,userId:this.u._id,taggedAt:new Date()})
             Meteor.call('rocketchat_taggedmessages.insert',this.room._id,msg._id,msg.ts,this.settings,taggedList)
-            console.log("lister",taggedList);
        }
        else if(taggedMsg.taggedList.length>0){
            taggedList = taggedMsg.taggedList;
@@ -389,7 +370,6 @@ Template.message.helpers({
     },
     avatarFromUsername() {
         const { msg } = this;
-        console.log("avat",msg)
         if (msg.avatar != null && msg.avatar[0] === '@') {
             return msg.avatar.replace(/^@/, '');
         }
@@ -718,7 +698,6 @@ Template.message.helpers({
     isRoomtags(){
         const {_id} = this.room;
         let tags = roomTags.findOne({room_id:_id})
-        console.log("tagsler",tags);
         if(tags.roomtagsList.length<2){
             return false;
         }
@@ -734,8 +713,6 @@ Template.message.helpers({
     messageTags(){
 
         const {msg} = this;
-
-
         let taggedMsg = TaggedMessages.findOne({messageId:msg._id})
         if(typeof taggedMsg === "undefined"){
             return undefined;
@@ -758,15 +735,6 @@ Template.message.helpers({
         return Session.get("tagSearchClicked")
     },
     listOfTaggedMsgs(){
-        // console.log("helpercalled")
-        // if(Session.get("tagSearchClicked") && Session.get("renderTags")){
-           
-        //   return  list;
-        // }
-        // else {
-        //   return  Session.get("finalList")
-        // }
-        console.log("pinto",Template.instance().listOfTaggedMsgs.get())
         return Template.instance().listOfTaggedMsgs.get()
     }
 });
@@ -804,7 +772,6 @@ const findParentMessage = (() => {
 Template.message.onCreated(function() {
     
 
-    console.log("oncreate is called")
     this.listOfTaggedMsgs = new ReactiveVar([]);
     const { msg, shouldCollapseReplies } = Template.currentData();
     if (shouldCollapseReplies && msg.tmid && !msg.threadMsg) {
